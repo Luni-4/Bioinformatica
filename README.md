@@ -4,26 +4,26 @@ Bioinformatica
 # Indice
 
 1. [Informazioni](#1-informazioni)
-2. [Modalità di lavoro](#2-modalita-di-lavoro)
-  1. [Divisione dei compiti](#21-divisione-compiti)
-  2. [Caricamento su repository](#22-caricamento-repository)
+2. [Modalità di lavoro](#2-modalità-di-lavoro)
+  1. [Divisione dei compiti](#21-divisione-dei-compiti)
+  2. [Caricamento su repository](#22-caricamento-su-repository)
 3. [Input](#3-input)
-  1. [Drosophila melanogaster](#31-drosophila)
-  2. [Homo sapiens](#32-homo)
+  1. [Drosophila melanogaster](#31-drosophila-melanogaster)
+  2. [Homo sapiens](#32-homo-sapiens)
 4. [Output](#4-output)
 5. [Idee](#5-idee)
 6. [TODO](#6-TODO)
-  1. [Luni-4](#61-luni)
+  1. [Luni-4](#61-luni-4)
   2. [Fede](#62-fede)
 
 -----------------
 
 # 1. Informazioni
 
-Linguaggio di programmazione: Python
-Versione Python: 3.6
-Librerie sicure: scikit-learn
-Librerie in forse: Shogun (altre che non mi vengono in mente)
+- Linguaggio di programmazione: Python
+- Versione Python: 3.6
+- Librerie sicure: scikit-learn
+- Librerie in forse: Shogun (altre che non mi vengono in mente)
 
 # 2. Modalità di lavoro
 
