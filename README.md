@@ -1,0 +1,86 @@
+Bioinformatica
+================
+
+# Indice
+
+1. [Informazioni](#1-informazioni)
+2. [Modalità di lavoro](#2-modalita-di-lavoro)
+  1. [Divisione dei compiti](#21-divisione-compiti)
+  2. [Caricamento su repository](#22-caricamento-repository)
+3. [Input](#3-input)
+  1. [Drosophila melanogaster](#31-drosophila)
+  2. [Homo sapiens](#32-homo)
+4. [Output](#4-output)
+5. [Idee](#5-idee)
+6. [TODO](#6-TODO)
+  1. [Luni-4](#61-luni)
+  2. [Fede](#62-fede)
+
+-----------------
+
+# 1. Informazioni
+
+Linguaggio di programmazione: Python
+Versione Python: 3.6
+Librerie sicure: scikit-learn
+Librerie in forse: Shogun (altre che non mi vengono in mente)
+
+# 2. Modalità di lavoro
+
+## 2.1. Divisione dei compiti
+
+Ogni componente, secondo me, deve occuparsi di un classificatore diverso. Le parti che vanno gestite insieme sono:
+
+- L'acquisizione dei dati e la loro formattazione
+
+- L'analisi dell'output dei due classificatori
+
+- Fase di test e set-up sperimentale
+
+Per quanto riguarda la la parte relativa alla combinazione degli output dei classificatori, ensemble, direi di farla solo se abbiamo tempo
+
+## 2.2. Caricamento su repository
+
+Entrambi i componenti del gruppo caricano i file e le relative revisioni del codice per mezzo di pull-request. 
+Se la pull-request viene accettata da entrambi i componenti, verrà "mergiata" nel repository master.
+All'interno di una pull-request si possono fare revisioni, nel caso in cui il codice non sia ritenuto valido.
+
+Esempio: https://github.com/mbunkus/mkvtoolnix/pull/1838
+
+# 3. Input
+
+## 3.1. Drosophila melanogaster
+
+- Matrice di adiacenza 3195 x 3195. Un entry di una matrice rappresenta un valore che indica la similarità tra le proteine.
+- Matrice delle annotazioni 3195 x 1951 per la BP, 3195 x 234 per MF e 3195 x 235 per CC. Un entry della matrice può assumere o 0 o 1.
+
+## 3.2. Homo sapiens
+
+- Matrice di adiacenza 19247 x 19247. Un entry di una matrice rappresenta un valore che indica la similarità tra le proteine.
+- Matrice delle annotazioni 19247 x 3958 per la BP, 19247 x 899 per MF e 19247 x 601 per CC. Un entry della matrice può assumere o 0 o 1.
+
+# 4. Output
+
+
+# 5. Idee
+
+- Al posto di caricare completamente la matrice delle adiacenze, essendo simmetrica, caricare solo la matrice triangolare corrispondente
+- Verificare se in python i tipi di dato che occupano meno spazio
+- Ottimizzare con cpython (richiede tempo e sbatti, molto improbabile, ma teniamolo scritto)  
+
+
+# 6. TODO
+
+## 6.1. Luni-4
+
+
+## 6.2. Fede 
+
+
+
+ 
+
+
+
+
+
