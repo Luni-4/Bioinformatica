@@ -12,7 +12,7 @@ Bioinformatica
   2. [Homo sapiens](#32-homo-sapiens)
 4. [Output](#4-output)
 5. [Idee](#5-idee)
-6. [TODO](#6-TODO)
+6. [TODO](#6-todo)
   1. [Luni-4](#61-luni-4)
   2. [Fede](#62-fede)
 
