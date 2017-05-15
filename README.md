@@ -49,24 +49,42 @@ Esempio: https://github.com/mbunkus/mkvtoolnix/pull/1838
 
 # 3. Input
 
+OGNI ENTRY DELLA MATRICE É SEPARATA DA UN ALTRA PER MEZZO DI UN TAB 
+
 ## 3.1. Drosophila melanogaster
 
-- Matrice di adiacenza 3195 x 3195. Un entry di una matrice rappresenta un valore che indica la similarità tra le proteine.
-- Matrice delle annotazioni 3195 x 1951 per la BP, 3195 x 234 per MF e 3195 x 235 per CC. Un entry della matrice può assumere o 0 o 1.
+- Matrice di adiacenza 3195 x 3195.Un entry della matrice contiene un valore che indica la similarità tra le proteine, individuate dagli indici della entry stessa.
+- Matrice delle annotazioni. Un entry della matrice può assumere solo i valori 0 e 1. Il valore 0 significa che la proteina non è associata alla classe, al contrario con 1 la proteina è associata.
+        - 3195 x 1951 per BP
+        - 3195 x 234 per MF
+        - 3195 x 235 per CC
 
 ## 3.2. Homo sapiens
 
-- Matrice di adiacenza 19247 x 19247. Un entry di una matrice rappresenta un valore che indica la similarità tra le proteine.
-- Matrice delle annotazioni 19247 x 3958 per la BP, 19247 x 899 per MF e 19247 x 601 per CC. Un entry della matrice può assumere o 0 o 1.
+- Matrice di adiacenza 19247 x 19247. Un entry della matrice contiene un valore che indica la similarità tra le proteine, individuate dagli indici della entry stessa.
+- Matrice delle annotazioni. Un entry della matrice può assumere solo i valori 0 e 1. Il valore 0 significa che la proteina non è associata alla classe, al contrario con 1 la proteina è associata.
+        - 19247 x 3958 per BP
+        - 19247 x 899 per MF
+        - 19247 x 601 per CC
 
 # 4. Output
+
+- Usare una 5-fold cross-validation per generare il training set e i test set, a partire dalle matrici di adiacenza e delle annotazioni in input.
+
+- Provare diverse soglie t di accettazione secondo un determinato criterio (??).
+
+- Calcolare la Precisione (Prec(t)) e la sensibilità (Rec(t)) per le soglie t stabilite precedentemente. Cercare delle librerie che consentono di calcolarle
+
+- Calcolare la F-score gerarchica (convertire in python il file F-hier.R, scritto in R, altrimenti usare una funzione di una libreria per calcolarla)
+
+- Cercare libreria python che calcola AUROC e AUPRC. 
 
 
 # 5. Idee
 
 - Al posto di caricare completamente la matrice delle adiacenze, essendo simmetrica, caricare solo la matrice triangolare corrispondente
-- Verificare se in python i tipi di dato che occupano meno spazio
-- Ottimizzare con cpython (richiede tempo e sbatti, molto improbabile, ma teniamolo scritto)  
+- Verificare i tipi di dato che occupano meno spazio in python
+- Ottimizzare il programma usando cpython (richiede tempo e sbatti, molto improbabile, ma teniamocelo in lista)  
 
 
 # 6. TODO
