@@ -86,8 +86,8 @@ OGNI ENTRY DELLA MATRICE É SEPARATA DA UN ALTRA PER MEZZO DI UN TAB
 
 - Al posto di caricare completamente la matrice delle adiacenze, essendo simmetrica, caricare solo la matrice triangolare corrispondente
 - Verificare i tipi di dato che occupano meno spazio in python
-- Ottimizzare il programma usando cpython (richiede tempo e sbatti, molto improbabile, ma teniamocelo in lista)
-- Non decomprimere il file zip fornito, ma leggere il file compresso e decomprimerlo in real time con Zlib oppure Gzip. 
+- Non decomprimere il file zip fornito, ma leggere il file compresso e decomprimerlo in real time con Zlib oppure Gzip.
+- Una volta che si è completata una sessione di apprendimento, è utile salvare su disco un file che contenga l'oggetto classificatore. Vedere http://machinelearningmastery.com/save-load-machine-learning-models-python-scikit-learn/
 
 
 # 6. TODO
