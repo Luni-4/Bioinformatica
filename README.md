@@ -86,7 +86,8 @@ OGNI ENTRY DELLA MATRICE É SEPARATA DA UN ALTRA PER MEZZO DI UN TAB
 
 - Al posto di caricare completamente la matrice delle adiacenze, essendo simmetrica, caricare solo la matrice triangolare corrispondente
 - Verificare i tipi di dato che occupano meno spazio in python
-- Ottimizzare il programma usando cpython (richiede tempo e sbatti, molto improbabile, ma teniamocelo in lista)  
+- Ottimizzare il programma usando cpython (richiede tempo e sbatti, molto improbabile, ma teniamocelo in lista)
+- Non decomprimere il file zip fornito, ma leggere il file compresso e decomprimerlo in real time con Zlib oppure Gzip. 
 
 
 # 6. TODO
