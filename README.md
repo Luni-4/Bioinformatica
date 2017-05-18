@@ -21,8 +21,12 @@ Bioinformatica
 # 1. Informazioni
 
 - Linguaggio di programmazione: Python
-- Versione Python: 3.6
-- Librerie sicure: scikit-learn
+- Versione Python: 3.5
+- Librerie Python
+    - scikit-learn
+    - numpy
+    - scipy
+
 - Librerie in forse: Shogun (altre che non mi vengono in mente)
 
 # 2. Modalità di lavoro
@@ -49,7 +53,9 @@ Esempio: https://github.com/mbunkus/mkvtoolnix/pull/1838
 
 # 3. Input
 
-OGNI ENTRY DELLA MATRICE É SEPARATA DA UN ALTRA PER MEZZO DI UN TAB 
+- OGNI ENTRY DELLA MATRICE É SEPARATA DA UN ALTRA PER MEZZO DI UN TAB
+- TENIAMO A 0 I VALORI DELLE DIAGONALI DELLE MATRICI DI ADIACENZA (FINGIAMO CHE NON ESISTANO)
+
 
 ## 3.1. Drosophila melanogaster
 
