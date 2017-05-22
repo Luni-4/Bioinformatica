@@ -11,11 +11,18 @@ def loadadjfromtxt(filename, lowlevel=False):
         print(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)
         if lowlevel:
             dim = len(next(file).split('\t'))
-            m = sparse.csr_matrix(dim, dim)
+            row_ind = []
+            col_ind = []
+            data = []
             for i in range(dim):
                 row = next(file).split('\t')[1:]
                 for j in range(dim):
-                    m[i, j] = float(row[j])
+                    v = float(row[j])
+                    if v != 0:
+                        row_ind.append(i)
+                        col_ind.append(j)
+                        data.append(v)
+            m = sparse.csr_matrix(data, (row_ind, col_ind))
         else:
             next(file)
             m = []
