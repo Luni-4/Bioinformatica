@@ -11,10 +11,9 @@ Bioinformatica
   1. [Drosophila melanogaster](#31-drosophila-melanogaster)
   2. [Homo sapiens](#32-homo-sapiens)
 4. [Output](#4-output)
-5. [Idee](#5-idee)
-6. [TODO](#6-todo)
-  1. [Luni-4](#61-luni-4)
-  2. [Fede](#62-fede)
+5. [Valutazione](#5-valutazione)
+6. [Idee](#6-idee)
+
 
 -----------------
 
@@ -87,27 +86,14 @@ Esempio: https://github.com/mbunkus/mkvtoolnix/pull/1838
 
 - Cercare libreria python che calcola AUROC e AUPRC. 
 
+# 5. Valutazione 
+Per ogni classe, valutare area sotto al grafico precision recall: https://www.quora.com/What-is-Precision-Recall-PR-curve?share=1
 
-# 5. Idee
+
+# 6. Idee
 
 - Al posto di caricare completamente la matrice delle adiacenze, essendo simmetrica, caricare solo la matrice triangolare corrispondente
 - Verificare i tipi di dato che occupano meno spazio in python
 - Non decomprimere il file zip fornito, ma leggere il file compresso e decomprimerlo in real time con Zlib oppure Gzip.
 - Una volta che si è completata una sessione di apprendimento, è utile salvare su disco un file che contenga l'oggetto classificatore. Vedere http://machinelearningmastery.com/save-load-machine-learning-models-python-scikit-learn/
-
-
-# 6. TODO
-
-## 6.1. Luni-4
-
-
-## 6.2. Fede 
-
-
-
- 
-
-
-
-
-
+- Michele è un povero sciocco
