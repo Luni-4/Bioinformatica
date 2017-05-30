@@ -28,26 +28,24 @@ def load_annotation(filename):
         col_ind = []
         data = []
         for row in file:
-            row = row.split('\t')[1:]
-            assert len(row) == nclass, "class size mismatch"
+            row = row.split('\t')[1:]           
             for j in range(nclass):
-                v = bool(int(row[j]))
-                if v:
-                    row_ind.append(nrows)
-                    col_ind.append(j)
-                    data.append(v)
+                v = bool(int(row[j]))                
+                row_ind.append(nrows)
+                col_ind.append(j)
+                data.append(v)
             nrows += 1
     m = sparse.csr_matrix((data, (row_ind, col_ind)), shape=(nrows, nclass))
     return m  
 
     
-def read_adj(filename, database="d", chunksize = 1024):
+def load_adj(filename, database="d", chunksize = 1024):
     typ = np.float64 if database == "d" else np.int16
     f = float if database == "d" else int   
     c = sparse.csr_matrix((0,0), dtype=typ)
     t = []
     i = 0      
-    print(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)
+    #print(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)
     with open(filename, encoding="UTF-8") as matrix: 
         next(matrix)                
         for line in matrix:
@@ -58,8 +56,8 @@ def read_adj(filename, database="d", chunksize = 1024):
                 t = []
                 i = 0            
         c = csr_vappend(c,sparse.csr_matrix(t, dtype=typ))              
-    print(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)
-    print(c)                    
+    #print(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)
+    return c                    
                            
 
 if __name__ == "__main__":
@@ -67,7 +65,9 @@ if __name__ == "__main__":
     filename = "Data/Dros.adjmatrix.txt"
     
     if filename == "Data/Dros.adjmatrix.txt": 
-        read_adj(filename, "d", 100)
+        b = load_adj(filename, "d", 100)
     else:
-        read_adj(filename, "h", 100)      
+        b = load_adj(filename, "h", 100)
+    
+    print(b)      
         
