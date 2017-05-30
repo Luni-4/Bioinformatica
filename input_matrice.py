@@ -15,45 +15,28 @@ def csr_vappend(a,b):
     a.indices = np.hstack((a.indices,b.indices))
     a.indptr = np.hstack((a.indptr,(b.indptr + a.nnz)[1:]))
     a._shape = (a.shape[0]+b.shape[0],b.shape[1])
-    return a
+    return a   
+
     
-    
-def read_homo(filename, chunksize = 1024):
-    c = sparse.csr_matrix((0,0), dtype=np.int16)
-    t = []
-    i = 0
-    print(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)
-    with open(filename, encoding="UTF-8") as matrix: 
-        next(matrix)                 
-        for line in matrix:
-            t.append([int(x) for x in line.split('\t')[1:]])
-            i += 1           
-            if i == chunksize:
-                c = csr_vappend(c,sparse.csr_matrix(t, dtype=np.int16)) 
-                t = []
-                i = 0            
-        c = csr_vappend(c,sparse.csr_matrix(t, dtype=np.int16))              
-    print(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)
-    print(c)
-    
-def read_dros(filename, chunksize = 1024):
-    c = sparse.csr_matrix((0,0))
+def read_adj(filename, database="d", chunksize = 1024):
+    typ = np.float64 if database == "d" else np.int16
+    f = float if database == "d" else int   
+    c = sparse.csr_matrix((0,0), dtype=typ)
     t = []
     i = 0      
     print(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)
     with open(filename, encoding="UTF-8") as matrix: 
         next(matrix)                
         for line in matrix:
-            t.append([float(x) for x in line.split('\t')[1:]])
+            t.append([f(x) for x in line.split('\t')[1:]])
             i += 1               
             if i == chunksize:                          
-                c = csr_vappend(c,sparse.csr_matrix(t)) 
+                c = csr_vappend(c,sparse.csr_matrix(t, dtype=typ)) 
                 t = []
                 i = 0            
-        c = csr_vappend(c,sparse.csr_matrix(t))              
+        c = csr_vappend(c,sparse.csr_matrix(t, dtype=typ))              
     print(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)
-    print(c)
-                    
+    print(c)                    
                            
 
 if __name__ == "__main__":
@@ -61,7 +44,7 @@ if __name__ == "__main__":
     filename = "Data/Dros.adjmatrix.txt"
     
     if filename == "Data/Dros.adjmatrix.txt": 
-        read_dros(filename, 100)
+        read_adj(filename, "d", 100)
     else:
-        read_homo(filename, 100)      
+        read_adj(filename, "h", 100)      
         
