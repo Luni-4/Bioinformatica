@@ -32,21 +32,25 @@ Bioinformatica
 
 ## 2.1. Divisione dei compiti
 
-Ogni componente, secondo me, deve occuparsi di un classificatore diverso. Le parti che vanno gestite insieme sono:
+FEDERICO:
 
-- L'acquisizione dei dati e la loro formattazione
+- Sistemare input etichette
+- Fare in modo che le funzioni di load salvino e leggano automaticamente i file npz con le matrici sparse
+- Guardare AdaBoost
 
-- L'analisi dell'output dei due classificatori
+MICHELE:
 
-- Fase di test e set-up sperimentale
-
-Per quanto riguarda la la parte relativa alla combinazione degli output dei classificatori, ensemble, direi di farla solo se abbiamo tempo
+- Fare tutto bene 5-fold su SVM su una classe, o su tutta l'ontologia più piccola
+- Misurare i tempi
+- Salvare i classificatori (serializzare)
 
 ## 2.2. Link
 
-Dati: http://homes.di.unimi.it/valentini/DATA/ProgettoBioinf1617
+- Dati: http://homes.di.unimi.it/valentini/DATA/ProgettoBioinf1617
 
-Specifiche progetto Valentini: https://homes.di.unimi.it/valentini/SlideCorsi/Bioinformatica1617/Bioinf-Project1617.pdf
+- Specifiche progetto Valentini: https://homes.di.unimi.it/valentini/SlideCorsi/Bioinformatica1617/Bioinf-Project1617.pdf
+
+- Salvataggio dei classificatori come oggetti: http://machinelearningmastery.com/save-load-machine-learning-models-python-scikit-learn/
 
 
 # 3. Input
@@ -94,14 +98,4 @@ Per ogni classe, valutare area sotto al grafico precision recall: https://www.qu
 - Al posto di caricare completamente la matrice delle adiacenze, essendo simmetrica, caricare solo la matrice triangolare corrispondente
 - Verificare i tipi di dato che occupano meno spazio in python
 - Non decomprimere il file zip fornito, ma leggere il file compresso e decomprimerlo in real time con Zlib oppure Gzip.
-- Una volta che si è completata una sessione di apprendimento, è utile salvare su disco un file che contenga l'oggetto classificatore. Vedere http://machinelearningmastery.com/save-load-machine-learning-models-python-scikit-learn/
-- Michele è un povero sciocco
-FEDERICO:
-- Sistemare input etichette
-- Fare in modo che le funzioni di load salvino e leggano automaticamente i file npz con le matrici sparse
-- Guardare AdaBoost
-
-MICHELE:
-- Fare tutto bene 5-fold su SVM su una classe, o su tutta l'ontologia più piccola
-- Misurare i tempi
-- Salvare i classificatori (serializzare)
+- Una volta che si è completata una sessione di apprendimento, è utile salvare su disco un file che contenga l'oggetto classificatore.
