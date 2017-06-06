@@ -6,7 +6,7 @@ Bioinformatica
 1. [Informazioni](#1-informazioni)
 2. [Modalità di lavoro](#2-modalità-di-lavoro)
   1. [Divisione dei compiti](#21-divisione-dei-compiti)
-  2. [Caricamento su repository](#22-caricamento-su-repository)
+  2. [Link](#22-link)
 3. [Input](#3-input)
   1. [Drosophila melanogaster](#31-drosophila-melanogaster)
   2. [Homo sapiens](#32-homo-sapiens)
@@ -42,13 +42,11 @@ Ogni componente, secondo me, deve occuparsi di un classificatore diverso. Le par
 
 Per quanto riguarda la la parte relativa alla combinazione degli output dei classificatori, ensemble, direi di farla solo se abbiamo tempo
 
-## 2.2. Caricamento su repository
+## 2.2. Link
 
-Entrambi i componenti del gruppo caricano i file e le relative revisioni del codice per mezzo di pull-request. 
-Se la pull-request viene accettata da entrambi i componenti, verrà "mergiata" nel repository master.
-All'interno di una pull-request si possono fare revisioni, nel caso in cui il codice non sia ritenuto valido.
+Dati: http://homes.di.unimi.it/valentini/DATA/ProgettoBioinf1617
+Specifiche progetto Valentini: https://homes.di.unimi.it/valentini/SlideCorsi/Bioinformatica1617/Bioinf-Project1617.pdf
 
-Esempio: https://github.com/mbunkus/mkvtoolnix/pull/1838
 
 # 3. Input
 
