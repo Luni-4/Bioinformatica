@@ -3,18 +3,18 @@ import resource
 
 def memory(f):
     def k(*args, **kargs):
-        print("Before function {0}: {1} MB".format(f.__name__, resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024))
+        print("Before function {0}: {1} MegaByte".format(f.__name__, resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024))
         result = f(*args, **kargs)
-        print("After function {0}: {1} MB".format(f.__name__, resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024))
+        print("After function {0}: {1} MegaByte".format(f.__name__, resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024))
         return result
     return k
 
 
-def timer(f):
+def timer(f, l = ""):    
     def k(*args, **kargs):
         start = clock()
         result = f(*args, **kargs)
-        elapsed = clock() - start
-        print("Function {0}: {1} s".format(f.__name__, elapsed))
+        elapsed = clock() - start        
+        print("{0} Function {1}: {2} seconds".format(l, f.__name__, elapsed))
         return result
     return k
