@@ -1,6 +1,5 @@
 from scipy import sparse
 import numpy as np
-import resource
 
 # maximum value Homo: 999
 # maximum value Dros: 0.818181... 
@@ -42,22 +41,20 @@ def load_annotation(filename):
 def load_adj(filename, database="d", chunksize = 1024):
     typ = np.float64 if database == "d" else np.int16
     f = float if database == "d" else int   
-    c = sparse.csr_matrix((0,0), dtype=typ)
+    m = sparse.csr_matrix((0,0), dtype=typ)
     t = []
     i = 0      
-    #print(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)
     with open(filename, encoding="UTF-8") as matrix: 
         next(matrix)                
         for line in matrix:
             t.append([f(x) for x in line.split('\t')[1:]])
             i += 1               
             if i == chunksize:                          
-                c = csr_vappend(c,sparse.csr_matrix(t, dtype=typ)) 
+                m = csr_vappend(m,sparse.csr_matrix(t, dtype=typ)) 
                 t = []
                 i = 0            
-        c = csr_vappend(c,sparse.csr_matrix(t, dtype=typ))              
-    #print(resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024)
-    return c                    
+        m = csr_vappend(m,sparse.csr_matrix(t, dtype=typ))              
+    return m                    
                            
 
 if __name__ == "__main__":
