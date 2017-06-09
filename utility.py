@@ -1,4 +1,4 @@
-from time import clock
+from time import time
 import resource
 
 def memory(f):
@@ -12,9 +12,9 @@ def memory(f):
 
 def timer(f, l = ""):    
     def k(*args, **kargs):
-        start = clock()
+        start = time()
         result = f(*args, **kargs)
-        elapsed = clock() - start        
+        elapsed = time() - start        
         print("{0} Function {1}: {2} seconds".format(l, f.__name__, elapsed))
         return result
     return k
