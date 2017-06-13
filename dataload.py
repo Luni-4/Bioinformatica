@@ -29,10 +29,11 @@ def load_annotation(filename):
         for row in file:
             row = row.split('\t')[1:]           
             for j in range(nclass):
-                v = bool(int(row[j]))                
-                row_ind.append(nrows)
-                col_ind.append(j)
-                data.append(v)
+                v = bool(int(row[j]))
+                if v:
+                    row_ind.append(nrows)
+                    col_ind.append(j)
+                    data.append(v)
             nrows += 1
     m = sparse.csr_matrix((data, (row_ind, col_ind)), shape=(nrows, nclass))
     return m  
