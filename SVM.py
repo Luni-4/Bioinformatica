@@ -32,7 +32,7 @@ if __name__ == '__main__':
     c = [timer(SVC, x + 1)() for x in range(Y.shape[1])]
 
     # Run SVMs, print their execution time and save in a list the cross-validation scores
-    cv = [timer(cross_val_score, x + 1)(c[x], X, Y.getcol(x).data, cv = 5, n_jobs = -1) for x in range(Y.shape[1])]
+    cv = [timer(cross_val_score, x + 1)(c[x], X, Y.getcol(x).toarray().reshape(-1), cv = 5, n_jobs = -1) for x in range(Y.shape[1])]
     
     # Print cross-validation results for each classifier
     for x in cv:
