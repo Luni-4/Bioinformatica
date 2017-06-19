@@ -37,9 +37,9 @@ FEDERICO:
 
 MICHELE:
 
-- Fare tutto bene 5-fold su SVM su una classe, o su tutta l'ontologia più piccola
-- Misurare i tempi
-- Salvare i classificatori (serializzare)
+- Stampare i grafici delle aree sotto le curve
+- Misurare i tempi 
+- Salvare i classificatori (serializzare) 
 
 ## 2.2. Link Utili
 
@@ -100,6 +100,7 @@ MICHELE:
 # 6. Dubbi
 
 FEDERICO:
+
 - model_selection.cross_val_predict --> Ho deciso di non usare entrambi. class_predict restituisce le predizioni prodotte da ognuno dei 5 classificatori, ma a noi servono le metriche, e quindi la loro media, per valutare le prestazioni del nostro classificatore.
 Invece, class_val_score non va bene perché non consente di calcolare le aree sotto le curve AUPRC e AUROC.
 Ho perciò deciso di dividere il calcolo delle metriche con lo stratified k-fold, che suddivide il training set in maniera equilibrata, ponendo lo stesso numero di esempi di classi positive e negative nello stesso batch.
@@ -110,3 +111,9 @@ I risultati per ciascun classificatore vengono restituiti in una lista di liste.
 - Com'è lento adaboost! 5-fold parallelizzato ci mette mezzo minuto per ogni classe ---> Possiamo cercare di ridurre il tempo distribuendo il carico di lavoro tra più unita?
 
 MICHI:
+
+- Problema con lo sbilanciamento delle classi, troppe etichette negativo a fronte di quelle positive. Dobbiamo bilanciare le classi, altrimenti le metriche producono
+risultati non buoni e vengono mostrati warning
+
+- Penso sia inutile salvare i classificatori perché, avendo solo il training set, non si possono effettivamente usare in quanto mancano gli esempi di test.
+Forse si potrebbero salvare i classificatori 5-fold, ma ci sarebbero 5*numero di classi oggetti diversi. 

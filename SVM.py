@@ -1,8 +1,8 @@
 from sklearn.svm import SVC
 from sklearn.externals import joblib
-from sklearn.model_selection import cross_val_predict
 import numpy as np
-from dataload import load_adj, load_annotation 
+from dataload import load_adj, load_annotation
+from metrics import metrics 
 from utility import timer, memory
 import sys
 
@@ -24,11 +24,18 @@ if __name__ == '__main__':
     Y = memory(load_annotation)(filename1)
     
     # For each class, define SVM models and save them in a list
-    c = [timer(SVC, x + 1)(decision_function_shape = "ovr") for x in range(Y.shape[1])]
+    c = [SVC(decision_function_shape = "ovr") for x in range(Y.shape[1])]
+    
+    # For each classifier, calculate the required metrics 
+    r = [metrics(X, Y.getdensecol(x), c[x]) for x in range(2)]
+    
+    # Print the metrics
+    for x in range(2):
+        print(r[x])
     
     # Create SVM models for each class using the complete training set
-    for x in range(Y.shape[1]):
-        timer(c[x].fit, x + 1)(X, Y.getdensecol(x))        
+    '''for x in range(Y.shape[1]):
+        timer(c[x].fit, x + 1)(X, Y.getdensecol(x))            
              
         
     # Save the models to disk
@@ -36,4 +43,4 @@ if __name__ == '__main__':
     for x in c:
        filename = "SVM_Classifiers/" + "Svm" + str(y) +".sav"
        joblib.dump(x, filename)
-       y += 1  
+       y += 1 ''' 

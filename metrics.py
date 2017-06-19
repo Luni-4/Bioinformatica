@@ -13,11 +13,38 @@
 # cv --> number of k-group used as train/test set
 # n_jobs --> if its value is -1, the work load is subdivided on the avaliable CPU
 
-# cross_val_predict parameters
-# http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_predict.html#sklearn.model_selection.cross_val_predict
-# It returns the prediction for each example
+from sklearn.metrics import precision_recall_fscore_support
+from sklearn.metrics import average_precision_score, roc_auc_score 
+from sklearn.model_selection import StratifiedKFold
 
-def metrics(y_true, y_pred):
-   # Run SVMs, print their execution time and save in a list the cross-validation scores
-    y_pred = [timer(cross_val_predict, x + 1)(c[x], X, Y.getcol(x).toarray().reshape(-1), cv = 5, n_jobs = -1, verbose = 5) for x in range(2)]   
+from utility import timer
 
+
+def metrics(X, Y, c):
+    # Define the array used to save the metrics for the classifier
+    s = []
+   
+    # Define Stratified 5-fold
+    skf = StratifiedKFold(n_splits = 5)
+   
+    # Execute 5-fold 
+    for train_index, test_index in skf.split(X, Y):
+        # Run SVM on batch
+        timer(c.fit)(X[train_index], Y[train_index])
+        
+        # Calculate predictions
+        p = timer(c.predict)(X[test_index])
+        
+        # Calculate Precision-Recall-F-score
+        val = precision_recall_fscore_support(Y[test_index], p, average = "binary")
+        
+        # Calculate AUPRC
+        auprc = average_precision_score(Y[test_index], p)
+        
+        # Calculate AUROC
+        auroc = roc_auc_score(Y[test_index], p)
+        
+        # Append all metrics to the array
+        s.append([val[0], val[1], val[2], auprc, auroc])    
+        
+    return s  
