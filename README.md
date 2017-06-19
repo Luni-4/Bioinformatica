@@ -34,7 +34,7 @@ Bioinformatica
 
 FEDERICO:
 
-- Sistemare input etichette
+- FATTO: Sistemare input etichette
 - Fare in modo che le funzioni di load salvino e leggano automaticamente i file npz con le matrici sparse
 - Guardare AdaBoost
 
@@ -95,7 +95,16 @@ Per ogni classe, valutare area sotto al grafico precision recall: https://www.qu
 
 # 6. Idee
 
-- Al posto di caricare completamente la matrice delle adiacenze, essendo simmetrica, caricare solo la matrice triangolare corrispondente
 - Verificare i tipi di dato che occupano meno spazio in python
 - Non decomprimere il file zip fornito, ma leggere il file compresso e decomprimerlo in real time con Zlib oppure Gzip.
 - Una volta che si è completata una sessione di apprendimento, è utile salvare su disco un file che contenga l'oggetto classificatore.
+
+Appunti di Federico:
+- model_selection.cross_val_predict (usato da Michi nelle SVM) sembra servire per stimare, come se si creasse un nuovo classificatore. A noi invece interessa sapere i punteggi, quindi userei [cross_val_score](http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html)
+- Non si possono sistemare i decoratori in modo da usare la sintassi con la chiocciola? Così sono difficili da leggere, e non si possono togliere e mettere facilmente
+- Com'è lento adaboost! 5-fold parallelizzato ci mette mezzo minuto per ogni classe
+- Ho aggiunto il metodo per leggere le colonne facilmente:
+```python
+Y = load_annotation(filename)
+col = Y.getdensecol(i)
+```
