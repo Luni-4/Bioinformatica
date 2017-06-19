@@ -6,13 +6,13 @@ Bioinformatica
 1. [Informazioni](#1-informazioni)
 2. [Modalità di lavoro](#2-modalità-di-lavoro)
   1. [Divisione dei compiti](#21-divisione-dei-compiti)
-  2. [Link](#22-link)
+  2. [Link Utili](#22-link-utili)
 3. [Input](#3-input)
   1. [Drosophila melanogaster](#31-drosophila-melanogaster)
   2. [Homo sapiens](#32-homo-sapiens)
 4. [Output](#4-output)
-5. [Valutazione](#5-valutazione)
-6. [Idee](#6-idee)
+5. [Idee](#5-idee)
+6. [Dubbi](#6-dubbi)
 
 
 -----------------
@@ -26,15 +26,12 @@ Bioinformatica
     - numpy
     - scipy
 
-- Librerie in forse: Shogun (altre che non mi vengono in mente)
-
 # 2. Modalità di lavoro
 
 ## 2.1. Divisione dei compiti
 
 FEDERICO:
 
-- FATTO: Sistemare input etichette
 - Fare in modo che le funzioni di load salvino e leggano automaticamente i file npz con le matrici sparse
 - Guardare AdaBoost
 
@@ -44,13 +41,19 @@ MICHELE:
 - Misurare i tempi
 - Salvare i classificatori (serializzare)
 
-## 2.2. Link
+## 2.2. Link Utili
 
 - Dati: http://homes.di.unimi.it/valentini/DATA/ProgettoBioinf1617
 
 - Specifiche progetto Valentini: https://homes.di.unimi.it/valentini/SlideCorsi/Bioinformatica1617/Bioinf-Project1617.pdf
 
 - Salvataggio dei classificatori come oggetti: http://machinelearningmastery.com/save-load-machine-learning-models-python-scikit-learn/
+
+- Buona spiegazione di AUPRC e AUROC: http://www.chioka.in/differences-between-roc-auc-and-pr-auc/
+
+- Spiegazione sbilanciamento delle classi (Data Imbalance) e possibili metodi per risolverlo: http://www.chioka.in/class-imbalance-problem/
+
+- Spiegazione Precision-Recall Curve su Quora: https://www.quora.com/What-is-Precision-Recall-PR-curve?share=1
 
 
 # 3. Input
@@ -87,24 +90,23 @@ MICHELE:
 
 - Calcolare la F-score gerarchica (convertire in python il file F-hier.R, scritto in R, altrimenti usare una funzione di una libreria per calcolarla)
 
-- Cercare libreria python che calcola AUROC e AUPRC. 
-
-# 5. Valutazione 
-Per ogni classe, valutare area sotto al grafico precision recall: https://www.quora.com/What-is-Precision-Recall-PR-curve?share=1
-
-
-# 6. Idee
+# 5. Idee
 
 - Verificare i tipi di dato che occupano meno spazio in python
 - Non decomprimere il file zip fornito, ma leggere il file compresso e decomprimerlo in real time con Zlib oppure Gzip.
 - Una volta che si è completata una sessione di apprendimento, è utile salvare su disco un file che contenga l'oggetto classificatore.
 
-Appunti di Federico:
-- model_selection.cross_val_predict (usato da Michi nelle SVM) sembra servire per stimare, come se si creasse un nuovo classificatore. A noi invece interessa sapere i punteggi, quindi userei [cross_val_score](http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html)
-- Non si possono sistemare i decoratori in modo da usare la sintassi con la chiocciola? Così sono difficili da leggere, e non si possono togliere e mettere facilmente
-- Com'è lento adaboost! 5-fold parallelizzato ci mette mezzo minuto per ogni classe
-- Ho aggiunto il metodo per leggere le colonne facilmente:
-```python
-Y = load_annotation(filename)
-col = Y.getdensecol(i)
-```
+
+# 6. Dubbi
+
+FEDERICO:
+- model_selection.cross_val_predict --> Ho deciso di non usare entrambi. class_predict restituisce le predizioni prodotte da ognuno dei 5 classificatori, ma a noi servono le metriche, e quindi la loro media, per valutare le prestazioni del nostro classificatore.
+Invece, class_val_score non va bene perché non consente di calcolare le aree sotto le curve AUPRC e AUROC.
+Ho perciò deciso di dividere il calcolo delle metriche con lo stratified k-fold, che suddivide il training set in maniera equilibrata, ponendo lo stesso numero di esempi di classi positive e negative nello stesso batch.
+I risultati per ciascun classificatore vengono restituiti in una lista di liste.
+
+- Non si possono sistemare i decoratori in modo da usare la sintassi con la chiocciola? Così sono difficili da leggere, e non si possono togliere e mettere facilmente --> proverò a cercare, ma generalmente le chiocciole si usano con le definizioni di funzioni e non quando si chiamano
+
+- Com'è lento adaboost! 5-fold parallelizzato ci mette mezzo minuto per ogni classe ---> Possiamo cercare di ridurre il tempo distribuendo il carico di lavoro tra più unita?
+
+MICHI:

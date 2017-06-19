@@ -36,7 +36,7 @@ def load_annotation(filename):
                     data.append(v)
             nrows += 1
     m = sparse.csr_matrix((data, (row_ind, col_ind)), shape=(nrows, nclass))
-    m.getdensecol = lambda c:m.getcol(c).toarray().reshape(-1)
+    m.getdensecol = lambda c: m.getcol(c).toarray().reshape(-1)
     return m  
 
     
