@@ -36,6 +36,7 @@ def load_annotation(filename):
                     data.append(v)
             nrows += 1
     m = sparse.csr_matrix((data, (row_ind, col_ind)), shape=(nrows, nclass))
+    m.getdensecol = lambda c:m.getcol(c).toarray().reshape(-1)
     return m  
 
     
@@ -54,7 +55,7 @@ def load_adj(filename, database="d", chunksize = 1024):
                 m = csr_vappend(m,sparse.csr_matrix(t, dtype=typ)) 
                 t = []
                 i = 0            
-        m = csr_vappend(m,sparse.csr_matrix(t, dtype=typ))              
+        m = csr_vappend(m,sparse.csr_matrix(t, dtype=typ))
     return m                    
                            
 
