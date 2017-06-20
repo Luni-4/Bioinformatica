@@ -18,3 +18,17 @@ def timer(f, l = ""):
         print("{0} Function {1}: {2} seconds".format(l, f.__name__, elapsed))
         return result
     return k
+    
+def debug_labels(true_labels, predictions):
+    print(true_labels)
+    print(predictions)    
+    
+def debug_precision_recall(precision, recall, fscore, prcurve, auprc):
+    print(precision, recall, fscore)
+    print(prcurve)
+    print(auprc)
+    
+def debug_roc(fpr, tpr, auroc):
+    print(fpr)
+    print(tpr)
+    print(auroc)

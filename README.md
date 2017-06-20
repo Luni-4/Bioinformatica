@@ -25,6 +25,8 @@ Bioinformatica
     - scikit-learn
     - numpy
     - scipy
+    - matplotlib
+    - python3-tk (sudo apt-get install python3-tk) 
 
 # 2. Modalità di lavoro
 
@@ -37,8 +39,9 @@ FEDERICO:
 
 MICHELE:
 
-- Stampare i grafici delle aree sotto le curve
-- Misurare i tempi 
+- Stampare l'area sotto i grafici
+- Salvare i grafici per il report
+- Misurare i tempi e la memoria 
 - Salvare i classificatori (serializzare) 
 
 ## 2.2. Link Utili
