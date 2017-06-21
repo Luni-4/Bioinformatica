@@ -109,9 +109,15 @@ Invece, class_val_score non va bene perché non consente di calcolare le aree so
 Ho perciò deciso di dividere il calcolo delle metriche con lo stratified k-fold, che suddivide il training set in maniera equilibrata, ponendo lo stesso numero di esempi di classi positive e negative nello stesso batch.
 I risultati per ciascun classificatore vengono restituiti in una lista di liste.
 
-- Non si possono sistemare i decoratori in modo da usare la sintassi con la chiocciola? Così sono difficili da leggere, e non si possono togliere e mettere facilmente --> proverò a cercare, ma generalmente le chiocciole si usano con le definizioni di funzioni e non quando si chiamano
+- Non si possono sistemare i decoratori in modo da usare la sintassi con la chiocciola? Così sono difficili da leggere, e non si possono togliere e mettere facilmente --> proverò a cercare, ma generalmente le chiocciole si usano con le definizioni di funzioni e non quando si chiamano --> non me lo ricordavo, bene... Se non si trova un'altra soluzione, propongo di decorare le funzioni nella loro definizione
 
-- Com'è lento adaboost! 5-fold parallelizzato ci mette mezzo minuto per ogni classe ---> Possiamo cercare di ridurre il tempo distribuendo il carico di lavoro tra più unita?
+- Com'è lento adaboost! 5-fold parallelizzato ci mette mezzo minuto per ogni classe ---> Possiamo cercare di ridurre il tempo distribuendo il carico di lavoro tra più unita? Per farlo dovremmo fare in modo che più classi vengano computate in parallelo.
+
+- Sempre a questo proposito, vedo che il modulo metrics non è parallelizzato, mentre invece class_val_score parallelizzava facilmente. A maggior ragione, allora, bisogna fare in modo che più classi vengano computate parallelamente.
+
+- A cosa serve quel sys.exit()?
+
+- Propongo di fare in modo che tutte le metriche di ogni classe vengano salvate in file, che si completi man mano che vengono computate. Dopo possiamo elaborare quei file, e non avremmo più bisogno dei classificatori. Se vuoi me ne posso occupare io
 
 MICHI:
 
@@ -119,4 +125,4 @@ MICHI:
 risultati non buoni e vengono mostrati warning
 
 - Penso sia inutile salvare i classificatori perché, avendo solo il training set, non si possono effettivamente usare in quanto mancano gli esempi di test.
-Forse si potrebbero salvare i classificatori 5-fold, ma ci sarebbero 5*numero di classi oggetti diversi. 
+Forse si potrebbero salvare i classificatori 5-fold, ma ci sarebbero 5xnumero di classi oggetti diversi. --> In effetti era quello a cui pensavo, ma adesso ti propongo di salvare le metriche su file man mano che si procede con la computazione. Potrebbe essere un file CSV o JSON, a cui man mano si appendono le metriche della nuova classe
