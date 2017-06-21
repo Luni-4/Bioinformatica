@@ -31,16 +31,4 @@ if __name__ == '__main__':
     
     # Print the metrics
     for x in range(2):
-        print(r[x])
-    
-    # Create SVM models for each class using the complete training set
-    '''for x in range(Y.shape[1]):
-        timer(c[x].fit, x + 1)(X, Y.getdensecol(x))            
-             
-        
-    # Save the models to disk
-    y = 1
-    for x in c:
-       filename = "SVM_Classifiers/" + "Svm" + str(y) +".sav"
-       joblib.dump(x, filename)
-       y += 1 ''' 
+        print(r[x])   

@@ -35,14 +35,13 @@ Bioinformatica
 FEDERICO:
 
 - Fare in modo che le funzioni di load salvino e leggano automaticamente i file npz con le matrici sparse
-- Salvare automaticamente grafici senza mostrarli a schermo.
+- Stampare l'area sotto i grafici e salvarli automaticamente evitando la stampa su schermo
 - Salvare su disco l'output di cross_val_score
 - usare Timer su Adaboost
 
 MICHELE:
 
-- Stampare l'area sotto i grafici
-- Salvare i grafici per il report
+- Formattare i dati delle metriche per latex
 - Sistemare scorer(estimator, X, y) e fare in modo che restituisca dizionari e sottodizionari. Se non ci riesci, fai una lista di valori. 
 
 ## 2.2. Link Utili
@@ -96,29 +95,18 @@ MICHELE:
 
 # 5. Idee
 
-- Non decomprimere il file zip fornito, ma leggere il file compresso e decomprimerlo in real time con Zlib oppure Gzip.
-
-
+- Cercare una buona implementazione di Pegaso, possibilmente ottimizzata il più possibile
 
 # 6. Dubbi
 
 FEDERICO:
 
-- model_selection.cross_val_predict --> Ho deciso di non usare entrambi. class_predict restituisce le predizioni prodotte da ognuno dei 5 classificatori, ma a noi servono le metriche, e quindi la loro media, per valutare le prestazioni del nostro classificatore.
-Invece, class_val_score non va bene perché non consente di calcolare le aree sotto le curve AUPRC e AUROC.
-Ho perciò deciso di dividere il calcolo delle metriche con lo stratified k-fold, che suddivide il training set in maniera equilibrata, ponendo lo stesso numero di esempi di classi positive e negative nello stesso batch.
-I risultati per ciascun classificatore vengono restituiti in una lista di liste.
-
-- Non si possono sistemare i decoratori in modo da usare la sintassi con la chiocciola? Così sono difficili da leggere, e non si possono togliere e mettere facilmente --> proverò a cercare, ma generalmente le chiocciole si usano con le definizioni di funzioni e non quando si chiamano --> non me lo ricordavo, bene... Se non si trova un'altra soluzione, propongo di decorare le funzioni nella loro definizione
-
 - Com'è lento adaboost! 5-fold parallelizzato ci mette mezzo minuto per ogni classe ---> Possiamo cercare di ridurre il tempo distribuendo il carico di lavoro tra più unita? Per farlo dovremmo fare in modo che più classi vengano computate in parallelo.
-
-- Sempre a questo proposito, vedo che il modulo metrics non è parallelizzato, mentre invece class_val_score parallelizzava facilmente. A maggior ragione, allora, bisogna fare in modo che più classi vengano computate parallelamente.
 
 MICHI:
 
-- Problema con lo sbilanciamento delle classi, troppe etichette negativo a fronte di quelle positive. Dobbiamo bilanciare le classi, altrimenti le metriche producono
+- Problema con lo sbilanciamento delle classi, troppe etichette negative a fronte di quelle positive. Dobbiamo bilanciare le classi, altrimenti le metriche producono
 risultati non buoni e vengono mostrati warning
 
-- Penso sia inutile salvare i classificatori perché, avendo solo il training set, non si possono effettivamente usare in quanto mancano gli esempi di test.
-Forse si potrebbero salvare i classificatori 5-fold, ma ci sarebbero 5xnumero di classi oggetti diversi. --> In effetti era quello a cui pensavo, ma adesso ti propongo di salvare le metriche su file man mano che si procede con la computazione. Potrebbe essere un file CSV o JSON, a cui man mano si appendono le metriche della nuova classe
+- Abbiamo deciso di non usare la soglia t, descritta dal prof nel suo documento, per le metriche, vero? 
+Perché sia svm che adaboost, per ciascuna feature, restituiscono o 0 o 1 e non il valore di probabilità relativo all'appartenenza ad una o ad un'altra classe.
