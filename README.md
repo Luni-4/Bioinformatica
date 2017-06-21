@@ -35,14 +35,15 @@ Bioinformatica
 FEDERICO:
 
 - Fare in modo che le funzioni di load salvino e leggano automaticamente i file npz con le matrici sparse
-- Guardare AdaBoost
+- Salvare automaticamente grafici senza mostrarli a schermo.
+- Salvare su disco l'output di cross_val_score
+- usare Timer su Adaboost
 
 MICHELE:
 
 - Stampare l'area sotto i grafici
 - Salvare i grafici per il report
-- Misurare i tempi e la memoria 
-- Salvare i classificatori (serializzare) 
+- Sistemare scorer(estimator, X, y) e fare in modo che restituisca dizionari e sottodizionari. Se non ci riesci, fai una lista di valori. 
 
 ## 2.2. Link Utili
 
@@ -95,9 +96,8 @@ MICHELE:
 
 # 5. Idee
 
-- Verificare i tipi di dato che occupano meno spazio in python
 - Non decomprimere il file zip fornito, ma leggere il file compresso e decomprimerlo in real time con Zlib oppure Gzip.
-- Una volta che si è completata una sessione di apprendimento, è utile salvare su disco un file che contenga l'oggetto classificatore.
+
 
 
 # 6. Dubbi
@@ -114,10 +114,6 @@ I risultati per ciascun classificatore vengono restituiti in una lista di liste.
 - Com'è lento adaboost! 5-fold parallelizzato ci mette mezzo minuto per ogni classe ---> Possiamo cercare di ridurre il tempo distribuendo il carico di lavoro tra più unita? Per farlo dovremmo fare in modo che più classi vengano computate in parallelo.
 
 - Sempre a questo proposito, vedo che il modulo metrics non è parallelizzato, mentre invece class_val_score parallelizzava facilmente. A maggior ragione, allora, bisogna fare in modo che più classi vengano computate parallelamente.
-
-- A cosa serve quel sys.exit()?
-
-- Propongo di fare in modo che tutte le metriche di ogni classe vengano salvate in file, che si completi man mano che vengono computate. Dopo possiamo elaborare quei file, e non avremmo più bisogno dei classificatori. Se vuoi me ne posso occupare io
 
 MICHI:
 
