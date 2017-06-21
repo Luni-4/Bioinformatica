@@ -27,7 +27,7 @@ def precision_recall_graph(precision, recall, auprc):
     plt.xlim([0.0, 1.0])
     plt.title("Precision-Recall: AUPRC={0:0.2f}".format(auprc))
     plt.legend(loc="lower right") # Position of the label defined in plt.plot
-    plt.show()
+    plt.savefig('prc.eps')
     
 def roc_graph(fpr, tpr, auroc):
     plt.clf()
@@ -39,7 +39,7 @@ def roc_graph(fpr, tpr, auroc):
     plt.ylim([0.0, 1.05])
     plt.title("ROC: AUROC={0:0.2f}".format(auroc))
     plt.legend(loc="lower right")
-    plt.show()
+    plt.savefig('roc.eps')
     
 
 
