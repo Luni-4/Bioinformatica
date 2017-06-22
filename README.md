@@ -58,6 +58,8 @@ MICHELE:
 
 - Spiegazione Precision-Recall Curve su Quora: https://www.quora.com/What-is-Precision-Recall-PR-curve?share=1
 
+- Metodi di scoring: http://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
+
 
 # 3. Input
 
