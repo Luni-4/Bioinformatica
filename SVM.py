@@ -2,7 +2,7 @@ from sklearn.svm import SVC
 from sklearn.externals import joblib
 import numpy as np
 from dataload import load_adj, load_annotation
-from metrics import metrics 
+from metrics2 import metrics 
 from utility import timer, memory
 import sys
 
