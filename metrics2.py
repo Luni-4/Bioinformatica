@@ -38,8 +38,9 @@ def my_custom_loss_func(ground_truth, p, f):
             
     # Calculate AUPRC
     auprc = average_precision_score(ground_truth, p)
-    
-    #f.append([precision, recall, fscore, prc, auprc])
+    with open('output.txt', 'a') as out:
+        out.write(str([precision, recall, fscore, prc, auprc]) + '\n')
+    f.append([precision, recall, fscore, prc, auprc])
     #globals()['Wrapper'].push(5)
     #print(globals())
     f[0] = 5
