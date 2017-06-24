@@ -6,94 +6,83 @@
 # AUROC ---> http://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_auc_score.html#sklearn.metrics.roc_auc_score
 # Precision-Recall-F-score --> http://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html#sklearn.metrics.precision_recall_fscore_support
 
-from sklearn.model_selection import StratifiedKFold
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn.metrics import precision_recall_curve, average_precision_score
 from sklearn.metrics import roc_curve, auc 
 
-import matplotlib.pyplot as plt
+from sklearn.metrics import make_scorer
+from sklearn.model_selection import cross_val_score
 
-from utility import timer, debug_precision_recall
-from utility import debug_labels, debug_roc
+from utility import timer, write_json, debug, read_json
 
 import sys
+import numpy as np
 
-def precision_recall_graph(precision, recall, auprc):
-    plt.clf() # clear the figure and don't close the graph window
-    plt.plot(precision, recall, linewidth = 2, color = "navy", label = "Precision-Recall Curve")
-    plt.xlabel("Recall")
-    plt.ylabel("Precision")
-    plt.ylim([0.0, 1.05])
-    plt.xlim([0.0, 1.0])
-    plt.title("Precision-Recall: AUPRC={0:0.2f}".format(auprc))
-    plt.legend(loc="lower right") # Position of the label defined in plt.plot
-    plt.savefig('prc.eps')
+# TODO 
+# for now, let's import the filename for the json file as constant
+from utility import simulation
+
+def my_custom_loss_func(ground_truth, p, n):
     
-def roc_graph(fpr, tpr, auroc):
-    plt.clf()
-    plt.plot(fpr, tpr, linewidth = 2, color = "darkorange", label = "ROC Curve")
-    plt.plot([0, 1], [0, 1], linewidth = 2, linestyle = "--", color = "navy")
-    plt.xlabel("False Positive Rate")
-    plt.ylabel("True Positive Rate")
-    plt.xlim([0.0, 1.0])
-    plt.ylim([0.0, 1.05])
-    plt.title("ROC: AUROC={0:0.2f}".format(auroc))
-    plt.legend(loc="lower right")
-    plt.savefig('roc.eps')
+    # Calculate Precision-Recall-F-Score
+    precision, recall, fscore, _ = precision_recall_fscore_support(ground_truth, p, labels = [1, 0])
+        
+    # Calculate Precision-Recall Curve
+    prc, rec, _ = precision_recall_curve(ground_truth, p, pos_label = 1)
+            
+    # Calculate AUPRC
+    auprc = average_precision_score(ground_truth, p)
     
+    # Calculate False Positive Rate (FPR) and True Positive Rate
+    fpr, tpr, _ = roc_curve(ground_truth, p)
+        
+    # Calculate AUROC
+    auroc = auc(fpr, tpr)
+    
+    # Save the metrics into a Json file with this structure
+    '''scores = {
+        "class": n, # class number
+        "precision0": precision[1],
+        "precision1": precision[0],
+        "recall0": recall[1],
+        "recall1": recall[0],
+        "fscore0": fscore[1],
+        "fscore1": fscore[0],
+        "prc10": prc.tolist(),
+        "rec10": rec.tolist(),
+        "auprc": auprc,
+        "fpr10": fpr.tolist(),
+        "tpr10": tpr.tolist(),
+        "auroc": auroc
+    }'''
+    
+    
+    scores = [
+        ("class", n), # class number
+        ("precision0", precision[1]),
+        ("precision1", precision[0]),
+        ("recall0", recall[1]),
+        ("recall1", recall[0]),
+        ("fscore0", fscore[1]),
+        ("fscore1", fscore[0]),
+        ("prc10", prc.tolist()),
+        ("rec10", rec.tolist()),
+        ("auprc", auprc),
+        ("fpr10", fpr.tolist()),
+        ("tpr10", tpr.tolist()),
+        ("auroc", auroc)
+    ]
+    
+    # Write scores into the json file    
+    write_json(simulation, scores)     
+    
+    return 0
 
-
-def metrics(X, Y, c):
-    # Define the array used to save the metrics for the classifier
-    s = []
-   
-    # Define Stratified 5-fold
-    skf = StratifiedKFold(n_splits = 5)
-   
-    # Execute 5-fold 
-    for train_index, test_index in skf.split(X, Y):
-        # Run SVM on batch
-        timer(c.fit)(X[train_index], Y[train_index])
+def metrics(X, Y, c, nc):
+    
+    ftwo_scorer = make_scorer(my_custom_loss_func, n = nc)
         
-        # Calculate predictions
-        p = timer(c.predict)(X[test_index])
-        
-        # Print Test and Predictions labels
-        debug_labels(Y[test_index], p)
-                
-        
-        # Calculate Precision-Recall-F-Score
-        precision, recall, fscore, _ = precision_recall_fscore_support(Y[test_index], p, labels = [1, 0])
-        
-        # Calculate Precision-Recall Curve
-        prc = precision_recall_curve(Y[test_index], p, pos_label = 1)
-        
-        # Calculate AUPRC
-        auprc = average_precision_score(Y[test_index], p)
-        
-        # Print Precision, Recall and F-score informations
-        debug_precision_recall(precision, recall, fscore, prc, auprc)         
-        
-        
-        # Calculate False Positive Rate (FPR) and True Positive Rate
-        fpr, tpr, _ = roc_curve(Y[test_index], p, pos_label = 1)
-        
-        # Calculate AUROC
-        auroc = auc(fpr, tpr)
-        
-        # Print FPR, TPR and AUROC informations
-        debug_roc(fpr, tpr, auroc)
-        
-        
-        # Print the Precision-Recall Graph
-        precision_recall_graph(precision, recall, auprc)
-        
-        # Print the Receiver Operating Characteristic Graph
-        roc_graph(fpr, tpr, auroc)       
-        
-        sys.exit()
-        
-        # Append all metrics to the array
-        s.append([precision, recall, fscore, auprc, auroc])    
-        
-    return s  
+    cross_val_score(c, X, Y, cv = 5, scoring = ftwo_scorer, n_jobs = -1)   
+    
+    # Leave this command for now    
+    sys.exit() 

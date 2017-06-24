@@ -1,5 +1,14 @@
 from time import time
 import resource
+import json
+from collections import OrderedDict
+
+# How to print a value into a generator without using for loop
+#print(next(read_json(simulation))["precision0"])
+
+# TODO
+# Simulation filename, move it when we create the controller
+simulation = "s1.json"
 
 def memory(f):
     def k(*args, **kargs):
@@ -19,16 +28,17 @@ def timer(f, l = ""):
         return result
     return k
     
-def debug_labels(true_labels, predictions):
-    print(true_labels)
-    print(predictions)    
-    
-def debug_precision_recall(precision, recall, fscore, prcurve, auprc):
-    print(precision, recall, fscore)
-    print(prcurve)
-    print(auprc)
-    
-def debug_roc(fpr, tpr, auroc):
-    print(fpr)
-    print(tpr)
-    print(auroc)
+def write_json(filename, w):
+    with open(filename, "a") as f:
+        f.write(json.dumps(OrderedDict(w)) + "\n")
+        
+
+def read_json(filename):
+    with open(filename, "r") as f:
+        for line in f:
+            s = json.loads(line)
+            yield s
+        
+def debug(*args):
+    for x in args:
+        print(x)

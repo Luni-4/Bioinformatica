@@ -36,13 +36,11 @@ FEDERICO:
 
 - Fare in modo che le funzioni di load salvino e leggano automaticamente i file npz con le matrici sparse
 - Stampare l'area sotto i grafici e salvarli automaticamente evitando la stampa su schermo
-- Salvare su disco l'output di cross_val_score
 - usare Timer su Adaboost
 
 MICHELE:
 
 - Formattare i dati delle metriche per latex
-- Sistemare scorer(estimator, X, y) e fare in modo che restituisca dizionari e sottodizionari. Se non ci riesci, fai una lista di valori. 
 
 ## 2.2. Link Utili
 
@@ -102,7 +100,6 @@ MICHELE:
 - SVM con class_weight=‘balanced’
 - Approfondire parametro C nelle SVM
 - AdaBoost
-- Pegaso
 - Adaboost con diversi parametri o classificatori (quali?)
 - Fare grafici che mostrano come variano diverse metriche in funzione di quanto sono popolate le classi.
 
