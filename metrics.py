@@ -6,6 +6,8 @@
 # AUROC ---> http://scikit-learn.org/stable/modules/generated/sklearn.metrics.roc_auc_score.html#sklearn.metrics.roc_auc_score
 # Precision-Recall-F-score --> http://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html#sklearn.metrics.precision_recall_fscore_support
 
+# Metrics Wikipedia: https://en.wikipedia.org/wiki/Sensitivity_and_specificity
+
 from sklearn.metrics import precision_recall_fscore_support
 from sklearn.metrics import precision_recall_curve, average_precision_score
 from sklearn.metrics import roc_curve, auc 
@@ -33,7 +35,8 @@ def my_custom_loss_func(ground_truth, p, n):
     # Calculate AUPRC
     auprc = average_precision_score(ground_truth, p)
     
-    # Calculate False Positive Rate (FPR) and True Positive Rate
+    # Calculate False Positive Rate (FPR) and True Positive Rate (TPR)
+    # [FPR, TNR] [TPR, FNR]
     fpr, tpr, _ = roc_curve(ground_truth, p)
         
     # Calculate AUROC
