@@ -98,6 +98,13 @@ MICHELE:
 # 5. Idee
 
 - Cercare una buona implementazione di Pegaso, possibilmente ottimizzata il più possibile
+- SVM normali
+- SVM con class_weight=‘balanced’
+- Approfondire parametro C nelle SVM
+- AdaBoost
+- Pegaso
+- Adaboost con diversi parametri o classificatori (quali?)
+- Fare grafici che mostrano come variano diverse metriche in funzione di quanto sono popolate le classi.
 
 # 6. Dubbi
 
