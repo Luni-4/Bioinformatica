@@ -15,7 +15,7 @@ from sklearn.metrics import roc_curve, auc
 from sklearn.metrics import make_scorer
 from sklearn.model_selection import cross_val_score
 
-from utility import timer, write_json, debug, read_json
+from utility import timer, write_json
 
 import sys
 import numpy as np
@@ -24,7 +24,7 @@ import numpy as np
 # for now, let's import the filename for the json file as constant
 from utility import simulation
 
-def my_custom_loss_func(ground_truth, p, n):
+def my_custom_loss_func(ground_truth, p, n):    
     
     # Calculate Precision-Recall-F-Score
     precision, recall, fscore, _ = precision_recall_fscore_support(ground_truth, p, labels = [1, 0])
@@ -42,9 +42,10 @@ def my_custom_loss_func(ground_truth, p, n):
     # Calculate AUROC
     auroc = auc(fpr, tpr)
     
-    # Save the metrics into a Json file with this structure
+    # Save the metrics as a dictionary
     '''scores = {
         "class": n, # class number
+        "positives": np.count_nonzero(ground_truth),
         "precision0": precision[1],
         "precision1": precision[0],
         "recall0": recall[1],
@@ -59,9 +60,10 @@ def my_custom_loss_func(ground_truth, p, n):
         "auroc": auroc
     }'''
     
-    
+    # Save the metrics as a ordered dictionary
     scores = [
         ("class", n), # class number
+        ("positives", np.count_nonzero(ground_truth)),
         ("precision0", precision[1]),
         ("precision1", precision[0]),
         ("recall0", recall[1]),

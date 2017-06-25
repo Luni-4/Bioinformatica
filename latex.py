@@ -24,7 +24,21 @@ def roc_graph(fpr, tpr, auroc):
     plt.legend(loc="lower right")
     plt.savefig("roc.eps")
     
-def latex():
+
+if __name__ == "__main__":
+
+    # Path to the simulation Json files for a specific ontology
+    fj = "Simulation/CC/"
+    
+    # If the latex directory exists, this line deletes it and its content
+    
+    # Create the latex directory
+    
+    # Each simulation file has a different directory
+    
+    # Read all the simulation files and write it in the latex directory 
+    
+    
     # Read json file
     read_json(filename)    
     
@@ -34,6 +48,6 @@ def latex():
     # Print the Receiver Operating Characteristic Graph
     roc_graph(fpr, tpr, auroc) 
     
-    # Create Table
+    # Create the tables from the simulation files
     latex_table() 
 
