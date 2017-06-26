@@ -3,7 +3,6 @@ import sys
 # Syntax: python controller.py ontology classifiers classifiers_parameters
 # ontology = {CC MF BP}
 # classifiers = - (all) or c1,c2 
-# classifiers_parameters = balanced, weight ecc 
 
 def launch_svm():
     print("SVM")
@@ -14,15 +13,6 @@ def launch_ada():
 
 def launch_pegaso():
     print("Pegaso")
-    
-    
-def launch_all():
-    launch_svm()
-    launch_ada()
-    launch_pegaso()
-    
-    
-    sys.exit()
 
 if __name__ == '__main__':
 
@@ -46,11 +36,11 @@ if __name__ == '__main__':
     
     # Launch all the classifiers
     if cla[0] == "-":
-        launch_all()
+        cla = cl.keys()
     
     # Launch some classifiers
     for x in cla:
-        cl[x]()
+        cl[x](f_sim + x)
         
         
          
