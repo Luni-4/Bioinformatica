@@ -1,4 +1,4 @@
-{"intro": "insert dict here", "datas":[
+{"intro": {"species":"Dros", "ontology": "CC", "classifier":"SVM unbalaced", "notes": "...", "time_start": "data e ora"}, "datas":[
 {"prot":1, "prat":2},
 {"prot":3, "prat":4}
 ],
