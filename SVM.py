@@ -27,22 +27,11 @@ if __name__ == '__main__':
     c = [SVC(decision_function_shape = "ovr") for x in range(Y.shape[1])]
     
     # Save the header as a ordered dictionary
-    '''header = [
-        ("class", n), # class number
-        ("positives", np.count_nonzero(ground_truth)),
-        ("precision0", precision[1]),
-        ("precision1", precision[0]),
-        ("recall0", recall[1]),
-        ("recall1", recall[0]),
-        ("fscore0", fscore[1]),
-        ("fscore1", fscore[0]),
-        ("prc10", prc.tolist()),
-        ("rec10", rec.tolist()),
-        ("auprc", auprc),
-        ("fpr10", fpr.tolist()),
-        ("tpr10", tpr.tolist()),
-        ("auroc", auroc)
-    ]'''
+    header = {'species': 'Dros',
+              'ontology': 'CC',
+              'classifier': 'SVM unbalaced', 
+              'notes': "...", 
+              "time_start": "data e ora"}
     
     # Write the header into the json file 
     #write_json(simulation, header)   
