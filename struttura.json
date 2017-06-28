@@ -1,5 +1,6 @@
 {"intro": {"species":"Dros", "ontology": "CC", "classifier":"SVM unbalaced", "notes": "...", "time_start": "data e ora"}, "datas":[
-{"prot":1, "prat":2},
-{"prot":3, "prat":4}
+{"classno":0, "auprc":0.95},
+{"classno":1, "auprc":0.98},
+{"classno":2, "auprc":0.97}
 ],
 "outro":"datiinfondo"}
