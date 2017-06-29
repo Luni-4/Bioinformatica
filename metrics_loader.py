@@ -15,6 +15,16 @@ def load_metrics(filename):
                 r.update(line)
     return r
  
+def average(r, metric_name):
+    count = 0
+    s = 0
+    for classno, folds in r['Data'].items():
+        for fold in folds:
+            s += fold[metric_name]
+            count += 1
+    return s / count
+
+
 """Return a dictionary, with keys:
 'End_Time', 'Data', 'Classifier', 'Parameters', 'Start_Time', 'Ontology'
 
