@@ -61,7 +61,7 @@ def my_custom_loss_func(ground_truth, p, n, json):
     
     return 0
 
-def metrics(f, X, Y, c, nc):
+def metrics(c, X, Y, nc, f):
     
     ftwo_scorer = make_scorer(my_custom_loss_func, n = nc, json = f)
         
