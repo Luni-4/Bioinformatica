@@ -14,16 +14,16 @@ if __name__ == '__main__':
     X = load_adj("Data/Dros.adjmatrix.txt")
     
     # this structure could be more complicated, some parts can be commented out, we can use dicts to pass parameters
-    classifiers = {
-        'SVM_Balanced': SVC(decision_function_shape = "ovr", class_weight = "balanced"),
-        # 'SVM_Balanced_C2' :SVC(decision_function_shape = "ovr", class_weight = "balanced", C=2)
-        'SVM_Unbalanced': SVC(decision_function_shape = "ovr"),
-        'AdaBoostDefault': AdaBoostClassifier(),
-        # 'AdaBoostVariant': AdaBoostClassifier('some parameters here'),
-        # 'Pegaso' : Pegaso()
-    }
+    classifiers = dict()
+    # classifiers['SVM_Balanced'] = SVC(decision_function_shape = "ovr", class_weight = "balanced"),
+    # classifiers['SVM_Balanced_C2'] = SVC(decision_function_shape = "ovr", class_weight = "balanced", C=2)
+    # classifiers['SVM_Unbalanced'] = SVC(decision_function_shape = "ovr"),
+    classifiers['AdaBoostDefault'] = AdaBoostClassifier()
+    # classifiers['AdaBoostVariant'] = AdaBoostClassifier('some parameters here'),
+    # classifiers['Pegaso'] = Pegaso()
     
-    for onto_name in ('BP', 'CC', 'MF'):
+    # for onto_name in ['BP', 'CC', 'MF']:
+    for onto_name in ['CC']:
         # Filename of the Annotation Matrix
         f_ann = "Data/Dros." + onto_name + ".ann.txt"
         
@@ -37,7 +37,7 @@ if __name__ == '__main__':
         Y = load_annotation(f_ann)
         
         for classname, classifier in classifiers.items():
-            filename_out = f_sim + classname + '.' + time.strftime("%c")'.json'
+            filename_out = f_sim + classname + '.' + time.strftime("%c") + '.json'
             # Save the header as a dictionary
             header = [  ("Ontology", onto_name),
                         ("Classifier", classname),                  
