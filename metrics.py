@@ -20,11 +20,7 @@ from utility import timer, write_json
 import sys
 import numpy as np
 
-# TODO 
-# for now, let's import the filename for the json file as constant
-from utility import simulation
-
-def my_custom_loss_func(ground_truth, p, n):    
+def my_custom_loss_func(ground_truth, p, n, json):    
     
     # Calculate Precision-Recall-F-Score
     precision, recall, fscore, _ = precision_recall_fscore_support(ground_truth, p, labels = [1, 0])
@@ -41,53 +37,32 @@ def my_custom_loss_func(ground_truth, p, n):
         
     # Calculate AUROC
     auroc = auc(fpr, tpr)
-    
-    # Save the metrics as a dictionary
-    '''scores = {
-        "class": n, # class number
-        "positives": np.count_nonzero(ground_truth),
-        "precision0": precision[1],
-        "precision1": precision[0],
-        "recall0": recall[1],
-        "recall1": recall[0],
-        "fscore0": fscore[1],
-        "fscore1": fscore[0],
-        "prc10": prc.tolist(),
-        "rec10": rec.tolist(),
-        "auprc": auprc,
-        "fpr10": fpr.tolist(),
-        "tpr10": tpr.tolist(),
-        "auroc": auroc
-    }'''
-    
+        
     # Save the metrics as a ordered dictionary
     scores = [
-        ("class", n), # class number
-        ("positives", np.count_nonzero(ground_truth)),
-        ("precision0", precision[1]),
-        ("precision1", precision[0]),
-        ("recall0", recall[1]),
-        ("recall1", recall[0]),
-        ("fscore0", fscore[1]),
-        ("fscore1", fscore[0]),
-        ("prc10", prc.tolist()),
-        ("rec10", rec.tolist()),
-        ("auprc", auprc),
-        ("fpr10", fpr.tolist()),
-        ("tpr10", tpr.tolist()),
-        ("auroc", auroc)
-    ]
+                ("class", n), # class number
+                ("positives", np.count_nonzero(ground_truth)),
+                ("precision0", precision[1]),
+                ("precision1", precision[0]),
+                ("recall0", recall[1]),
+                ("recall1", recall[0]),
+                ("fscore0", fscore[1]),
+                ("fscore1", fscore[0]),
+                ("prc10", prc.tolist()),
+                ("rec10", rec.tolist()),
+                ("auprc", auprc),
+                ("fpr10", fpr.tolist()),
+                ("tpr10", tpr.tolist()),
+                ("auroc", auroc)
+             ]
     
     # Write scores into the json file    
-    write_json(simulation, scores)     
+    write_json(json, scores)     
     
     return 0
 
-def metrics(X, Y, c, nc):
+def metrics(f, X, Y, c, nc):
     
-    ftwo_scorer = make_scorer(my_custom_loss_func, n = nc)
+    ftwo_scorer = make_scorer(my_custom_loss_func, n = nc, json = f)
         
-    cross_val_score(c, X, Y, cv = 5, scoring = ftwo_scorer, n_jobs = -1)   
-    
-    # Leave this command for now    
-    sys.exit() 
+    cross_val_score(c, X, Y, cv = 5, scoring = ftwo_scorer, n_jobs = -1) 

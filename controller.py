@@ -1,23 +1,21 @@
 import sys
+from dataload import load_adj, load_annotation
+#from SVM import svm
 
 # Syntax: python controller.py ontology classifiers classifiers_parameters
 # ontology = {CC MF BP}
 # classifiers = - (all) or c1,c2 
 
-def launch_svm():
-    print("SVM")
-    
-    
-def launch_ada():
-    print("Ada")
+def ada():
+    pass
 
-def launch_pegaso():
-    print("Pegaso")
+def pegaso():
+    pass
 
 if __name__ == '__main__':
 
     # Classifiers
-    cl = {"SVM" : launch_svm, "Ada": launch_ada, "Pegaso": launch_pegaso}
+    cl = {"SVM" : svm, "Ada": ada, "Pegaso": pegaso}
     
     # Filename of the Adjacent Matrix
     f_adj = "Data/Dros.adjmatrix.txt"
@@ -29,7 +27,13 @@ if __name__ == '__main__':
     p_sim = "Simulation/" + sys.argv[1] + "/"
     
     # Part of the filenames associated to the Json files
-    f_sim = "S" + sys.argv[1]     
+    f_sim = p_sim + "S_" + sys.argv[1] + "_"
+    
+    # Read Adjacent Matrix
+    X = load_adj(f_adj)
+    
+    # Read Annotation Matrix
+    Y = load_annotation(f_ann)     
     
     # Define what classifiers will be launched
     cla = sys.argv[2].split(",")
@@ -40,7 +44,8 @@ if __name__ == '__main__':
     
     # Launch some classifiers
     for x in cla:
-        cl[x](f_sim + x)
+        f_temp = f_sim + x + ".json" 
+        cl[x](f_temp, sys.argv[1], X, Y)
         
         
          
