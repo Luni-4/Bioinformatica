@@ -66,8 +66,7 @@ if __name__ == '__main__':
     
     # Read Annotation Matrix
     Y = load_annotation(f_ann)
-    
-    if sys.argv[2] == "b":
+    if len(sys.argv) > 2 and sys.argv[2] == "b":
         f_sim += "SVM_Balanced.json"
         # Launch SVM Balanced
         SVM(f_sim, sys.argv[1], X, Y, sys.argv[2])        
