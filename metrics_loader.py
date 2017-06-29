@@ -18,7 +18,7 @@ def load_metrics(filename):
 def average(r, metric_name):
     count = 0
     s = 0
-    for classno, folds in r['Data'].items:
+    for classno, folds in r['Data'].items():
         for fold in folds:
             s += fold[metric_name]
             count += 1
