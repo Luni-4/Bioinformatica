@@ -10,11 +10,7 @@ import sys
 import os
 import time
 
-def ada():
-    pass
-
-def pegaso():
-    pass
+# Use: controller.py (ontology) (classifiers: SVM Ada Pegaso) (parameters for each classifier: s_p, a_p, p_p keys)
 
 if __name__ == '__main__':
     
@@ -23,7 +19,7 @@ if __name__ == '__main__':
         print("You must insert 4 parameters")
         sys.exit()   
 
-    # Parameters for classifiers
+    # Parameters for each classifiers
     s_p = {
             "SVM_Balanced": SVC(decision_function_shape = "ovr", class_weight = "balanced"),
             "SVM_Balanced_C2" :SVC(decision_function_shape = "ovr", class_weight = "balanced", C = 2),
@@ -41,6 +37,25 @@ if __name__ == '__main__':
     
     # Classifiers
     cl = {"SVM" : s_p, "Ada": a_p, "Pegaso": p_p}
+    
+    # Ontology
+    onto = {"CC", "BP", "MF"}    
+   
+    # Check the ontology inserted
+    if sys.argv[1] not in onto:
+        print("Wrong Ontology")
+        sys.exit()    
+    
+    # Define what classifiers will be launched
+    cla = sys.argv[2].split(",")
+    
+    # Check if the classifiers are into the classifiers dictionary
+    if not set(cla) <= set(cl.keys()):
+        print("Wrong Classifiers")
+        sys.exit() 
+    
+    # Define the parameters for each classifier
+    par = sys.argv[3].split(",")    
     
     # Path to the directory of the chosen ontology
     p_sim = "Simulation/" + sys.argv[1] + "/"
@@ -62,16 +77,6 @@ if __name__ == '__main__':
     
     # Read Annotation Matrix
     Y = load_annotation(f_ann)     
-    
-    # Define what classifiers will be launched
-    cla = sys.argv[2].split(",")
-    
-    # Define the parameters for each classifier
-    par = sys.argv[3].split(",")    
-    
-    # The program will launch all classifiers
-    if cla[0] == "-":
-        cla = cl.keys()
     
     #The program launches all/some classifiers
     for x in cla:
