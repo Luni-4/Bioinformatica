@@ -2,7 +2,7 @@ from sklearn.svm import SVC
 
 from dataload import load_adj, load_annotation
 from metrics import metrics 
-from utility import timer, memory, debug, write_json
+from utility import timer, memory, write_json
 
 import time
 import sys

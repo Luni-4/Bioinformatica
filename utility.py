@@ -3,9 +3,6 @@ import resource
 import json
 from collections import OrderedDict
 
-# How to print a value into a generator without using for loop
-#print(next(read_json(simulation))["precision0"])
-
 def memory(f):
     def k(*args, **kargs):
         print("Before function {0}: {1} MegaByte".format(f.__name__, resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024))
@@ -26,13 +23,7 @@ def timer(f, l = ""):
     
 def write_json(filename, w):
     with open(filename, "a") as f:
-        f.write(json.dumps(OrderedDict(w)) + "\n")        
-
-def read_json(filename):
-    with open(filename, "r") as f:
-        for line in f:
-            s = json.loads(line)
-            yield s
+        f.write(json.dumps(OrderedDict(w)) + "\n")
         
 def debug(*args):
     for x in args:
