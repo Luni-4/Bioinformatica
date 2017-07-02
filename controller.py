@@ -16,8 +16,7 @@ if __name__ == '__main__':
     
     # Check the number of the inserted parameters
     if len(sys.argv) < 4:
-        print("You must insert 4 parameters")
-        sys.exit()   
+        raise ValueError("You must insert 4 parameters") 
 
     # Parameters for each classifiers
     s_p = {
@@ -43,16 +42,14 @@ if __name__ == '__main__':
    
     # Check the ontology inserted
     if sys.argv[1] not in onto:
-        print("Wrong Ontology")
-        sys.exit()    
+        raise ValueError("Wrong Ontology")
     
     # Define what classifiers will be launched
     cla = sys.argv[2].split(",")
     
     # Check if the classifiers are into the classifiers dictionary
     if not set(cla) <= set(cl.keys()):
-        print("Wrong Classifiers")
-        sys.exit() 
+       raise ValueError("Wrong Classifiers") 
     
     # Define the parameters for each classifier
     par = sys.argv[3].split(",")    
@@ -76,7 +73,7 @@ if __name__ == '__main__':
     X = load_adj(f_adj)
     
     # Read Annotation Matrix
-    Y = load_annotation(f_ann)     
+    Y = load_annotation(f_ann)
     
     #The program launches all/some classifiers
     for x in cla:
@@ -114,7 +111,7 @@ if __name__ == '__main__':
             # Write the header into the json file 
             write_json(f_temp, header)
             
-            for j in range(2):
+            for j in range(Y.shape[1]):
                 metrics(c, X, Y.getdensecol(j), j, f_temp)
         
             # Save the footer as a dictionary
