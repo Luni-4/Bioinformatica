@@ -3,6 +3,18 @@ import resource
 import json
 from collections import OrderedDict
 
+from scipy import sparse
+import numpy as np
+
+def dot_product(x, y):
+    if sparse.issparse(x) and sparse.issparse(y):
+        return (x.T * y)[0,0]
+        
+    if not (sparse.issparse(x) and sparse.issparse(y)):
+        return np.inner(x, y)
+        
+    raise ValueError("sparsity of arguments is not consistant")
+
 def memory(f):
     def k(*args, **kargs):
         print("Before function {0}: {1} MegaByte".format(f.__name__, resource.getrusage(resource.RUSAGE_SELF).ru_maxrss / 1024))
