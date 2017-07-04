@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 import numpy as np
 from scipy import sparse
 
-from utility import dot_product
+from utility import dot_product, debug
 
 import random
 
@@ -18,19 +18,16 @@ class Weights:
         self.dimensionality = X.shape[1]
 
         if sparse.issparse(X):
-            self.w = sparse.csr_matrix(np.zeros(self.dimensionality))
+            self.w = sparse.csr_matrix((1,self.dimensionality))
         else:
-            self.w = np.zeros(self.dimensionality)
+            self.w = np.zeros(self.dimensionality)            
 
     def scale_to(self, scaling_factor):
         # The author of the code uses this technique to update the weights only when (1 - 1/t) is very small
         '''
         if self.scale < constants.MIN_SCALE:
             self.w *= self.scale
-            self.scale = 1.0'''          
-       
-        # Save (1 - 1/t) into a variable
-        #self.scale *= scaling_factor
+            self.scale = 1.0'''       
        
         # Update the weights 
         self.w *= scaling_factor        
@@ -39,14 +36,19 @@ class Weights:
         # Calculate eta * yi * xi     
         xi_scaled = xi * scaler
         # Update the weights  
-        self.w = self.w + xi_scaled
-
+        self.w = self.w + xi_scaled       
         
     # Inner product <w_t, x_t>
     def inner_product(self, x):
         return dot_product(self.w, x)
 
 def train_pegasos(model, X, Y):
+
+    # So we can repeat the experiment
+    random.seed(2)
+    
+    # Variable used to average the w_i
+    mean = model.weights.w
     
     # Start Pegasos T iterations
     for iteration in range(1, model.iterations):
@@ -58,10 +60,10 @@ def train_pegasos(model, X, Y):
         xi = X[i]
         
         # Extract Y
-        yi = Y[i]
-        
+        yi = Y[i] 
+    
         # Calculate eta value
-        eta = 1.0 / (model.lambda_reg * iteration)
+        eta = 1.0 / (model.lambda_reg * iteration)        
         
         # Calculate h_st(w) = y_t * <w_t, x_t>
         h_st = yi * model.weights.inner_product(xi)
@@ -70,13 +72,20 @@ def train_pegasos(model, X, Y):
         scaling_factor = 1.0 - (eta * model.lambda_reg)
         
         # w_t+1 = (1 - 1/t) * w_t
-        model.weights.scale_to(scaling_factor)              
+        model.weights.scale_to(scaling_factor)          
         
         # I{h_st(w) < 1}
-        if h_st < 1.0:
+        if h_st < 1.0:      
             # Calculate eta * yi * xi and update weights
             model.weights.add(xi, (eta * yi))
-            
+        
+        # Sum w_t+1 model for mean
+        mean += model.weights.w
+    
+    # Calculate mean
+    model.weights.w = (mean / model.iterations) 
+             
+        
 class Pegasos(BaseEstimator, ClassifierMixin):
 
     def __init__(self, iterations, lambda_reg):
@@ -135,8 +144,8 @@ class Pegasos(BaseEstimator, ClassifierMixin):
             p = np.dot(self.weights.w, X.T)
         
         # Apply sgn function on the discriminant function f(x)    
-        p[p>=0] = 1
-        p[p<0] = 0
+        p[p>0] = 1
+        p[p<=0] = 0
                 
         # Convert predictions floating-point values into int32 values
         p = p.astype(np.int32, copy = False)
@@ -149,9 +158,9 @@ def test_svm():
     X = np.array([[1,1,1],[1,1,0],[1,0,0],[0,0,0], [0,1,1], [0,0,1]])
     y = np.array([1,1,1,0,0,0])
 
-    svm = Pegasos(iterations=1000, lambda_reg = 0.1)
+    svm = Pegasos(iterations=10000, lambda_reg = 0.05)
     svm.fit(X, y)
-
+    
     assert np.all(svm.predict(X) == y)
 
 
@@ -159,10 +168,8 @@ def test_svm_sparse():
     X = sparse.csr_matrix([[1,1,1],[1,1,0],[1,0,0],[0,0,0], [0,1,1], [0,0,1]])
     y = np.array([1,1,1,0,0,0])
 
-    svm = Pegasos(iterations=1000, lambda_reg = 0.5)
+    svm = Pegasos(iterations=10000, lambda_reg = 0.05)
     svm.fit(X, y)
-    
-    print(svm.predict(X))
 
     assert np.all(svm.predict(X) == y)
     
