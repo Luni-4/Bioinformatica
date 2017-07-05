@@ -1,0 +1,52 @@
+\documentclass[11pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[italian]{babel}
+
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+\author{Federico Picetti, Michele Valsesia}
+%\title{Classificazione automatica di proteine attraverso algoritmi di Machine Learning}
+\title{Predizione della funzione di proteine attraverso metodi di Machine Learning}
+\begin{document}
+\tableofcontents
+
+\chapter{Dati}
+Le feature di ingresso sono tratte dalla matrice di adiacenza delle proteine di \emph{Drosophila melanogaster}. La matrice esprime una metrica di similarità fra coppie di proteine.
+Gli algoritmi di apprendimento automatico utilizzano l'$ i $-esima riga (o $ i $-esima colonna) della matrice come vettore di feature per l'$ i $-esimo esempio.
+Si dispone di 3 distinte matrici di annotazioni, un per ogni ontologia della \emph{GO} (Gene Ontology):
+\begin{description}
+\item[CC]Cellular Component, 235 classi
+\item[BP]Biological Process, 1951 classi
+\item[MF]Molecular Function, 234 classi
+\end{description}
+Si tratta di ontologie multiclasse, per cui ogni proteina può appartenere a una o più classi nella stessa ontologia.
+Le matrici di annotazioni $ Y $ riportano le proteine sulle righe e le classi sulle colonne. 
+
+\[ Y_{i,j} =
+  \begin{cases}
+    1       & \quad \text{se l'elemento } i \text{-esimo appartiene alla classe } j \text{-esima}\\
+    0  & \quad \text{altrimenti}\\
+  \end{cases}
+\]
+
+
+
+
+\chapter{Metodi di machine learning}
+Si è deciso di utilizzare tre diversi metodi di Machine Learning: per Support Vector Machine a AdaBoost si sono utilizzate le librerie scikit-learn per Python.
+Pegasos è stato implementato in Python in modo da rispettare le API di scikit-learn.
+
+\section{Support Vector Machine}
+Si sono provate le SVM della libreria scikit-learn, in particolare l'implementazione SVC\footnote{http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}.
+% Parlare delle impostazioni utilizzate, della funzione di decisione, del bilanciamento, del kernel, di C
+\section{AdaBoost}
+\section{Pegasos}
+
+\chapter{Implementazione}
+Eventualmente parlare di dettagli su come è costruito il codice
+\chapter{Risultati}
+\section{Metriche adottate}
+\section{Analisi dei risultati}
+\end{document}
