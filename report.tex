@@ -48,5 +48,10 @@ Si sono provate le SVM della libreria scikit-learn, in particolare l'implementaz
 Eventualmente parlare di dettagli su come è costruito il codice
 \chapter{Risultati}
 \section{Metriche adottate}
+Si è adottata la tecnica di cross-validazione 5-fold. Per ogni classe vengono costruiti 5 classificatori simili e addestrati su 4/5 dei dati. Ogni classificatore viene poi testato sul restante 1/5 dei dati.
+L'operazione viene eseguita all'interno del modulo \texttt{metrics.py}, 
+%che a sua volta sfrutta la funzione \texttt{cross_val_score} contenuta in 
+%\texttt{sklearn.model_selection} 
+%\footnote{http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html}.
 \section{Analisi dei risultati}
 \end{document}
