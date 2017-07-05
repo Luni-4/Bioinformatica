@@ -1,6 +1,6 @@
 from sklearn.svm import SVC
 from sklearn.ensemble import AdaBoostClassifier
-# from myPegaso import Pegaso
+# from pegasos import Pegasos
 
 from dataload import load_adj, load_annotation
 from utility import write_json
@@ -10,49 +10,47 @@ import sys
 import os
 import time
 
-# Use: controller.py (ontology) (classifiers: SVM Ada Pegaso) (parameters for each classifier: s_p, a_p, p_p keys)
+# Use: controller.py (ontology) (classifier_configuration)
 
 if __name__ == '__main__':
     
     # Check the number of the inserted parameters
-    if len(sys.argv) < 4:
-        raise ValueError("You must insert 4 parameters") 
-
-    # Parameters for each classifiers
-    s_p = {
-            "SVM_Balanced": SVC(decision_function_shape = "ovr", class_weight = "balanced"),
-            "SVM_Balanced_C2" :SVC(decision_function_shape = "ovr", class_weight = "balanced", C = 2),
-            "SVM_Unbalanced": SVC(decision_function_shape = "ovr")
-          }
-    
-    a_p = {
-             "AdaBoostDefault": AdaBoostClassifier(),
-             "AdaBoostVariant": AdaBoostClassifier("some parameters here")
-          }
-          
-    p_p = {
-             #'Pegaso' : Pegaso()
-          }
-    
-    # Classifiers
-    cl = {"SVM" : s_p, "Ada": a_p, "Pegaso": p_p}
-    
+    if len(sys.argv) < 2:
+        raise ValueError("You must insert the ontology at least")       
+        
     # Ontology
     onto = {"CC", "BP", "MF"}    
    
     # Check the ontology inserted
     if sys.argv[1] not in onto:
-        raise ValueError("Wrong Ontology")
+        raise ValueError("Wrong Ontology") 
+    
+
+    # Different configurations of the classifiers
+    cl = {
+            # SVM Configurations
+            "SVM_Balanced":    SVC(decision_function_shape = "ovr", class_weight = "balanced"),
+            "SVM_Balanced_C2": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = 2),
+            "SVM_Unbalanced":  SVC(decision_function_shape = "ovr"),
+            
+            # AdaBoost Configurations
+            "AdaBoostDefault": AdaBoostClassifier(),
+            "AdaBoostVariant": AdaBoostClassifier("some parameters here"),
+            
+            # Pegasos Configurations
+            #"Pegasos": Pegasos()
+         } 
     
     # Define what classifiers will be launched
-    cla = sys.argv[2].split(",")
+    if len(sys.argv) < 3:
+        cla = cl.keys()
+    else:    
+        cla = sys.argv[2].split(",")
+       
     
     # Check if the classifiers are into the classifiers dictionary
     if not set(cla) <= set(cl.keys()):
-       raise ValueError("Wrong Classifiers") 
-    
-    # Define the parameters for each classifier
-    par = sys.argv[3].split(",")    
+       raise ValueError("Wrong Classifiers")
     
     # Path to the directory of the chosen ontology
     p_sim = "Simulation/" + sys.argv[1] + "/"
@@ -76,46 +74,40 @@ if __name__ == '__main__':
     Y = load_annotation(f_ann)
     
     #The program launches all/some classifiers
-    for x in cla:
+    for x in cla:   
         
-        # Loop on the parameters of the classifier
-        for y in par:
+        # Filename of the classifier
+        f_temp = f_sim + x          
         
-            if y not in cl[x].keys():
-                continue       
+        # Check if the same filename exists into the ontology directory
+        neq = len([ 1 for z in l_dir if os.path.splitext(z)[0].count(f_temp)])                       
         
-            # Filename of the classifier
-            f_temp = f_sim + y          
-        
-            # Check if the same filename exists into the ontology directory
-            neq = len([ 1 for z in l_dir if os.path.splitext(z)[0].count(f_temp)])                       
-        
-            # Increment the counter and add it to the filename
-            if neq > 0:
-                f_temp += str(neq)    
+        # Increment the counter and add it to the filename
+        if neq > 0:
+            f_temp += str(neq)    
             
-            # Add Json extension
-            f_temp = p_sim + f_temp + ".json"            
+        # Add Json extension
+        f_temp = p_sim + f_temp + ".json"            
 
-            # Classifier
-            c =  cl[x][y]     
+        # Classifier
+        c =  cl[x]     
         
-            # Save the header as a dictionary
-            header = [
-                        ("Ontology",   sys.argv[1]),
-                        ("Classifier", y ),                  
-                        ("Parameters", c.get_params()),                                    
-                        ("Start_Time", time.strftime("%c"))
-                     ]
+        # Save the header as a dictionary
+        header = [
+                    ("Ontology",   sys.argv[1]),
+                    ("Classifier", x ),                  
+                    ("Parameters", c.get_params()),                                    
+                    ("Start_Time", time.strftime("%c"))
+                 ]
 
-            # Write the header into the json file 
-            write_json(f_temp, header)
+        # Write the header into the json file 
+        write_json(f_temp, header)
             
-            for j in range(Y.shape[1]):
-                metrics(c, X, Y.getdensecol(j), j, f_temp)
+        for j in range(Y.shape[1]):
+            metrics(c, X, Y.getdensecol(j), j, f_temp)
         
-            # Save the footer as a dictionary
-            footer = [("End_Time", time.strftime("%c"))]
+        # Save the footer as a dictionary
+        footer = [("End_Time", time.strftime("%c"))]
              
-            # Write the footer into the json file 
-            write_json(f_temp, footer)    
+        # Write the footer into the json file 
+        write_json(f_temp, footer)    
