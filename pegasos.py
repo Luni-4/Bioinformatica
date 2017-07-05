@@ -7,7 +7,7 @@ from sklearn.preprocessing import LabelEncoder
 import numpy as np
 from scipy import sparse
 
-from utility import dot_product, debug
+from utility import dot_product
 
 import random
 
@@ -20,7 +20,7 @@ class Weights:
         if sparse.issparse(X):
             self.w = sparse.csr_matrix((1,self.dimensionality))
         else:
-            self.w = np.zeros(self.dimensionality)            
+            self.w = np.zeros(self.dimensionality)              
 
     def scale_to(self, scaling_factor):
         # The author of the code uses this technique to update the weights only when (1 - 1/t) is very small
@@ -36,7 +36,7 @@ class Weights:
         # Calculate eta * yi * xi     
         xi_scaled = xi * scaler
         # Update the weights  
-        self.w = self.w + xi_scaled       
+        self.w = self.w + xi_scaled
         
     # Inner product <w_t, x_t>
     def inner_product(self, x):
@@ -54,13 +54,15 @@ def train_pegasos(model, X, Y):
     for iteration in range(1, model.iterations):
         
         # Choose the index of the random example
-        i = random.randint(0, X.shape[0] - 1)
+        #i = random.randint(0, X.shape[0] - 1)
+        
+        i = iteration % 6
         
         # Exctract X
         xi = X[i]
         
         # Extract Y
-        yi = Y[i] 
+        yi = Y[i]
     
         # Calculate eta value
         eta = 1.0 / (model.lambda_reg * iteration)        
@@ -139,7 +141,7 @@ class Pegasos(BaseEstimator, ClassifierMixin):
         
         # Apply discriminant function f(x) = w * x^T to compute the predictions   
         if sparse.issparse(X):
-            p = np.array((self.weights.w * X.T).todense()).reshape(-1)
+            p = (self.weights.w.dot(X.T).toarray()).reshape(-1)
         else:
             p = np.dot(self.weights.w, X.T)
         
@@ -158,7 +160,7 @@ def test_svm():
     X = np.array([[1,1,1],[1,1,0],[1,0,0],[0,0,0], [0,1,1], [0,0,1]])
     y = np.array([1,1,1,0,0,0])
 
-    svm = Pegasos(iterations=10000, lambda_reg = 0.05)
+    svm = Pegasos(iterations=8, lambda_reg = 0.05)
     svm.fit(X, y)
     
     assert np.all(svm.predict(X) == y)
@@ -176,4 +178,4 @@ def test_svm_sparse():
 if __name__ == '__main__':
 
     print(test_svm())
-    print(test_svm_sparse())
+    #print(test_svm_sparse())
