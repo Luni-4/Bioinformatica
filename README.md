@@ -107,7 +107,7 @@ MICHELE:
 
 FEDERICO:
 
-- Com'è lento adaboost! 5-fold parallelizzato ci mette mezzo minuto per ogni classe ---> Possiamo cercare di ridurre il tempo distribuendo il carico di lavoro tra più unita? Per farlo dovremmo fare in modo che più classi vengano computate in parallelo.
+- Com'è lento adaboost! 5-fold parallelizzato ci mette mezzo minuto per ogni classe. Provare a ridurre il numero di classificatori
 
 MICHI:
 
@@ -115,4 +115,4 @@ MICHI:
 risultati non buoni e vengono mostrati warning
 
 - Abbiamo deciso di non usare la soglia t, descritta dal prof nel suo documento, per le metriche, vero? 
-Perché sia svm che adaboost, per ciascuna feature, restituiscono o 0 o 1 e non il valore di probabilità relativo all'appartenenza ad una o ad un'altra classe.
+Perché sia svm che adaboost, per ciascuna feature, restituiscono o 0 o 1 e non il valore di probabilità relativo all'appartenenza ad una o ad un'altra classe. --> Usiamo decisori, ma nel report descriviamo la cosa e diciamo che avremmo potuto usare classificatori probabilistici e fare delle prove con la soglia. e diciamo perchè usiamo funzioni di decisione. Perchè non usiamo probabilistici? Perchè rallentano l'apprendimento (il metodo fit) e perchè sono più sensati in un contesto gerarchico, non in un contesto di classificazione flat
