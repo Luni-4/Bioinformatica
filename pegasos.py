@@ -141,13 +141,13 @@ class Pegasos(BaseEstimator, ClassifierMixin):
         
         # Apply discriminant function f(x) = w * x^T to compute the predictions   
         if sparse.issparse(X):
-            p = (self.weights.w.dot(X.T).toarray()).reshape(-1)
+            p = (self.weights.w * X.T.todense()).reshape(-1)
         else:
             p = np.dot(self.weights.w, X.T)
         
         # Apply sgn function on the discriminant function f(x)    
-        p[p>0] = 1
-        p[p<=0] = 0
+        p[p>=0] = 1
+        p[p<0] = 0
                 
         # Convert predictions floating-point values into int32 values
         p = p.astype(np.int32, copy = False)
@@ -158,9 +158,9 @@ class Pegasos(BaseEstimator, ClassifierMixin):
 
 def test_svm():
     X = np.array([[1,1,1],[1,1,0],[1,0,0],[0,0,0], [0,1,1], [0,0,1]])
-    y = np.array([1,1,1,0,0,0])
+    y = np.array([1,1,1,1,0,0])
 
-    svm = Pegasos(iterations=8, lambda_reg = 0.05)
+    svm = Pegasos(iterations=10000, lambda_reg = 0.05)
     svm.fit(X, y)
     
     assert np.all(svm.predict(X) == y)
@@ -168,7 +168,7 @@ def test_svm():
 
 def test_svm_sparse():
     X = sparse.csr_matrix([[1,1,1],[1,1,0],[1,0,0],[0,0,0], [0,1,1], [0,0,1]])
-    y = np.array([1,1,1,0,0,0])
+    y = np.array([1,1,1,1,0,0])
 
     svm = Pegasos(iterations=10000, lambda_reg = 0.05)
     svm.fit(X, y)

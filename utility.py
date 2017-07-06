@@ -8,7 +8,7 @@ import numpy as np
 
 def dot_product(x, y):
     if sparse.issparse(x) and sparse.issparse(y):
-        return x.dot(y.T)[0,0]
+        return (x * y.T)[0,0]
         
     if not (sparse.issparse(x) and sparse.issparse(y)):
         return np.inner(x, y)
