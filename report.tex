@@ -53,8 +53,8 @@
 % //////////////////////////////////////////////////
 
 % Impostare interlinea a 1.5
-\renewcommand{\baselinestretch}{1.5}
-
+%\renewcommand{\baselinestretch}{1.5}
+\onehalfspacing
 % Dichiara la funzione argmin non presente di default
 \DeclareMathOperator*{\argmin}{argmin} 
 
@@ -75,9 +75,8 @@
 
 %Titolo e intestazione
 \title{% 
-        Progetto d’esame per il corso di Bioinformatica: 
-        Predizione della funzione delle proteine con \\
-        metodi di Machine Learning}
+        Predizione della funzione delle proteine \\
+        con metodi di Machine Learning}
   
 \author{Federico Picetti \\
         Michele Valsesia}
@@ -119,7 +118,7 @@ Le matrici di annotazioni $ Y $ riportano le proteine sulle righe e le classi su
 Si è deciso di utilizzare tre diversi metodi di Machine Learning: per Support Vector Machine a AdaBoost si sono utilizzate le librerie scikit-learn per Python.
 
 \section{Support Vector Machine}
-Si sono provate le SVM della libreria scikit-learn, in particolare l'implementazione SVC\footnote{http://scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}.
+Si sono provate le SVM della libreria scikit-learn, in particolare l'implementazione SVC\footnote{scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}.
 % Parlare delle impostazioni utilizzate, della funzione di decisione, del bilanciamento, del kernel, di C
 \section{AdaBoost}
 
@@ -130,8 +129,8 @@ Eventualmente parlare di dettagli su come è costruito il codice
 Si è deciso di non utilizzare l'accuratezza in quanto non produce buoni risultati se le classi sono sbilanciate.  
 Si è adottata la tecnica di cross-validazione 5-fold. Per ogni classe vengono costruiti 5 classificatori simili e addestrati su 4/5 dei dati. Ogni classificatore viene poi testato sul restante 1/5 dei dati.
 L'operazione viene eseguita all'interno del modulo \texttt{metrics.py}, 
-%che a sua volta sfrutta la funzione \texttt{cross_val_score} contenuta in 
-%\texttt{sklearn.model_selection} 
-%\footnote{http://scikit-learn.org/stable/modules/generated/sklearn.model_selection.cross_val_score.html}.
+che a sua volta utilizza la funzione \texttt{cross\_val\_score} contenuta in 
+\texttt{sklearn.model\_selection} 
+\footnote{scikit-learn.org/stable/modules/generated/sklearn.model\_selection.cross\_val\_score.html}.
 \section{Analisi dei risultati}
 \end{document}
