@@ -58,6 +58,12 @@ MICHELE:
 
 - Metodi di scoring: http://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
 
+- Precision-Recall-Curve: https://classeval.wordpress.com/introduction/introduction-to-the-precision-recall-plot/
+
+- ROC e AUROC: http://www.cs.bris.ac.uk/~flach/ICML04tutorial/ 
+
+- Metriche per classificatori binari, multiclasse, multi-label: http://rali.iro.umontreal.ca/rali/sites/default/files/publis/SokolovaLapalme-JIPM09.pdf
+
 
 # 3. Input
 
