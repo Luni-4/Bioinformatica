@@ -1,6 +1,7 @@
 import json
 import statistics
 import matplotlib.pyplot as plt
+import os
 
 class MetricResult:
 
@@ -66,17 +67,19 @@ def roc_graph(fpr, tpr, auroc):
     plt.legend(loc="lower right")
     plt.savefig('roc.eps')
 
-
+def cfr_MR_graph(mrs, metric_name):
+    plt.clf()
+    vals = [statistics.mean(mr.means(metric_name)) for mr in mrs]
+    plt.bar(range(len(mrs)), vals)
+    plt.show()
 
 if __name__ == '__main__':
-    fn = 'Simulation/CC/S_CC_SVM_Balanced.json'
-    mr = MetricResult(fn)
-    print(mr.foldmean('auroc', 234))
-    print(mr.foldstdev('auroc', 234))
-    #print(mr.means('positives'))
-    mr.metric_on_population_graph('auroc')
-    
-    
+    files = []
+    for entry in os.scandir('./Simulation/CC'):
+        if entry.name.endswith('.json') and entry.is_file():
+            files.append('Simulation/CC/' + entry.name)
+    mrs = [MetricResult(fn) for fn in files]
+    cfr_MR_graph(mrs, 'auroc')
     
     """Return a dictionary, with keys:
     'End_Time', 'Data', 'Classifier', 'Parameters', 'Start_Time', 'Ontology'
@@ -85,6 +88,5 @@ if __name__ == '__main__':
     r['Ontology']
 
     # return auroc for the fold 2 of class 234
-    r['Data'][234][2]['auroc'] 
-    """
+    r['Data'][234][2]['auroc'] """
 
