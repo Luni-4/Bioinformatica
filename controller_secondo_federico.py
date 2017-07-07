@@ -1,12 +1,10 @@
 from sklearn.svm import SVC
 from sklearn.ensemble import AdaBoostClassifier
-# from myPegaso import Pegaso
+# from pegasos import Pegasos
 from dataload import load_adj, load_annotation
 from metrics import metrics 
-from utility import timer, memory, debug, write_json
-
+from utility import write_json
 import time
-import sys
  
 if __name__ == '__main__':
     
@@ -18,12 +16,11 @@ if __name__ == '__main__':
     # classifiers['SVM_Balanced'] = SVC(decision_function_shape = "ovr", class_weight = "balanced"),
     # classifiers['SVM_Balanced_C2'] = SVC(decision_function_shape = "ovr", class_weight = "balanced", C=2)
     # classifiers['SVM_Unbalanced'] = SVC(decision_function_shape = "ovr"),
-    classifiers['AdaBoostDefault'] = AdaBoostClassifier()
-    # classifiers['AdaBoostVariant'] = AdaBoostClassifier('some parameters here'),
-    # classifiers['Pegaso'] = Pegaso()
+    # classifiers['AdaBoostDefault'] = AdaBoostClassifier()
+    classifiers['AdaBoost_n10'] = AdaBoostClassifier(n_estimators=10)
+    # classifiers['Pegasos'] = Pegasos()
     
-    # for onto_name in ['BP', 'CC', 'MF']:
-    for onto_name in ['CC']:
+    for onto_name in ['CC', 'MF']:
         # Filename of the Annotation Matrix
         f_ann = "Data/Dros." + onto_name + ".ann.txt"
         
@@ -31,13 +28,13 @@ if __name__ == '__main__':
         p_sim = "Simulation/" + onto_name + "/"
     
         # Part of the filenames associated to the Json files
-        f_sim = p_sim + "S_" + onto_name + "_"
+        f_sim = p_sim + "M_" + onto_name + "_"
 
         # Read Annotation Matrix
         Y = load_annotation(f_ann)
         
         for classname, classifier in classifiers.items():
-            filename_out = f_sim + classname + '.' + time.strftime("%c") + '.json'
+            filename_out = f_sim + classname + '.json'
             # Save the header as a dictionary
             header = [  ("Ontology", onto_name),
                         ("Classifier", classname),                  
@@ -48,7 +45,7 @@ if __name__ == '__main__':
             # Write the header into the json file 
             write_json(filename_out, header)
             for x in range(Y.shape[1]):
-                metrics(filename_out, X, Y.getdensecol(x), classifier, x)
+                metrics(classifier, X, Y.getdensecol(x), x, filename_out)
         
             # Save the footer as a dictionary
             footer = [("End_Time", time.strftime("%c"))]
