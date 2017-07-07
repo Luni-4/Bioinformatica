@@ -24,6 +24,7 @@
 
 % Gestiscono la parte matematica del documento
 \usepackage{amssymb, amsmath, amsthm}
+\DeclareMathOperator{\sgn}{sgn}
 
 % Gestisce il codice del documento
 \usepackage{listings}
@@ -53,8 +54,8 @@
 % //////////////////////////////////////////////////
 
 % Impostare interlinea a 1.5
-%\renewcommand{\baselinestretch}{1.5}
-\onehalfspacing
+\renewcommand{\baselinestretch}{1.5}
+
 % Dichiara la funzione argmin non presente di default
 \DeclareMathOperator*{\argmin}{argmin} 
 
@@ -120,7 +121,34 @@ Si è deciso di utilizzare tre diversi metodi di Machine Learning: per Support V
 \section{Support Vector Machine}
 Si sono provate le SVM della libreria scikit-learn, in particolare l'implementazione SVC\footnote{scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}.
 % Parlare delle impostazioni utilizzate, della funzione di decisione, del bilanciamento, del kernel, di C
+
 \section{AdaBoost}
+AdaBoost (adaptive boosting) è un algoritmo incrementale che costruisce una serie di classificatori $ h_{i}:\mathbb{R}^{d}\rightarrow \{-1,+1\} $ appartenenti ad una famiglia $ \mathcal{H} $. 
+Il procedimento prevede di addestrare un classificatore di base sul training set, calcolarne l'errore, creare copie del classificatore e addestrarle sullo stesso training set, bilanciando i pesi degli elementi del training set classificati scorrettamente dai classificatori precedenti. I classificatori successivi tenderanno quindi a concentrarsi sui casi più difficili.
+Al termine avremo un classificatore nella forma
+\[\hat{y}=\sgn(\sum_{i=1}^{T} w_{i}h_{i}(\vec{x}))\]
+dove $ \vec{w} $ è un vettore di coefficienti reali (pesi) e $ T $ è il numero di classificatori.
+
+Tipicamente contenere i costi computazionali si sceglie una famiglia $ \mathcal{H} $ di classificatori di base molto semplici. $ T $ può essere un numero fissato o può crescere durante l'apprendimento e fermarsi secondo un dato criterio di stop.
+
+In questo lavoro si è usata l'implementazione \texttt{sklearn.ensemble.AdaBoostClassifier}
+\footnote{scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html}.
+Questo modulo consente di specificare i seguenti parametri:
+
+\begin{description}
+\item[\texttt{base\_estimator}:]la famiglia $ \mathcal{H} $ di \emph{weak learner};
+\item[\texttt{n\_estimators}:]la quantità massima di stimatori da costruire, limite oltre il quale il boosting è terminato.
+In caso di aderenza perfetta, la procedura di boosting è arrestata prima del raggiungimento del limite.
+\item[\texttt{learning\_rate}:] permette di ridurre il contributo di ogni classificatore.
+\item[\texttt{algorithm}:]consente di scegliere fra due algoritmi:
+\begin{description}
+\item[SAMME]Algoritmo di boosting discreto: necessario quando $ \mathcal{H} $ è una famiglia di decisori;
+\item[SAMME.R]Algoritmo di boosting reale: tipicamente converge più velocemente, praticabile quando i classificatori $ \mathcal{H} $ restituiscono una probabilità.
+\end{description}
+\end{description}
+ 
+Si è testato il training set con 5-fold utilizzando alberi di decisione come stimatore di base e fissando il limite di stimatori a 50.
+% Di default si usano stump o alberi più profondi?
 
 \chapter{Implementazione}
 Eventualmente parlare di dettagli su come è costruito il codice
@@ -131,6 +159,6 @@ Si è adottata la tecnica di cross-validazione 5-fold. Per ogni classe vengono c
 L'operazione viene eseguita all'interno del modulo \texttt{metrics.py}, 
 che a sua volta utilizza la funzione \texttt{cross\_val\_score} contenuta in 
 \texttt{sklearn.model\_selection} 
-\footnote{scikit-learn.org/stable/modules/generated/sklearn.model\_selection.cross\_val\_score.html}.
+\footnote{scikit-learn.org/stable/modules/generated/sklearn.model\_selection.cross\_val\_score.html}. 
 \section{Analisi dei risultati}
 \end{document}
