@@ -90,10 +90,22 @@
 
 % //////////////////// Capitoli /////////////////
 
+\newpage
 
-\chapter{Introduzione}
+\section*{Introduzione}
+L'obiettivo del progetto consiste nel predire la funzione delle proteine del \textit{Drosophila melanogaster}, un moscerino della frutta nonché organismo modello per gli insetti, usando dei classificatori prodotti da determinati algoritmi di apprendimento.
 
-\section{Dati}
+Per affrontare il problema, si è puntato su modelli semplici, rapidi e che consentano di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento scelti, che soddisfano le caratteristiche sopradescritte, sono:
+
+\begin{itemize}
+    \item Support Vector Machine (SVM)
+    \item AdaBoost
+\end{itemize}
+
+Lo scopo principale dell'elaborato è quello di descrivere i passaggi e le problematiche affrontate durante lo svolgimento del lavoro. Per fare ciò, si è deciso di associare ad ogni singolo stadio lavorativo un capitolo. Il \autoref{chap:dati} analizza i dati di input, mostrandone la struttura e le diverse modalità di elaborazione.
+Nel \autoref{chap:metodi} vengono trattati i metodi di machine learning scelti e la loro relativa implementazione. Il \autoref{chap:risultati}, l'ultimo, presenta i risultati ottenuti dai clasificatori, per mezzo di grafici, e confronta tra loro i due algoritmi per decretare quale sia il migliore.
+
+\chapter{Analisi dei Dati} \label{chap:dati}
 Le feature di ingresso sono tratte dalla matrice di adiacenza delle proteine di \emph{Drosophila melanogaster}. La matrice esprime una metrica di similarità fra coppie di proteine.
 Gli algoritmi di apprendimento automatico utilizzano l'$ i $-esima riga (o $ i $-esima colonna) della matrice come vettore di feature per l'$ i $-esimo esempio.
 Si dispone di 3 distinte matrici di annotazioni, un per ogni ontologia della \emph{GO} (Gene Ontology):
@@ -115,7 +127,7 @@ Le matrici di annotazioni $ Y $ riportano le proteine sulle righe e le classi su
 
 
 
-\chapter{Metodi di machine learning}
+\chapter{Metodi di Machine Learning} \label{chap:metodi}
 Si è deciso di utilizzare tre diversi metodi di Machine Learning: per Support Vector Machine a AdaBoost si sono utilizzate le librerie scikit-learn per Python.
 
 \section{Support Vector Machine}
@@ -150,9 +162,11 @@ In caso di aderenza perfetta, la procedura di boosting è arrestata prima del ra
 Si è testato il training set con 5-fold utilizzando alberi di decisione come stimatore di base e fissando il limite di stimatori a 50.
 % Di default si usano stump o alberi più profondi?
 
-\chapter{Implementazione}
+\section{Implementazione}
 Eventualmente parlare di dettagli su come è costruito il codice
-\chapter{Risultati}
+
+\chapter{Analisi dei Risultati} \label{chap:risultati}
+
 \section{Metriche adottate}
 Si è deciso di non utilizzare l'accuratezza in quanto non produce buoni risultati se le classi sono sbilanciate.  
 Si è adottata la tecnica di cross-validazione 5-fold. Per ogni classe vengono costruiti 5 classificatori simili e addestrati su 4/5 dei dati. Ogni classificatore viene poi testato sul restante 1/5 dei dati.
@@ -160,5 +174,9 @@ L'operazione viene eseguita all'interno del modulo \texttt{metrics.py},
 che a sua volta utilizza la funzione \texttt{cross\_val\_score} contenuta in 
 \texttt{sklearn.model\_selection} 
 \footnote{scikit-learn.org/stable/modules/generated/sklearn.model\_selection.cross\_val\_score.html}. 
-\section{Analisi dei risultati}
+
+\section{Risultati}
+
+\chapter{Conclusioni}
+
 \end{document}
