@@ -117,8 +117,68 @@ FEDERICO:
 
 MICHI:
 
-- Problema con lo sbilanciamento delle classi, troppe etichette negative a fronte di quelle positive. Dobbiamo bilanciare le classi, altrimenti le metriche producono
-risultati non buoni e vengono mostrati warning
+SVM parametri
 
-- Abbiamo deciso di non usare la soglia t, descritta dal prof nel suo documento, per le metriche, vero? 
-Perché sia svm che adaboost, per ciascuna feature, restituiscono o 0 o 1 e non il valore di probabilità relativo all'appartenenza ad una o ad un'altra classe. --> Usiamo decisori, ma nel report descriviamo la cosa e diciamo che avremmo potuto usare classificatori probabilistici e fare delle prove con la soglia. e diciamo perchè usiamo funzioni di decisione. Perchè non usiamo probabilistici? Perchè rallentano l'apprendimento (il metodo fit) e perchè sono più sensati in un contesto gerarchico, non in un contesto di classificazione flat
+Kernel RBF trasforma i dati in input dallo spazio delle feature in uno spazio kernel composto da gaussiane. Un link che spiega bene come funziona
+è questo https://calculatedcontent.com/2012/02/06/kernels_part_1/ più la pagina di Wikipedia https://en.wikipedia.org/wiki/Radial_basis_function_kernel
+
+Gamma: corrisponde all'inverso del raggio di influenza che determina quali campioni sono selezionati dal modello come support vectors. Con valori piccoli il
+raggio è molto grande, con valori alti il raggio è molto piccolo.
+
+Parametro C: parametro di tradeoff tra capacità di classificare al meglio gli esempi del training set (modello più complesso) e semplicità della funzione di decisione
+(modello più semplice). Un C basso comporta una funzione di decisione più semplice e quindi un modello più semplice, mentre un C alto mira a classificare al meglio
+tutti gli esempi del training set (potrebbe overfittare). C alti comporta una maggiore libertà del modello nel scegliere gli esempi per il support vector
+
+Svm è molto sensibile al parametro gamma. 
+
+Se gamma è troppo grande, il raggio di influenza è troppo piccolo e questo significa che il support vector
+conterrà solo gli esempi sul margine o quelli che violano il vincolo, ovvero il support vector stesso. In questo modo, qualsiasi sia il valore di C, l'overfitting è
+assicurato.
+
+Quando gamma è troppo piccolo, il raggio di influenza è tropp grande. Il support vector è composto da tutti gli esempi del training set. Il modello
+risulta troppo "vincolato" e quindi non riesce a ottenere la forma della funzione discriminante. (modello simile a quello lineare)
+
+I valori migliori si trovano sulla diagonale tra C e gamma.
+
+Delle buone configurazioni potrebbero essere:
+
+-  Configurazione 1
+    - Kernel: RBF 
+    - Gamma basso (tanti esempi nel support vector) 
+    - Valori di C grandi (C sceglie più liberamente gli esempi da mettere come support vector)
+
+-  Configurazione 2
+    - Kernel: RBF 
+    - Gamma medio (default) 
+    - Valori di C bassi (limitare la scelta dei support vectors e trovare un predittore con meno memoria e più velocemente)
+    
+C_range = [-2, 10]
+gamma_range = [-9, 3, 13]
+
+I range degli esempi sono dati in scala logaritmica in questo modo
+
+C_range = np.logspace(-2, 10, 13)
+gamma_range = np.logspace(-9, 3, 13)
+
+
+
+Kernel lineari: da scartare, in quanto non sappiamo se abbiamo training set linearmente separabili
+
+Kernel polinomiali: direi di provare a usare un degree (parametro ignorato dagli altri kernel) compreso tra 3 e 5. Usare valori più alti comporterebbe
+un elevato tempo di computazione.
+
+-  Configurazione 3
+    - Kernel: Poly
+    - Degree: [3,5] 
+    - Gamma basso (tanti esempi nel support vector) 
+    - Valori di C grandi (C sceglie più liberamente gli esempi da mettere come support vector)
+
+-  Configurazione 4
+    - Kernel: RBF
+    - Degree: [3,5] 
+    - Gamma medio (default) 
+    - Valori di C bassi (limitare la scelta dei support vectors e trovare un predittore con meno memoria e più velocemente)
+
+
+    
+
