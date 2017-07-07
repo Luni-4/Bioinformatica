@@ -178,7 +178,3 @@ un elevato tempo di computazione.
     - Degree: [3,5] 
     - Gamma medio (default) 
     - Valori di C bassi (limitare la scelta dei support vectors e trovare un predittore con meno memoria e più velocemente)
-
-
-    
-

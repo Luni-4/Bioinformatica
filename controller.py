@@ -6,6 +6,8 @@ from dataload import load_adj, load_annotation
 from utility import write_json
 from metrics import metrics
 
+import numpy as np
+
 import sys
 import os
 import time
@@ -24,6 +26,10 @@ if __name__ == '__main__':
     # Check the ontology inserted
     if sys.argv[1] not in onto:
         raise ValueError("Wrong Ontology") 
+        
+    # Range C and Gamma    
+    C_range = np.logspace(-2, 10, 13)
+    gamma_range = np.logspace(-9, 3, 13)
     
 
     # Different configurations of the classifiers
@@ -32,6 +38,11 @@ if __name__ == '__main__':
             "SVM_Balanced":    SVC(decision_function_shape = "ovr", class_weight = "balanced"),
             "SVM_Balanced_C2": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = 2),
             "SVM_Unbalanced":  SVC(decision_function_shape = "ovr"),
+            "SVM_Balanced_C0_G0": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = C_range[0], gamma = gamma_range[0]),
+            "SVM_Balanced_C2_G2": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = C_range[2], gamma = gamma_range[2]),
+            "SVM_Balanced_C7_G7": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = C_range[7], gamma = gamma_range[7]),
+            "SVM_Balanced_C12_G12": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = C_range[12], gamma = gamma_range[12]),
+            "SVM_Balanced_Poly_4": SVC(decision_function_shape = "ovr", class_weight = "balanced", kernel = "poly", degree = 4),
             
             # AdaBoost Configurations
             "AdaBoostDefault": AdaBoostClassifier(),
@@ -39,7 +50,7 @@ if __name__ == '__main__':
             
             # Pegasos Configurations
             #"Pegasos": Pegasos()
-         } 
+         }
     
     # Define what classifiers will be launched
     if len(sys.argv) < 3:
@@ -103,7 +114,7 @@ if __name__ == '__main__':
         # Write the header into the json file 
         write_json(f_temp, header)
             
-        for j in range(Y.shape[1]):
+        for j in range(0,Y.shape[1],5):
             metrics(c, X, Y.getdensecol(j), j, f_temp)
         
         # Save the footer as a dictionary
