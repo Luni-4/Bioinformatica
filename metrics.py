@@ -65,4 +65,4 @@ def metrics(c, X, Y, nc, f):
     
     ftwo_scorer = make_scorer(my_custom_loss_func, n = nc, json = f)
         
-    cross_val_score(c, X, Y, cv = 5, scoring = ftwo_scorer, n_jobs = -1) 
+    cross_val_score(c, X, Y, cv = 5, scoring = ftwo_scorer, n_jobs = 5) 
