@@ -32,10 +32,20 @@ class MetricResult:
     def stdevs(self, metric_name):
         """Returns a list of standard deviations for every class"""
         return [self.foldstdev(metric_name, c) for c in sorted(self.d['Data'].keys())]
+
+    def class_population(self, classno):
+        return sum(fold['positives'] for fold in self.d['Data'][classno])
         
+    def illdefined(self):
+        for classno in self.d['Data']:
+            counter = 0
+            for fold in self.d['Data'][classno]:
+                if fold['precision1'] == 0 and fold['fscore1'] == 0:
+                    counter += 1
+            print('Class {} has {} ill-defined fold'.format(classno, counter))
+    
     def metric_on_population_graph(self, metricname):
-        #TODO this should actually count positives in label matrix
-        populations = self.means('positives')
+        populations = [self.class_population(cn) for cn in self.d['Data']]
         metrics = self.means(metricname)
         plt.clf()
         plt.scatter(populations, metrics)
@@ -67,14 +77,15 @@ def roc_graph(fpr, tpr, auroc):
     plt.legend(loc="lower right")
     plt.savefig('roc.eps')
 
-def cfr_MR_graph(mrs, metric_name, ax):
-    vals = [statistics.mean(mr.means(metric_name)) for mr in mrs]
-    ax.bar(range(len(mrs)), vals)
-    #ax.xticks(range(len(mrs)), [mr.d['Classifier'] for mr in mrs], rotation=30, ha='right')
+def cmp_MR_graph(mrs, metric_name, ax):
+    vals_mean = [statistics.mean(mr.means(metric_name)) for mr in mrs]
+    vals_stdev = [statistics.stdev(mr.means(metric_name)) for mr in mrs]
+    ax.errorbar(x = range(len(mrs)), y = vals_mean, yerr = vals_stdev, fmt='o', capsize=10)
     ax.set_xticks(range(len(mrs)))
     ax.set_xticklabels([mr.d['Classifier'] for mr in mrs], rotation=30, ha='right')
     ax.set_ylabel(metric_name)
-    return ax
+    #ax.set_ylim([0.0, 1.05])
+    ax.grid(axis='y')
 
 if __name__ == '__main__':
     files = []
@@ -83,14 +94,12 @@ if __name__ == '__main__':
             files.append('Simulation/CC/' + entry.name)
     files = sorted(files)
     mrs = [MetricResult(fn) for fn in files]
-    #plt.xkcd()
     metrics = ['auroc', 'auprc', 'fscore1']
-    #plt.subplots(ncols=len(metrics), sharex=True)
-    plt.figure(figsize=(10,20))
+    fig, axs = plt.subplots(len(metrics), 1, sharex=True)
+    fig.set_size_inches(8,11)
     for i in range(len(metrics)):
-        #fig, ax = plt.subplots(len(metrics), 1, i+1)
-        ax = plt.subplot(len(metrics), 1, i+1)
-        ax = cfr_MR_graph(mrs, metrics[i], ax)
+        ax = axs[i]
+        cmp_MR_graph(mrs, metrics[i], ax)
     
     plt.savefig('confronto.eps')
     
