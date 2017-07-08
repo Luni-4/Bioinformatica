@@ -13,7 +13,7 @@ Bioinformatica
 4. [Output](#4-output)
 5. [Idee](#5-idee)
 6. [Dubbi](#6-dubbi)
-7. [Creazione Grafici](#6-creazione-grafici)
+7. [Creazione Grafici](#7-creazione-grafici)
 
 
 -----------------
@@ -204,7 +204,7 @@ classe (metodo degli istogrammi vicini, come ho inviato nella foto su whatsapp).
 Calcolare per queste classi anche la roc e la prc e valutarne la auroc e auprc. Auroc e Auprc valutate come istogrammi, mentre roc e prc con le loro curve, direi di metterle tutte in un unico grafico,
 come su scikit-learn
 
--  Livello 3 (Confornto classificatori ---> configuarazione migliore livello 1)
+-  Livello 3 (Confronto classificatori ---> configuarazione migliore livello 1)
     - Per ogni ontologia (CC, MF)
     - Per ogni famiglia (ada, svm) 
     
