@@ -24,7 +24,6 @@
 
 % Gestiscono la parte matematica del documento
 \usepackage{amssymb, amsmath, amsthm}
-\DeclareMathOperator{\sgn}{sgn}
 
 % Gestisce il codice del documento
 \usepackage{listings}
@@ -57,7 +56,10 @@
 \renewcommand{\baselinestretch}{1.5}
 
 % Dichiara la funzione argmin non presente di default
-\DeclareMathOperator*{\argmin}{argmin} 
+\DeclareMathOperator*{\argmin}{argmin}
+
+% Dichiara la funzione sgn non presente di default 
+\DeclareMathOperator{\sgn}{sgn}
 
 % Apertura del pdf con il 100% di zoom
 \hypersetup{pdfstartview={XYZ null null 1.00}}
@@ -67,6 +69,33 @@
 
 %Impostare font del documento (Latin Modern Roman)
 \renewcommand*\rmdefault{lmr}
+
+% Definizione dei colori per i commenti, le keyword e le stringhe dei codici
+\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{redstrings}{rgb}{0.9,0,0}
+
+% Opzioni grafiche delle liste contenenti il codice scritto in Python
+\lstdefinestyle{customp}{
+    language=Python, 
+    basicstyle=\ttfamily\footnotesize,   
+    backgroundcolor=\color{gray!10},
+    frame=single,
+    tabsize=2,
+    commentstyle=\color{greencomments},
+    keywordstyle=\color{bluekeywords},
+    stringstyle=\color{redstrings},
+    title=\lstname,    
+    escapeinside={\%*}{*)},
+    breaklines=true,
+    breakatwhitespace=true,
+    framextopmargin=2pt,
+    framexbottommargin=2pt,
+    inputencoding=utf8,
+    extendedchars=true,
+    showstringspaces=false,
+    literate={à}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {ù}{{\'u}}1,
+}
 
 % //////////////////// DOCUMENTO /////////////////
 
@@ -93,46 +122,81 @@
 \newpage
 
 \section*{Introduzione}
-L'obiettivo del progetto consiste nel predire la funzione delle proteine del \textit{Drosophila melanogaster}, un moscerino della frutta nonché organismo modello per gli insetti, usando dei classificatori prodotti da determinati algoritmi di apprendimento.
+L'obiettivo del progetto consiste nel predire la funzione delle proteine del \textit{Drosophila melanogaster}, un moscerino della frutta, nonché organismo modello per gli insetti, usando dei classificatori prodotti da determinati algoritmi di apprendimento. 
 
-Per affrontare il problema, si è puntato su modelli semplici, rapidi e che consentano di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento scelti, che soddisfano le caratteristiche sopradescritte, sono:
+Per affrontare il problema, si è puntato su modelli semplici, rapidi, che consentano di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento scelti sono: 
 
 \begin{itemize}
     \item Support Vector Machine (SVM)
     \item AdaBoost
 \end{itemize}
 
-Lo scopo principale dell'elaborato è quello di descrivere i passaggi e le problematiche affrontate durante lo svolgimento del lavoro. Per fare ciò, si è deciso di associare ad ogni singolo stadio lavorativo un capitolo. Il \autoref{chap:dati} analizza i dati di input, mostrandone la struttura e le diverse modalità di elaborazione.
-Nel \autoref{chap:metodi} vengono trattati i metodi di machine learning scelti e la loro relativa implementazione. Il \autoref{chap:risultati}, l'ultimo, presenta i risultati ottenuti dai clasificatori, per mezzo di grafici, e confronta tra loro i due algoritmi per decretare quale sia il migliore.
+Ognuno dei metodi sopra elencati verrà applicato alla predizione dei termini MF (Molecular Function) e CC (Cellular Component) della GO (Gene Ontology).
 
-\chapter{Analisi dei Dati} \label{chap:dati}
-Le feature di ingresso sono tratte dalla matrice di adiacenza delle proteine di \emph{Drosophila melanogaster}. La matrice esprime una metrica di similarità fra coppie di proteine.
-Gli algoritmi di apprendimento automatico utilizzano l'$ i $-esima riga (o $ i $-esima colonna) della matrice come vettore di feature per l'$ i $-esimo esempio.
-Si dispone di 3 distinte matrici di annotazioni, un per ogni ontologia della \emph{GO} (Gene Ontology):
-\begin{description}
-\item[CC]Cellular Component, 235 classi
-\item[BP]Biological Process, 1951 classi
-\item[MF]Molecular Function, 234 classi
-\end{description}
-Si tratta di ontologie multiclasse, per cui ogni proteina può appartenere a una o più classi nella stessa ontologia.
-Le matrici di annotazioni $ Y $ riportano le proteine sulle righe e le classi sulle colonne. 
+\paragraph*{}
+Il progetto è stato svolto utilizzando il linguaggio \textit{Python}, più precisamente la versione 3.5, e la versione 0.18.1 della libreria per l'apprendimento automatico \textit{scikit-learn}. Il caricamento e l'elaborazione delle strutture dati viene svolto usando la versione 0.19.1 della libreria \textit{SciPy}.
 
-\[ Y_{i,j} =
-  \begin{cases}
-    1       & \quad \text{se l'elemento } i \text{-esimo appartiene alla classe } j \text{-esima}\\
-    0  & \quad \text{altrimenti}\\
-  \end{cases}
-\]
+\paragraph*{}
+L'elaborato descrive i passaggi e le problematiche affrontate durante lo svolgimento del lavoro. Per fare ciò, si è deciso di associare ad ogni singolo stadio lavorativo un capitolo. 
 
+Il \autoref{chap:dati} analizza i dati di input, mostrandone la struttura e le possibili modalità di elaborazione.
 
+Il \autoref{chap:metodi} tratta i metodi di machine learning scelti e la loro implementazione. 
 
+Il \autoref{chap:risultati}, l'ultimo, presenta i risultati ottenuti dai clasificatori, per mezzo di grafici e tabelle, e confronta tra loro gli algoritmi per individuare quello che commette il più basso errore di classificiazione.
 
-\chapter{Metodi di Machine Learning} \label{chap:metodi}
+\chapter{Analisi dei Dati} 
+\label{chap:dati}
+Le feature degli esempi da fornire in input agli algoritmi di apprendimento sono contenute in una matrice bidimensionale chiamata \textit{Matrice di Adiacenza}, mentre le rispettive etichette si trovano nella \textit{Matrice delle Annotazioni}.
+
+Per ognuna delle ontologie considerate, il numero delle classi è variabile e quindi si hanno tante \textit{Matrici delle Annotazioni} quante sono le ontologie.
+
+\paragraph*{}
+La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica ed ha una dimensione di 3195 x 3195. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. La singola entry corrisponde ad una misura di similarità fra coppie di proteine. La matrice risulta molto sparsa, in quanto la maggior parte delle proteine non sono affatto simili tra loro.
+
+\paragraph*{}
+La \textit{Matrice delle Annotazioni} è una matrice rettangolare con un numero di righe pari al numero delle proteine e tante colonne quante sono le classi dell'ontologia considerata.
+
+Il numero delle classi per ciascuna ontologia è descritto di seguito:
+
+\begin{itemize}
+    \item Cellular Component (CC) si compone di 235 classi
+    \item Molecular Function (MF) si compone di 234 classi
+\end{itemize}
+  
+Per ridurre lo spazio in memoria centrale e garantire una rapida elaborazione dei dati, la Matrice delle Adiacenze e la Matrice delle Annotazioni vengono entrambe caricate e convertite in una matrice sparsa. Questa funzione è contenuta nella libreria SciPy e sotto ne viene mostrata la funzionalità.
+
+\newpage
+
+% Viene impostato lo stile del codice relativo a Python
+\lstset{style=customp}
+
+\begin{lstlisting} 
+# Creazione di una matrice sparsa partendo da una matrice densa di Python
+sparse.csr_matrix(matrix, dtype = np.float64))
+\end{lstlisting}
+
+Le singole colonne delle matrici delle Annotazioni verranno successivamente convertite in array densi nel momento in cui verranno forniti in input agli algoritmi di apprendimento. Per fare ciò, viene utilizzata la seguente funzione.
+
+% Viene impostato lo stile del codice relativo a Python
+\lstset{style=customp}
+
+\begin{lstlisting} 
+# Conversione di una colonna sparsa in un array denso
+matrix.getcol(index_column).toarray().reshape(-1)
+\end{lstlisting}
+
+\chapter{Metodi di Machine Learning} 
+\label{chap:metodi}
+
 Si è deciso di utilizzare tre diversi metodi di Machine Learning: per Support Vector Machine a AdaBoost si sono utilizzate le librerie scikit-learn per Python.
 
 \section{Support Vector Machine}
 Si sono provate le SVM della libreria scikit-learn, in particolare l'implementazione SVC\footnote{scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}.
 % Parlare delle impostazioni utilizzate, della funzione di decisione, del bilanciamento, del kernel, di C
+
+\subsection{Implementazione}
+Eventualmente parlare di dettagli su come è costruito il codice
 
 \section{AdaBoost}
 AdaBoost (adaptive boosting) è un algoritmo incrementale che costruisce una serie di classificatori $ h_{i}:\mathbb{R}^{d}\rightarrow \{-1,+1\} $ appartenenti ad una famiglia $ \mathcal{H} $. 
@@ -162,10 +226,11 @@ In caso di aderenza perfetta, la procedura di boosting è arrestata prima del ra
 Si è testato il training set con 5-fold utilizzando alberi di decisione come stimatore di base e fissando il limite di stimatori a 50.
 % Di default si usano stump o alberi più profondi?
 
-\section{Implementazione}
+\subsection{Implementazione}
 Eventualmente parlare di dettagli su come è costruito il codice
 
-\chapter{Analisi dei Risultati} \label{chap:risultati}
+\chapter{Analisi dei Risultati}
+\label{chap:risultati}
 
 \section{Metriche adottate}
 Si è deciso di non utilizzare l'accuratezza in quanto non produce buoni risultati se le classi sono sbilanciate.  

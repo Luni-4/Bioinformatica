@@ -13,6 +13,7 @@ Bioinformatica
 4. [Output](#4-output)
 5. [Idee](#5-idee)
 6. [Dubbi](#6-dubbi)
+7. [Creazione Grafici](#6-creazione-grafici)
 
 
 -----------------
@@ -178,3 +179,40 @@ un elevato tempo di computazione.
     - Degree: [3,5] 
     - Gamma medio (default) 
     - Valori di C bassi (limitare la scelta dei support vectors e trovare un predittore con meno memoria e più velocemente)
+    
+# 7. Creazione Grafici
+
+-  Livello 1 (Analisi delle configurazioni di classificatori)
+    - Per ogni ontologia (CC, MF)
+    - Per ogni famiglia (ada, svm) 
+    - Per ogni metrica (auroc, auprc, fscore1) --> precision, recall facoltativi 
+
+Ogni classificatore avrà 3 istogrammi (uno per ogni metrica) di 3 colonne l'uno. Le colonne rappresentano 3 configurazioni di parametri diversi e l'altezza delle colonne
+dipenderà dal valore della metrica considerata.
+
+Totale: 12 grafici 
+
+Non confrontare tra loro classificatori diversi! I grafici devono contenere colonne associate allo stesso classificatore!!!
+
+-  Livello 2 (Analisi dei classificatori sulle classi ---> scegliere la configurazione migliore risultante dal livello 1)
+    - Per ogni ontologia (CC, MF)
+    - Per ogni famiglia (ada, svm) 
+    - Per fscore1, precision1, recall1
+
+Scegliere tra le classi delle ontologie quelle con un buon numero di positivi e alcune molto sbilanciate. Confrontare tra loro la precision, recall, fscore della stessa
+classe (metodo degli istogrammi vicini, come ho inviato nella foto su whatsapp). Fare tanti grafici quante sono le classi per il quale si vuole fare il confronto.
+Calcolare per queste classi anche la roc e la prc e valutarne la auroc e auprc. Auroc e Auprc valutate come istogrammi, mentre roc e prc con le loro curve, direi di metterle tutte in un unico grafico,
+come su scikit-learn
+
+-  Livello 3 (Confornto classificatori ---> configuarazione migliore livello 1)
+    - Per ogni ontologia (CC, MF)
+    - Per ogni famiglia (ada, svm) 
+    
+In questo livello si usa il grafico di Pici, già creato. 
+Confrontare AdaBoost e Svm, con le configurazioni migliori, sulle migliori classi sbilanciate e le miglori classi ricce di positivi. Fare 2
+grafici. Uno per la classe positiva e una per la classe negativa
+
+
+
+
+
