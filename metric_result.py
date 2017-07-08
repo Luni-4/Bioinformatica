@@ -67,19 +67,32 @@ def roc_graph(fpr, tpr, auroc):
     plt.legend(loc="lower right")
     plt.savefig('roc.eps')
 
-def cfr_MR_graph(mrs, metric_name):
-    plt.clf()
+def cfr_MR_graph(mrs, metric_name, ax):
     vals = [statistics.mean(mr.means(metric_name)) for mr in mrs]
-    plt.bar(range(len(mrs)), vals)
-    plt.show()
+    ax.bar(range(len(mrs)), vals)
+    #ax.xticks(range(len(mrs)), [mr.d['Classifier'] for mr in mrs], rotation=30, ha='right')
+    ax.set_xticks(range(len(mrs)))
+    ax.set_xticklabels([mr.d['Classifier'] for mr in mrs], rotation=30, ha='right')
+    ax.set_ylabel(metric_name)
+    return ax
 
 if __name__ == '__main__':
     files = []
     for entry in os.scandir('./Simulation/CC'):
         if entry.name.endswith('.json') and entry.is_file():
             files.append('Simulation/CC/' + entry.name)
+    files = sorted(files)
     mrs = [MetricResult(fn) for fn in files]
-    cfr_MR_graph(mrs, 'auroc')
+    #plt.xkcd()
+    metrics = ['auroc', 'auprc', 'fscore1']
+    #plt.subplots(ncols=len(metrics), sharex=True)
+    plt.figure(figsize=(10,20))
+    for i in range(len(metrics)):
+        #fig, ax = plt.subplots(len(metrics), 1, i+1)
+        ax = plt.subplot(len(metrics), 1, i+1)
+        ax = cfr_MR_graph(mrs, metrics[i], ax)
+    
+    plt.savefig('confronto.eps')
     
     """Return a dictionary, with keys:
     'End_Time', 'Data', 'Classifier', 'Parameters', 'Start_Time', 'Ontology'
