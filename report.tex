@@ -152,7 +152,9 @@ Le feature degli esempi da fornire in input agli algoritmi di apprendimento sono
 Per ognuna delle ontologie considerate, il numero delle classi è variabile e quindi si hanno tante \textit{Matrici delle Annotazioni} quante sono le ontologie.
 
 \paragraph*{}
-La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica ed ha una dimensione di 3195 x 3195. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. La singola entry corrisponde ad una misura di similarità fra coppie di proteine. La matrice risulta molto sparsa, in quanto la maggior parte delle proteine non sono affatto simili tra loro.
+La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica ed ha una dimensione effettiva di 3195x3195. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. Le entry della matrice contengono una misura di similarità, ottenuta a partire da fattori biologici, fra coppie di proteine.
+Ciascuna entry può assumere valori compresi nell'intervallo $[0,1]$. Un valore vicino o uguale a 0 indica che le proteine non sono simili tra loro, mentre valori tendenti o uguali a 1 ne sanciscono la similarità. 
+La matrice risulta essere sparsa, a causa dell'elevato numero di entry pari a 0.
 
 \paragraph*{}
 La \textit{Matrice delle Annotazioni} è una matrice rettangolare con un numero di righe pari al numero delle proteine e tante colonne quante sono le classi dell'ontologia considerata.
@@ -164,9 +166,7 @@ Il numero delle classi per ciascuna ontologia è descritto di seguito:
     \item Molecular Function (MF) si compone di 234 classi
 \end{itemize}
   
-Per ridurre lo spazio in memoria centrale e garantire una rapida elaborazione dei dati, la Matrice delle Adiacenze e la Matrice delle Annotazioni vengono entrambe caricate e convertite in una matrice sparsa. Questa funzione è contenuta nella libreria SciPy e sotto ne viene mostrata la funzionalità.
-
-\newpage
+Per ridurre lo spazio in memoria centrale e garantire una rapida elaborazione dei dati, la Matrice delle Adiacenze e la Matrice delle Annotazioni vengono entrambe caricate e convertite in matrici sparse. La funzione utilizzata per effettuare la conversione è contenuta nella libreria SciPy e se ne mostra la funzionalità nell'esempio sottostante.
 
 % Viene impostato lo stile del codice relativo a Python
 \lstset{style=customp}
@@ -176,7 +176,7 @@ Per ridurre lo spazio in memoria centrale e garantire una rapida elaborazione de
 sparse.csr_matrix(matrix, dtype = np.float64))
 \end{lstlisting}
 
-Le singole colonne delle matrici delle Annotazioni verranno successivamente convertite in array densi nel momento in cui verranno forniti in input agli algoritmi di apprendimento. Per fare ciò, viene utilizzata la seguente funzione.
+Le singole colonne delle matrici delle Annotazioni verranno successivamente convertite in array densi quando dovranno essere forniti in input agli algoritmi di apprendimento. Per fare ciò, viene utilizzata la seguente funzione.
 
 % Viene impostato lo stile del codice relativo a Python
 \lstset{style=customp}
@@ -189,9 +189,27 @@ matrix.getcol(index_column).toarray().reshape(-1)
 \chapter{Metodi di Machine Learning} 
 \label{chap:metodi}
 
-Si è deciso di utilizzare tre diversi metodi di Machine Learning: per Support Vector Machine a AdaBoost si sono utilizzate le librerie scikit-learn per Python.
+I metodi di Machine Learning scelti si basano su modelli semplici, rapidi, che consentono di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento presi in considerazione sono le \textit{Support Vector Machine (SVM)} e \textit{AdaBoost}. La scelta dei metodi è stata effettuata con lo scopo di individuare le differenze tra i modelli e decretarne il migliore. Un'ulteriore motivazione è data dal voler confrontare algoritmi di apprendimento lineari, come SVM, con algoritmi basati sull'utilizzo di più classificatori, come AdaBoost.
 
 \section{Support Vector Machine}
+Una \textit{Support Vector Machine}, comunemente abbreviata in \textit{SVM}, costruisce un iperpiano o una serie di iperpiani in uno spazio iperdimensionale i quali possono essere utilizzati per risolvere problemi di classificazione e di regressione. Una buona separazione dei dati si verifica quando si ottiene un iperpiano che massimizza la distanza dal più vicino esempio di ogni classe, in altro modo, quando si individua l'iperpiano di margine massimo. In generale, più è ampio è il margine, più l'errore di classificazione sarà basso.
+
+SVM ricava l'iperpiano di margine massimo risolvendo il seguente problema di ottimizzazione
+
+\begin{equation}
+\min_{w, b, \zeta} \frac{1}{2} w^T w + C \sum_{i=1}^{n} \zeta_i
+\textrm {subject to } y_i (w^T \phi (x_i) + b) \geq 1 - \zeta_i, \\
+                      \zeta_i \geq 0, i=1, ..., n
+\end{equation}
+
+La sua funzione di decisione è definita come:
+
+\begin{equation}
+
+\sum_{i=1}^n (\alpha_i - \alpha_i^*) K(x_i, x) + \rho
+
+\end{equation}
+
 Si sono provate le SVM della libreria scikit-learn, in particolare l'implementazione SVC\footnote{scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}.
 % Parlare delle impostazioni utilizzate, della funzione di decisione, del bilanciamento, del kernel, di C
 

@@ -113,9 +113,19 @@ if __name__ == '__main__':
 
         # Write the header into the json file 
         write_json(f_temp, header)
+        
+        # Weight for positive examples
+        weight = 50
+        
+        # Set sample_weight as None
+        sample_weight = None
             
         for j in range(0, Y.shape[1], 5):
-            metrics(c, X, Y.getdensecol(j), j, f_temp)
+            
+            # Set sample_weight: False = 1 and True = weight
+            sample_weight = (Y.getdensecol(j) * (weight - 1)) + 1            
+    
+            metrics(c, X, Y.getdensecol(j), j, f_temp, sample_weight)
         
         # Save the footer as a dictionary
         footer = [("End_Time", time.strftime("%c"))]
