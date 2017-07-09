@@ -3,6 +3,9 @@ import statistics
 import matplotlib.pyplot as plt
 import os
 
+inputfolder = './Simulation/'
+outputfolder = 'img/'
+
 class MetricResult:
 
     def __init__(self, filename, remove_ills = False):
@@ -15,6 +18,7 @@ class MetricResult:
                     if not remove_ills or line['precision1'] != 0 or line['fscore1'] != 0:
                         if line['class'] not in self.d['Data']:
                             self.d['Data'][line['class']] = []
+                        line['is_ill'] = line['precision1'] == 0 and line['fscore1'] == 0
                         self.d['Data'][line['class']].append(line)
                 else:
                     # line contains header or footer
@@ -26,6 +30,9 @@ class MetricResult:
     def foldstdev(self, metric_name, classno):
         """calculate standard deviation across folds"""
         return statistics.stdev(fold[metric_name] for fold in self.d['Data'][classno])
+    def foldills(self, classno):
+        """calcolate how many folds are ill-defined for a given class"""
+        return len(list(filter(lambda fold: fold['is_ill'] == True, self.d['Data'][classno])))
 
     def means(self, metric_name):
         """Returns a list of means for every class"""
@@ -37,19 +44,19 @@ class MetricResult:
     def class_population(self, classno):
         return sum(fold['positives'] for fold in self.d['Data'][classno])
         
-    def illdefined(self):
-        for classno in self.d['Data']:
-            counter = 0
-            for fold in self.d['Data'][classno]:
-                if fold['precision1'] == 0 and fold['fscore1'] == 0:
-                    counter += 1
-            print('Class {} has {} ill-defined fold'.format(classno, counter))
+    def ills(self):
+        """Returns a list: for every class count how many folds are ill-defined"""
+        return [self.foldills(c) for c in sorted(self.d['Data'].keys())]
   
     def metric_on_population_graph(self, metricname):
-        populations = [self.class_population(cn) for cn in self.d['Data']]
-        metrics = self.means(metricname)
         plt.clf()
+        # This happens to be already ordered, but is it guaranteed?
+        # populations = [self.class_population(cn) for cn in self.d['Data']]
+        populations = [self.class_population(cn) for cn in sorted(self.d['Data'].keys())]
+        metrics = self.means(metricname)
         plt.scatter(populations, metrics)
+        ills = self.ills()
+        plt.scatter(populations, ills)
         plt.semilogx()
         plt.xlabel("Positives")
         plt.ylabel(metricname)
@@ -78,52 +85,55 @@ def roc_graph(fpr, tpr, auroc):
     plt.legend(loc="lower right")
     plt.savefig('roc.eps')
 
-def cmp_MR_graph(mrs, metric_name, ax, lbl):
+def cmp_ills(mrs, ax):
+    x = [mr.ills() for mr in mrs]
+    labels = [mr.d['Classifier'] for mr in mrs]
+    ax.boxplot(x, labels = labels)
+    ax.set_ylabel('#ills')
+    ax.grid(axis='y')
+
+def cmp_MR_graph(mrs, metric_name, ax, offset = 0):
+    x = [mr.means(metric_name) for mr in mrs]
+    labels = [mr.d['Classifier'] for mr in mrs]
+    positions = list(map(lambda x: x+offset, range(len(mrs))))
+    ax.boxplot(x, labels = labels, positions = positions, widths = 0.4, showfliers = False)
+    """
     vals_mean = [statistics.mean(mr.means(metric_name)) for mr in mrs]
     vals_stdev = [statistics.stdev(mr.means(metric_name)) for mr in mrs]
-    ax.errorbar(x = range(len(mrs)), y = vals_mean, yerr = vals_stdev, fmt='o', capsize=10, alpha=0.7, label = lbl)
+    ax.errorbar(x = range(len(mrs)), y = vals_mean, yerr = vals_stdev, fmt='o', capsize=5, alpha=0.7, label = lbl)
+    """
     ax.set_xticks(range(len(mrs)))
     ax.set_xticklabels([mr.d['Classifier'] for mr in mrs], rotation=30, ha='right')
     ax.set_ylabel(metric_name)
-    #ax.set_ylim([0.0, 1.05])
     ax.grid(axis='y')
 
-if __name__ == '__main__':
+def level1(ont, learner_fam):
+    metrics = ['auroc', 'auprc', 'fscore1']
     files = []
-    for entry in os.scandir('./Simulation/CC'):
+    for entry in os.scandir(inputfolder + ont):
         if entry.name.endswith('.json') and entry.is_file():
-            files.append('Simulation/CC/' + entry.name)
+            files.append(inputfolder + ont + '/' + entry.name)
     files = sorted(files)
-    files.pop(6)
+    files = list(filter(lambda x: learner_fam in x, files))
     mrs = [MetricResult(fn, remove_ills=True) for fn in files]
     mrs = list(filter(lambda x: len(x.d['Data']) > 0, mrs))
-    metrics = ['auroc', 'auprc', 'fscore1']
-    """
-    for mr in mrs:
-        for classno in mr.d['Data']:
-            print(classno, len(mr.d['Data'][classno]))
-            #print(statistics.mean(mr.means('auroc')))
-    """
-    fig, axs = plt.subplots(len(metrics), 1, sharex=True)
+    fig, axs = plt.subplots(len(metrics)+1, 1, sharex=True)
     fig.set_size_inches(8,11)
     for i in range(len(metrics)):
         ax = axs[i]
-        cmp_MR_graph(mrs, metrics[i], ax, "ills removed")
-    
-    mrs = [MetricResult(fn) for fn in files]
-    mrs = list(filter(lambda x: len(x.d['Data']) > 0, mrs))
-    for i in range(len(metrics)):
-        ax = axs[i]
-        cmp_MR_graph(mrs, metrics[i], ax, "ills included")
-    plt.legend()
-    
-    
-    
-    #plt.show()
-    plt.savefig('confronto.eps')
-    
-    #mrs[0].illdefined()
-    
+        cmp_MR_graph(mrs, metrics[i], ax)
+    ax = axs[-1]
+    cmp_ills(mrs, ax)
+    #fig.show()
+    fig.savefig(outputfolder + ont + '.' + learner_fam + '.level1.eps')
+
+if __name__ == '__main__':
+    for ont in ['CC', 'MF']:
+        for learner_fam in ['SVM', 'AdaBoost']:
+            level1(ont, learner_fam)
+    ax = plt.subplot()
+    cmp_ills(mrs, ax)
+    plt.show()
     """Return a dictionary, with keys:
     'End_Time', 'Data', 'Classifier', 'Parameters', 'Start_Time', 'Ontology'
 
