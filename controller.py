@@ -35,9 +35,11 @@ if __name__ == '__main__':
     # Different configurations of the classifiers
     cl = {
             # SVM Configurations
+            "SVM_Unbalanced":  SVC(decision_function_shape = "ovr"),
             "SVM_Balanced":    SVC(decision_function_shape = "ovr", class_weight = "balanced"),
             "SVM_Balanced_C2": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = 2),
-            "SVM_Unbalanced":  SVC(decision_function_shape = "ovr"),
+            "SVM_Balanced_C3": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = 3),
+            
             "SVM_Balanced_C0_G0": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = C_range[0], gamma = gamma_range[0]),
             "SVM_Balanced_C2_G2": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = C_range[2], gamma = gamma_range[2]),
             "SVM_Balanced_C7_G7": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = C_range[7], gamma = gamma_range[7]),
@@ -113,19 +115,10 @@ if __name__ == '__main__':
 
         # Write the header into the json file 
         write_json(f_temp, header)
-        
-        # Weight for positive examples
-        weight = 50
-        
-        # Set sample_weight as None
-        sample_weight = None
             
-        for j in range(0, Y.shape[1], 5):
-            
-            # Set sample_weight: False = 1 and True = weight
-            sample_weight = (Y.getdensecol(j) * (weight - 1)) + 1            
+        for j in range(0, Y.shape[1], 5):                    
     
-            metrics(c, X, Y.getdensecol(j), j, f_temp, sample_weight)
+            metrics(c, X, Y.getdensecol(j), j, f_temp)
         
         # Save the footer as a dictionary
         footer = [("End_Time", time.strftime("%c"))]

@@ -61,8 +61,8 @@ def my_custom_loss_func(ground_truth, p, n, json):
     
     return 0
 
-def metrics(c, X, Y, nc, f, sample_weight):
+def metrics(c, X, Y, nc, f):
     
     ftwo_scorer = make_scorer(my_custom_loss_func, n = nc, json = f)
         
-    cross_val_score(c, X, Y, cv = 5, fit_params = {"sample_weight": sample_weight}, scoring = ftwo_scorer, n_jobs = 5) 
+    cross_val_score(c, X, Y, cv = 5, scoring = ftwo_scorer, n_jobs = 5) 
