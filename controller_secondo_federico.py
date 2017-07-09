@@ -16,14 +16,14 @@ if __name__ == '__main__':
     classifiers = dict()
     # classifiers['SVM_Balanced'] = SVC(decision_function_shape = "ovr", class_weight = "balanced"),
     # classifiers['SVM_Balanced_C2'] = SVC(decision_function_shape = "ovr", class_weight = "balanced", C=2)
-    classifiers['SVM_BalaMan'] = SVC(decision_function_shape = "ovr", class_weight = {0:0.01, 1:0.99})
-    #classifiers['SVM_Balanced_C5'] = SVC(decision_function_shape = "ovr", class_weight = "balanced", C=5)
-    #classifiers['SVM_Balanced_C7'] = SVC(decision_function_shape = "ovr", class_weight = "balanced", C=7)
+    # classifiers['SVM_BalaMan'] = SVC(decision_function_shape = "ovr", class_weight = {0:0.01, 1:0.99})
+    classifiers['SVM_Balanced_C5'] = SVC(decision_function_shape = "ovr", class_weight = "balanced", C=5)
+    classifiers['SVM_Balanced_C7'] = SVC(decision_function_shape = "ovr", class_weight = "balanced", C=7)
     # classifiers['SVM_Unbalanced'] = SVC(decision_function_shape = "ovr"),
     # classifiers['AdaBoostDefault'] = AdaBoostClassifier()
     # classifiers['AdaBoost_n10'] = AdaBoostClassifier(n_estimators=10)
     # classifiers['AdaBoost_n10_Bal'] = AdaBoostClassifier(DecisionTreeClassifier(max_depth=1, class_weight = "balanced"), n_estimators=10)
-    #classifiers['AdaBoost_n100'] = AdaBoostClassifier(n_estimators=100)
+    classifiers['AdaBoost_n100'] = AdaBoostClassifier(n_estimators=100)
     # classifiers['Pegasos'] = Pegasos()
     
     for onto_name in ['CC', 'MF']:
