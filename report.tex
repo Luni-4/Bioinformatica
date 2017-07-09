@@ -50,6 +50,9 @@
 % Gestione delle tabelle su più pagine
 \usepackage{subcaption}
 
+% Consente di impostare le virgolette del discorso diretto
+\usepackage{dirtytalk}
+
 % //////////////////////////////////////////////////
 
 % Impostare interlinea a 1.5
@@ -59,7 +62,7 @@
 \DeclareMathOperator*{\argmin}{argmin}
 
 % Dichiara la funzione sgn non presente di default 
-\DeclareMathOperator{\sgn}{sgn}
+\DeclareMathOperator*{\sgn}{sgn}
 
 % Apertura del pdf con il 100% di zoom
 \hypersetup{pdfstartview={XYZ null null 1.00}}
@@ -186,35 +189,83 @@ Le singole colonne delle matrici delle Annotazioni verranno successivamente conv
 matrix.getcol(index_column).toarray().reshape(-1)
 \end{lstlisting}
 
+Le classi di una Matrice delle Annotazioni sono indipendenti tra loro, infatti non è prevista nessun tipo di gerarchia. I classificatori scelti verranno addestrati sulle singole classi e durante la fase di valutazione, si terrà conto di come le loro prestazioni cambiano al variare della classe considerata.
+
 \chapter{Metodi di Machine Learning} 
 \label{chap:metodi}
 
 I metodi di Machine Learning scelti si basano su modelli semplici, rapidi, che consentono di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento presi in considerazione sono le \textit{Support Vector Machine (SVM)} e \textit{AdaBoost}. La scelta dei metodi è stata effettuata con lo scopo di individuare le differenze tra i modelli e decretarne il migliore. Un'ulteriore motivazione è data dal voler confrontare algoritmi di apprendimento lineari, come SVM, con algoritmi basati sull'utilizzo di più classificatori, come AdaBoost.
 
+\paragraph*{}
+Per poter effettuare il tuning degli iperparametri, sono state create diverse configuarazioni di esecuzione.
+Le configurazioni sono inserite in un dizionario Python che ha come chiavi i nomi delle configurazioni stesse e come oggetti i classificatori della liberia scikit-learn impostati con i parametri che si vogliono testare.
+
+
 \section{Support Vector Machine}
 Una \textit{Support Vector Machine}, comunemente abbreviata in \textit{SVM}, costruisce un iperpiano o una serie di iperpiani in uno spazio iperdimensionale i quali possono essere utilizzati per risolvere problemi di classificazione e di regressione. Una buona separazione dei dati si verifica quando si ottiene un iperpiano che massimizza la distanza dal più vicino esempio di ogni classe, in altro modo, quando si individua l'iperpiano di margine massimo. In generale, più è ampio è il margine, più l'errore di classificazione sarà basso.
 
-SVM ricava l'iperpiano di margine massimo risolvendo il seguente problema di ottimizzazione
+SVM ricava l'iperpiano di margine massimo risolvendo il seguente problema di programmazione lineare
 
-\begin{equation}
-\min_{w, b, \zeta} \frac{1}{2} w^T w + C \sum_{i=1}^{n} \zeta_i
-\textrm {subject to } y_i (w^T \phi (x_i) + b) \geq 1 - \zeta_i, \\
-                      \zeta_i \geq 0, i=1, ..., n
+\begin{equation} \label{uno}
+\begin{split}
+\min_ {w, b, \zeta} \frac{1}{2} w^T w + C \sum_{i=1}^{n} \zeta_i \\
+\textrm {subject to } & y_i (w^T \phi (x_i) + b) \geq 1 - \zeta_i, \\
+& \zeta_i \geq 0, i=1, \dotsc ,n
+\end{split}
 \end{equation}
 
 La sua funzione di decisione è definita come:
 
-\begin{equation}
-
-\sum_{i=1}^n (\alpha_i - \alpha_i^*) K(x_i, x) + \rho
-
+\begin{equation} \label{due}
+\sgn(\sum_{i=1}^n y_i \alpha_i K(x_i, x) + \rho)
 \end{equation}
 
-Si sono provate le SVM della libreria scikit-learn, in particolare l'implementazione SVC\footnote{scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}.
-% Parlare delle impostazioni utilizzate, della funzione di decisione, del bilanciamento, del kernel, di C
+L'apprendimento del classificatore è stato effettuato usando la funzione \textit{SVC} \footnote{scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}, implementata nel modulo \textit{sklearn.svm}, contenente gli algoritmi SVM, della libreria scikit-learn. Sono stati considerati i seguenti parametri principali nella definizione del metodo:
+
+\paragraph*{}
+\textbf{\textit{C}}. Penalità sull'errore commesso. È un parametro di tradeoff, un valore elevato di C crea un modello complesso che mira a classificare nel miglior modo possibile gli esempi del training set, mentre un valore piccolo comporta un modello con una funzione di decisione più semplice. È un valore di tipo float. 
+
+\paragraph*{}
+\textbf{\textit{Kernel}}. Specifica il kernel che deve essere usato dall'algoritmo. I kernel scelti per lo svolgimento del progetto sono stati:
+
+\begin{itemize}
+    \item Radial Basis Function (rbf) 
+    \item Polinomiale
+\end{itemize}
+
+\paragraph*{}
+\textbf{\textit{degree}}. Grado del polinomio usato dal Kernel Polinomiale. È un valore intero.
+
+\paragraph*{}
+\textbf{\textit{gamma}}. Inverso del raggio di influenza. Questo parametro stabilisce quali esempi verrano inseriti nel support vector dal modello. SVM è molto sensibile a questo parametro. Se gamma è molto grande, il raggio di influenza risulterà piccolo ed il modello inserirà nel support vector gli elementi più vicini al margine e quelli che violano il vincolo, al contrario, un gamma piccolo comporta un raggio di influenza grande e il support vector conterrà tutti gli esempi del training set. È un valore di tipo float.
+
+Un valore grande di gamma può portare ad overfittare il modello, mentre uno troppo piccolo rischia di produrre un classificatore che non riesca a discriminare al meglio le classi.
+
+\paragraph*{}
+\textbf{\textit{class\_weight}}. Parametro utilizzato per il bilanciamento di classi sbilanciate. Se non viene fornito in input, tutte le classi hanno peso unitario. Il peso di ciascuna classe può essere tarato, a seconda del risultato che si vuole ottenere, privilegiando una classe rispetto ad un'altra, oppure calcolato in maniera autonoma per mezzo della modalità \say{balanced}. 
+Questa modalità sfrutta i valori delle etichette di una classe per aggiustare i pesi in maniera tale che risultino inversamente proporzionali alle frequenze delle classi di input. In pratica, una classe con una cardinalità molto bassa, avrà un peso alto, al contrario, una classe con cardinalità elevata avrà un peso più basso. La regola di assegnamento dei pesi è la seguente.
+
+\begin{center}
+numero\_campioni / (numero\_classi * array\_contenente\_cardinalità\_classi)
+\end{center}
 
 \subsection{Implementazione}
-Eventualmente parlare di dettagli su come è costruito il codice
+Per determinare con quali parametri, sul dataset considerato, la SVM produce dei buoni risultati, vengono eseguite le seguenti configurazioni:
+
+\paragraph*{}
+\textbf{\textit{Unbalanced}}. Il kernel di questa configurazione è rbf. La funzione SVC viene eseguita con i parametri di default, C unitario e gamma variabile, per verificare, dall'analisi dei risultati ottenuti, la necessità di modificare gli iperparametri.
+
+\paragraph*{}
+\textbf{\textit{C crescente}}. Il kernel usato dalla configurazione è rbf. Il valore di class\_weight è \say{balanced}. Mantenendo costanti tutti gli altri parametri, C viene fatto crescere nell'intervallo $[1,3]$ in maniera discreta. Si vuole verificare che aumentando C in maniera gradata, i risultati subiscano un miglioramento.
+
+\paragraph*{}
+\textbf{\textit{C e gamma crescenti}}. Questa configurazione è identica a quella precedente, con la sola differenza di far crescere anche il parametro gamma insieme a C. I valori di entrambi vengono estratti da un intervallo in scala logaritimica.
+
+\paragraph*{}
+\textbf{\textit{Poly}}. Viene usato un kernel polinomiale di grado 4. Il valore di class\_weight è \say{balanced}. Tutti i restanti parametri non hanno subito modifiche. La scelta del grado è stata effettuata tenendo conto della potenza computazionale delle macchine a disposizione.
+
+\paragraph*{}
+Il tempo di computazione di ciascuna configurazione è un $\mathcal{O}(N^2)$ rispetto al numero degli esempi. A seconda della grandezza dei valori dei parametri, il tempo richiesto per l'elaborazione aumenta considerevolmente. 
 
 \section{AdaBoost}
 AdaBoost (adaptive boosting) è un algoritmo incrementale che costruisce una serie di classificatori $ h_{i}:\mathbb{R}^{d}\rightarrow \{-1,+1\} $ appartenenti ad una famiglia $ \mathcal{H} $. 
