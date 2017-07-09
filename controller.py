@@ -37,9 +37,11 @@ if __name__ == '__main__':
             # SVM Configurations
             "SVM_Unbalanced":  SVC(decision_function_shape = "ovr"),
             "SVM_Balanced":    SVC(decision_function_shape = "ovr", class_weight = "balanced"),
+            "SVM_Balaman":     SVC(decision_function_shape = "ovr", class_weight = {0:0.01, 1:0.99}),
             "SVM_Balanced_C2": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = 2),
             "SVM_Balanced_C3": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = 3),
-            
+            "SVM_Balanced_C5": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = 5),
+            "SVM_Balanced_C7": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = 7),
             "SVM_Balanced_C0_G0": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = C_range[0], gamma = gamma_range[0]),
             "SVM_Balanced_C2_G2": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = C_range[2], gamma = gamma_range[2]),
             "SVM_Balanced_C7_G7": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = C_range[7], gamma = gamma_range[7]),
@@ -48,7 +50,9 @@ if __name__ == '__main__':
             
             # AdaBoost Configurations
             "AdaBoostDefault": AdaBoostClassifier(),
-            "AdaBoostVariant": AdaBoostClassifier("some parameters here"),
+            "AdaBoost_n10": AdaBoostClassifier(n_estimators=10),
+            "AdaBoost_n10_Bal": AdaBoostClassifier(DecisionTreeClassifier(max_depth=1, class_weight = "balanced"), n_estimators=10),
+            "AdaBoost_n100": AdaBoostClassifier(n_estimators=100),
             
             # Pegasos Configurations
             #"Pegasos": Pegasos()
