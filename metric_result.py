@@ -85,23 +85,31 @@ def roc_graph(fpr, tpr, auroc):
     plt.legend(loc="lower right")
     plt.savefig('roc.eps')
 
-def cmp_ills(mrs, ax):
+def cmp_ills(ont, learner_fam):
+    fig, ax = plt.subplots()
+    files = []
+    for entry in os.scandir(inputfolder + ont):
+        if entry.name.endswith('.json') and entry.is_file():
+            files.append(inputfolder + ont + '/' + entry.name)
+    files = sorted(files)
+    files = list(filter(lambda x: learner_fam in x, files))
+    mrs = [MetricResult(fn, remove_ills=False) for fn in files]
+    mrs = list(filter(lambda x: len(x.d['Data']) > 0, mrs))
     x = [mr.ills() for mr in mrs]
-    labels = [mr.d['Classifier'] for mr in mrs]
-    ax.boxplot(x, labels = labels)
+    positions = range(len(mrs))
+    ax.boxplot(x, positions = positions, showfliers = False)
+    ax.set_xticks(range(len(mrs)))
+    ax.set_xticklabels([mr.d['Classifier'] for mr in mrs], rotation=30, ha='right')
     ax.set_ylabel('#ills')
     ax.grid(axis='y')
+    
+    fig.savefig(outputfolder + ont + '.' + learner_fam + '.ills.eps')
 
 def cmp_MR_graph(mrs, metric_name, ax, offset = 0):
     x = [mr.means(metric_name) for mr in mrs]
     labels = [mr.d['Classifier'] for mr in mrs]
     positions = list(map(lambda x: x+offset, range(len(mrs))))
-    ax.boxplot(x, labels = labels, positions = positions, widths = 0.4, showfliers = False)
-    """
-    vals_mean = [statistics.mean(mr.means(metric_name)) for mr in mrs]
-    vals_stdev = [statistics.stdev(mr.means(metric_name)) for mr in mrs]
-    ax.errorbar(x = range(len(mrs)), y = vals_mean, yerr = vals_stdev, fmt='o', capsize=5, alpha=0.7, label = lbl)
-    """
+    ax.boxplot(x, positions = positions, showfliers = False)
     ax.set_xticks(range(len(mrs)))
     ax.set_xticklabels([mr.d['Classifier'] for mr in mrs], rotation=30, ha='right')
     ax.set_ylabel(metric_name)
@@ -117,13 +125,11 @@ def level1(ont, learner_fam):
     files = list(filter(lambda x: learner_fam in x, files))
     mrs = [MetricResult(fn, remove_ills=True) for fn in files]
     mrs = list(filter(lambda x: len(x.d['Data']) > 0, mrs))
-    fig, axs = plt.subplots(len(metrics)+1, 1, sharex=True)
+    fig, axs = plt.subplots(len(metrics), 1, sharex=True)
     fig.set_size_inches(8,11)
     for i in range(len(metrics)):
         ax = axs[i]
         cmp_MR_graph(mrs, metrics[i], ax)
-    ax = axs[-1]
-    cmp_ills(mrs, ax)
     #fig.show()
     fig.savefig(outputfolder + ont + '.' + learner_fam + '.level1.eps')
 
@@ -131,9 +137,8 @@ if __name__ == '__main__':
     for ont in ['CC', 'MF']:
         for learner_fam in ['SVM', 'AdaBoost']:
             level1(ont, learner_fam)
-    ax = plt.subplot()
-    cmp_ills(mrs, ax)
-    plt.show()
+            cmp_ills(ont, learner_fam)
+
     """Return a dictionary, with keys:
     'End_Time', 'Data', 'Classifier', 'Parameters', 'Start_Time', 'Ontology'
 
