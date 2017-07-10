@@ -128,7 +128,7 @@ Le feature degli esempi da fornire in input agli algoritmi di apprendimento sono
 Per ognuna delle ontologie considerate, il numero delle classi è variabile e quindi si hanno tante \textit{Matrici delle Annotazioni} quante sono le ontologie.
 
 \paragraph*{}
-La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica ed ha una dimensione effettiva di 3195x3195. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. Le entry della matrice contengono una misura di similarità, ottenuta a partire da fattori biologici, fra coppie di proteine.
+La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica ed ha una dimensione effettiva di $3195x3195$. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. Le entry della matrice contengono una misura di similarità, ottenuta a partire da fattori biologici, fra coppie di proteine.
 Ciascuna entry può assumere valori compresi nell'intervallo $[0,1]$. Un valore vicino o uguale a 0 indica che le proteine non sono simili tra loro, mentre valori tendenti o uguali a 1 ne sanciscono la similarità. 
 La matrice risulta essere sparsa, a causa dell'elevato numero di entry pari a 0.
 
@@ -144,9 +144,9 @@ Il numero delle classi per ciascuna ontologia è descritto di seguito:
   
 Per ridurre lo spazio in memoria centrale e garantire una rapida elaborazione dei dati, la Matrice delle Adiacenze e la Matrice delle Annotazioni vengono entrambe caricate e convertite in matrici sparse. La funzione utilizzata per la conversione è contenuta nella libreria SciPy.
 
-Le singole colonne delle matrici delle Annotazioni verranno successivamente convertite in array densi quando dovranno essere forniti in input agli algoritmi di apprendimento. Per fare ciò, viene utilizzata la seguente funzione.
+Le singole colonne delle matrici delle Annotazioni verranno successivamente convertite in array densi, in modo da poterle passare in input ai diversi algoritmi di apprendimento. 
 
-Le classi delle Matrici delle Annotazioni vengono trattate come se fossero indipendenti tra loro, non tenendo conto della gerarchia presente. I classificatori scelti verranno addestrati sulle singole classi e durante la fase di valutazione, si terrà conto di come le loro prestazioni cambiano al variare della classe considerata.
+Le classi delle Matrici delle Annotazioni vengono trattate come se fossero indipendenti tra loro, non tenendo conto della gerarchia presente. I classificatori scelti verranno addestrati sulle singole classi e durante la fase di valutazione, si terrà conto di come le loro prestazioni cambiano al variare della classe considerata. 
 
 \chapter{Metodi di Machine Learning} 
 \label{chap:metodi}
@@ -156,6 +156,8 @@ I metodi di Machine Learning scelti si basano su modelli semplici, rapidi, che c
 \paragraph*{}
 Per poter effettuare il tuning degli iperparametri, sono state create diverse configuarazioni di esecuzione.
 Le configurazioni sono inserite in un dizionario Python che ha come chiavi i nomi delle configurazioni stesse e come oggetti i classificatori della liberia scikit-learn impostati con i parametri che si vogliono testare.
+Utilizzando tutte le classi di un ontologia si ottiene un elevato tempo computazionale per ciascuna configurazione. Per evitare ciò, si è deciso di campionare le classi, prendendone una ogni cinque.
+ 
 
 \section{Support Vector Machine}
 Una \textit{Support Vector Machine}, comunemente abbreviata in \textit{SVM}, costruisce un iperpiano o una serie di iperpiani in uno spazio iperdimensionale i quali possono essere utilizzati per risolvere problemi di classificazione e di regressione. Una buona separazione dei dati si verifica quando si ottiene un iperpiano che massimizza la distanza dal più vicino esempio di ogni classe, in altro modo, quando si individua l'iperpiano di margine massimo. In generale, più è ampio è il margine, più l'errore di classificazione sarà basso.
@@ -260,7 +262,11 @@ Si è variato \texttt{n\_estimators} ponendolo a 10, 50 e 100 stimatori di base.
 Si è poi andato a modificare alcune proprietà dello stimatore ad albero di base, impostando un bilanciamento del peso delle classi inversamente proporzionale alla loro frequenza.
 È stato fatto un tentativo utilizzando alberi leggermente più complessi, impostandone la \texttt{max\_depth} a 3.
 
-\begin{tabular}{c|c|c|c|}
+\begin{table}[ht]%	
+\centering
+\caption{Cosa fa la tabella?}\label{tab:b1}
+\begin{tabular}{|c|c|c|c|}
+\hline
 nome & \texttt{n\_estimators} & bilanciamento & \texttt{max\_depth} \\ 
 \hline 
 AdaBoost\_n10 & 10 & No & 1 \\ 
@@ -278,14 +284,82 @@ AdaBoost\_n50\_Bal & 50 & Auto & 1 \\
 AdaBoost\_n50\_Bal\_Dep3 & 5 & Auto &  3\\ 
 \hline 
 \end{tabular} 
+\end{table}
 
 \subsection{Implementazione}
 Eventualmente parlare di dettagli su come è costruito il codice
 
+\section{Costruzione del software}
+Il programma Python è costruito in modo tale da calcolare le funzioni di predizione per un'unica ontologia. Questa scelta è stata effettuta per facilitare la gestione del codice e dei risultati prodotti. Se si vogliono eseguire diverse ontologie bisogna mandare nuovamente in esecuzione il processo specificando l'ontologia che si vuole computare.
+Tuttavia, per una singola istanza del programma, possono essere inserite più configurazioni contemporaneamente.
+
+Gli step seguiti dall'algoritmo sono i seguenti:
+
+\begin{itemize}
+    \item Verificare che l'ontologia e le configurazioni inserite siano corrette
+    \item Se ritenute valide, le configurazioni vengono eseguite una alla volta sulle \\     
+    classi dell'ontologia
+    \item Calcolo delle metriche e salvataggio dei risultati ottenuti
+\end{itemize}
+
+\paragraph*{}
+Le performance di un metodo vengono valutate con la tecnica sperimentale della 5-fold cross-validation. Questa tecnica suddivide il dataset in 5 fold, quattro dei quali vengono usati per addestrare il classificatore e il fold restante per ottenere le metriche richieste. Ogni fold deve essere utilizzato almeno una volta come test set, questo implica che per ogni classe vengono prodotti cinque classificatori, ciascuno con le proprie metriche.
+
+I risultati ottenuti dall'esecuzione di una configurazione sono salvati in un file \textit{json} che presenta la seguente struttura:
+
+\begin{itemize}
+    \item Header
+    \item Metriche dei fold di una classe
+    \item Footer
+\end{itemize}
+L'\textit{Header} è un dizionario contenente le seguenti informazioni:
+\begin{itemize}
+    \item L'ontologia in uso
+    \item L'algoritmo di apprendimento eseguito
+    \item I parametri del metodo
+    \item Il tempo di inizio, in formato data e ora, della configurazione
+\end{itemize}
+Le \textit{Metriche} ricavate da ciascun fold di una classe sono le seguenti:
+\begin{itemize}
+\item Identificativo della classe (indice colonna della Matrice delle Annotazioni)
+\item Numero di esempi positivi nel fold
+\item Precision
+\item Recall
+\item F-score
+\item False Positive rate
+\item True Positive rate
+\item Auroc
+\item Auprc
+\end{itemize}
+Anche la struttura sopra descritta è contenuta all'interno di un dizionario. Ad ogni classe vengono associati tanti dizionari quanti sono i fold.
+
+Il \textit{Footer} è costituito da un dizionario di un solo elemento: il tempo di fine, in formato data e ora, della configurazione.
+
+Dai file json verranno estratte le informazioni necessarie per la valutazione dei classificatori.
+
+\paragraph*{}
+Per poter eseguire la cross-validation e calcolare le misure richieste, vengono utilizzate delle funzioni messe a disposizione dalla libreria scikit-learn.
+La funzione \textit{cross\_val} è stata scelta perché riduce il tempo di computazione, in quanto assegna l'esecuzione dei differenti fold di una classe alle diverse unità di elaborazione presenti su una determinata macchina.
+
+Le metriche dei fold vengono calcolate a partire dalle etichette degli esempi contenuti nel test set e dalle predizioni del classificatore del fold. Di seguito una breve lista delle funzioni utilizzate:
+
+\begin{itemize}
+\item \textit{precision\_recall\_fscore\_support} calcola la precision, la recall e la f-score di un classificatore
+
+\item \textit{precision\_recall\_curve} computa la precision-recall-curve
+
+\item \textit{average\_precision\_score} restituisce l'AUPRC del classificatore 
+
+\item \textit{roc\_curve} determina la ROC
+
+\item \textit{auc} restituisce l'AUROC del classificatore
+\end{itemize}
+
+
 \chapter{Analisi dei Risultati}
 \label{chap:risultati}
 
-\section{Metriche adottate}
+\section{Scelta delle metriche}
 Si è deciso di non utilizzare l'accuratezza in quanto non produce buoni risultati se le classi sono sbilanciate.  
 Si è adottata la tecnica di cross-validazione 5-fold. Per ogni classe vengono costruiti 5 classificatori simili e addestrati su 4/5 dei dati. Ogni classificatore viene poi testato sul restante 1/5 dei dati.
 L'operazione viene eseguita all'interno del modulo \texttt{metrics.py}, 
