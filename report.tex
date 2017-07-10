@@ -73,33 +73,6 @@
 %Impostare font del documento (Latin Modern Roman)
 \renewcommand*\rmdefault{lmr}
 
-% Definizione dei colori per i commenti, le keyword e le stringhe dei codici
-\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
-\definecolor{greencomments}{rgb}{0,0.5,0}
-\definecolor{redstrings}{rgb}{0.9,0,0}
-
-% Opzioni grafiche delle liste contenenti il codice scritto in Python
-\lstdefinestyle{customp}{
-    language=Python, 
-    basicstyle=\ttfamily\footnotesize,   
-    backgroundcolor=\color{gray!10},
-    frame=single,
-    tabsize=2,
-    commentstyle=\color{greencomments},
-    keywordstyle=\color{bluekeywords},
-    stringstyle=\color{redstrings},
-    title=\lstname,    
-    escapeinside={\%*}{*)},
-    breaklines=true,
-    breakatwhitespace=true,
-    framextopmargin=2pt,
-    framexbottommargin=2pt,
-    inputencoding=utf8,
-    extendedchars=true,
-    showstringspaces=false,
-    literate={à}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {ù}{{\'u}}1,
-}
-
 % //////////////////// DOCUMENTO /////////////////
 
 \begin{document}
@@ -169,27 +142,11 @@ Il numero delle classi per ciascuna ontologia è descritto di seguito:
     \item Molecular Function (MF) si compone di 234 classi
 \end{itemize}
   
-Per ridurre lo spazio in memoria centrale e garantire una rapida elaborazione dei dati, la Matrice delle Adiacenze e la Matrice delle Annotazioni vengono entrambe caricate e convertite in matrici sparse. La funzione utilizzata per effettuare la conversione è contenuta nella libreria SciPy e se ne mostra la funzionalità nell'esempio sottostante.
-
-% Viene impostato lo stile del codice relativo a Python
-\lstset{style=customp}
-
-\begin{lstlisting} 
-# Creazione di una matrice sparsa partendo da una matrice densa di Python
-sparse.csr_matrix(matrix, dtype = np.float64))
-\end{lstlisting}
+Per ridurre lo spazio in memoria centrale e garantire una rapida elaborazione dei dati, la Matrice delle Adiacenze e la Matrice delle Annotazioni vengono entrambe caricate e convertite in matrici sparse. La funzione utilizzata per la conversione è contenuta nella libreria SciPy.
 
 Le singole colonne delle matrici delle Annotazioni verranno successivamente convertite in array densi quando dovranno essere forniti in input agli algoritmi di apprendimento. Per fare ciò, viene utilizzata la seguente funzione.
 
-% Viene impostato lo stile del codice relativo a Python
-\lstset{style=customp}
-
-\begin{lstlisting} 
-# Conversione di una colonna sparsa in un array denso
-matrix.getcol(index_column).toarray().reshape(-1)
-\end{lstlisting}
-
-Le classi di una Matrice delle Annotazioni sono indipendenti tra loro, infatti non è prevista nessun tipo di gerarchia. I classificatori scelti verranno addestrati sulle singole classi e durante la fase di valutazione, si terrà conto di come le loro prestazioni cambiano al variare della classe considerata.
+Le classi delle Matrici delle Annotazioni vengono trattate come se fossero indipendenti tra loro, non tenendo conto della gerarchia presente. I classificatori scelti verranno addestrati sulle singole classi e durante la fase di valutazione, si terrà conto di come le loro prestazioni cambiano al variare della classe considerata.
 
 \chapter{Metodi di Machine Learning} 
 \label{chap:metodi}
@@ -200,11 +157,10 @@ I metodi di Machine Learning scelti si basano su modelli semplici, rapidi, che c
 Per poter effettuare il tuning degli iperparametri, sono state create diverse configuarazioni di esecuzione.
 Le configurazioni sono inserite in un dizionario Python che ha come chiavi i nomi delle configurazioni stesse e come oggetti i classificatori della liberia scikit-learn impostati con i parametri che si vogliono testare.
 
-
 \section{Support Vector Machine}
 Una \textit{Support Vector Machine}, comunemente abbreviata in \textit{SVM}, costruisce un iperpiano o una serie di iperpiani in uno spazio iperdimensionale i quali possono essere utilizzati per risolvere problemi di classificazione e di regressione. Una buona separazione dei dati si verifica quando si ottiene un iperpiano che massimizza la distanza dal più vicino esempio di ogni classe, in altro modo, quando si individua l'iperpiano di margine massimo. In generale, più è ampio è il margine, più l'errore di classificazione sarà basso.
 
-SVM ricava l'iperpiano di margine massimo risolvendo il seguente problema di programmazione lineare
+SVM ricava l'iperpiano di margine massimo risolvendo il seguente problema di ottimizzazione lineare convessa
 
 \begin{equation} \label{uno}
 \begin{split}
@@ -220,6 +176,9 @@ La sua funzione di decisione è definita come:
 \sgn(\sum_{i=1}^n y_i \alpha_i K(x_i, x) + \rho)
 \end{equation}
 
+I support vectors sono gli esempi del training set che, a seconda dell'iperpiano ottenuto, hanno un margine inferiore o pari a 1. La soluzione di SVM dipende solo da questi esempi.
+
+\paragraph*{}
 L'apprendimento del classificatore è stato effettuato usando la funzione \textit{SVC} \footnote{scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}, implementata nel modulo \textit{sklearn.svm}, contenente gli algoritmi SVM, della libreria scikit-learn. Sono stati considerati i seguenti parametri principali nella definizione del metodo:
 
 \paragraph*{}
@@ -237,9 +196,9 @@ L'apprendimento del classificatore è stato effettuato usando la funzione \texti
 \textbf{\textit{degree}}. Grado del polinomio usato dal Kernel Polinomiale. È un valore intero.
 
 \paragraph*{}
-\textbf{\textit{gamma}}. Inverso del raggio di influenza. Questo parametro stabilisce quali esempi verrano inseriti nel support vector dal modello. SVM è molto sensibile a questo parametro. Se gamma è molto grande, il raggio di influenza risulterà piccolo ed il modello inserirà nel support vector gli elementi più vicini al margine e quelli che violano il vincolo, al contrario, un gamma piccolo comporta un raggio di influenza grande e il support vector conterrà tutti gli esempi del training set. È un valore di tipo float.
+\textbf{\textit{gamma}}. Inverso del raggio di influenza. Questo parametro stabilisce quali sono gli esempi scelti dal modello come support vectors. SVM è molto sensibile a questo parametro. Con un gamma molto grande, il raggio di influenza risulterà piccolo ed il modello sceglierà come support vectors gli elementi più vicini al margine e quelli che violano il vincolo, al contrario, un gamma piccolo comporta un raggio di influenza grande ed ogni esempio del training set sarà un support vector. È un valore di tipo float.
 
-Un valore grande di gamma può portare ad overfittare il modello, mentre uno troppo piccolo rischia di produrre un classificatore che non riesca a discriminare al meglio le classi.
+Un valore grande di gamma può portare a overfitting, mentre uno troppo piccolo rischia di produrre un classificatore che non riesce a discriminare al meglio le classi.
 
 \paragraph*{}
 \textbf{\textit{class\_weight}}. Parametro utilizzato per il bilanciamento di classi sbilanciate. Se non viene fornito in input, tutte le classi hanno peso unitario. Il peso di ciascuna classe può essere tarato, a seconda del risultato che si vuole ottenere, privilegiando una classe rispetto ad un'altra, oppure calcolato in maniera autonoma per mezzo della modalità \say{balanced}. 
@@ -259,13 +218,13 @@ Per determinare con quali parametri, sul dataset considerato, la SVM produce dei
 \textbf{\textit{C crescente}}. Il kernel usato dalla configurazione è rbf. Il valore di class\_weight è \say{balanced}. Mantenendo costanti tutti gli altri parametri, C viene fatto crescere nell'intervallo $[1,3]$ in maniera discreta. Si vuole verificare che aumentando C in maniera gradata, i risultati subiscano un miglioramento.
 
 \paragraph*{}
-\textbf{\textit{C e gamma crescenti}}. Questa configurazione è identica a quella precedente, con la sola differenza di far crescere anche il parametro gamma insieme a C. I valori di entrambi vengono estratti da un intervallo in scala logaritimica.
+\textbf{\textit{C e gamma crescenti}}. Questa configurazione è identica a quella precedente, con la sola differenza di far crescere anche il parametro gamma insieme a C. I valori di entrambi vengono estratti dall'intervallo $[10^(-3), 10^3]$ in scala logaritmica.
 
 \paragraph*{}
-\textbf{\textit{Poly}}. Viene usato un kernel polinomiale di grado 4. Il valore di class\_weight è \say{balanced}. Tutti i restanti parametri non hanno subito modifiche. La scelta del grado è stata effettuata tenendo conto della potenza computazionale delle macchine a disposizione.
+\textbf{\textit{Poly}}. Viene usato un kernel polinomiale di grado 4. Il valore di class\_weight è \say{balanced}. Tutti i restanti parametri non hanno subito modifiche. La scelta del grado del polinomio è stata effettuata tenendo in considerazione la potenza computazionale delle macchine a disposizione.
 
 \paragraph*{}
-Il tempo di computazione di ciascuna configurazione è un $\mathcal{O}(N^2)$ rispetto al numero degli esempi. A seconda della grandezza dei valori dei parametri, il tempo richiesto per l'elaborazione aumenta considerevolmente. 
+La complessità in tempo di ciascuna configurazione è un $\mathcal{O}(N^2)$ rispetto al numero degli esempi del training set. La velocità di computazione diminuisce considerevolmente all'aumentare della grandezza dei parametri usati.
 
 \section{AdaBoost}
 AdaBoost (adaptive boosting) è un algoritmo incrementale che costruisce una serie di classificatori $ h_{i}:\mathbb{R}^{d}\rightarrow \{-1,+1\} $ appartenenti ad una famiglia $ \mathcal{H} $. 
@@ -310,6 +269,9 @@ che a sua volta utilizza la funzione \texttt{cross\_val\_score} contenuta in
 \footnote{scikit-learn.org/stable/modules/generated/sklearn.model\_selection.cross\_val\_score.html}. 
 
 \section{Risultati}
+Scrivi qui Pici come devono essere interpretati i risultati, la spiegazione dei grafici, quello che volevamo confrontare e il significato del risultato ottenuto.
+
+Da qui in poi crei le pagine per i grafici 
 
 \chapter{Conclusioni}
 
