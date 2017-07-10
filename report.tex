@@ -220,7 +220,7 @@ Per determinare con quali parametri, sul dataset considerato, la SVM produce dei
 \textbf{\textit{C crescente}}. Il kernel usato dalla configurazione è rbf. Il valore di class\_weight è \say{balanced}. Mantenendo costanti tutti gli altri parametri, C viene fatto crescere nell'intervallo $[1,3]$ in maniera discreta. Si vuole verificare che aumentando C in maniera gradata, i risultati subiscano un miglioramento.
 
 \paragraph*{}
-\textbf{\textit{C e gamma crescenti}}. Questa configurazione è identica a quella precedente, con la sola differenza di far crescere anche il parametro gamma insieme a C. I valori di entrambi vengono estratti dall'intervallo $[10^(-3), 10^3]$ in scala logaritmica.
+\textbf{\textit{C e gamma crescenti}}. Questa configurazione è identica a quella precedente, con la sola differenza di far crescere anche il parametro gamma insieme a C. I valori di entrambi vengono estratti dall'intervallo $[10^{-3}, 10^3]$ in scala logaritmica.
 
 \paragraph*{}
 \textbf{\textit{Poly}}. Viene usato un kernel polinomiale di grado 4. Il valore di class\_weight è \say{balanced}. Tutti i restanti parametri non hanno subito modifiche. La scelta del grado del polinomio è stata effettuata tenendo in considerazione la potenza computazionale delle macchine a disposizione.
@@ -339,7 +339,7 @@ Dai file json verranno estratte le informazioni necessarie per la valutazione de
 
 \paragraph*{}
 Per poter eseguire la cross-validation e calcolare le misure richieste, vengono utilizzate delle funzioni messe a disposizione dalla libreria scikit-learn.
-La funzione \textit{cross\_val} è stata scelta perché riduce il tempo di computazione, in quanto assegna l'esecuzione dei differenti fold di una classe alle diverse unità di elaborazione presenti su una determinata macchina.
+La funzione \textit{cross\_val\_score} è stata scelta perché riduce il tempo di computazione, in quanto assegna l'esecuzione dei differenti fold di una classe alle diverse unità di elaborazione presenti su una determinata macchina.
 
 Le metriche dei fold vengono calcolate a partire dalle etichette degli esempi contenuti nel test set e dalle predizioni del classificatore del fold. Di seguito una breve lista delle funzioni utilizzate:
 
@@ -360,12 +360,49 @@ Le metriche dei fold vengono calcolate a partire dalle etichette degli esempi co
 \label{chap:risultati}
 
 \section{Scelta delle metriche}
-Si è deciso di non utilizzare l'accuratezza in quanto non produce buoni risultati se le classi sono sbilanciate.  
-Si è adottata la tecnica di cross-validazione 5-fold. Per ogni classe vengono costruiti 5 classificatori simili e addestrati su 4/5 dei dati. Ogni classificatore viene poi testato sul restante 1/5 dei dati.
-L'operazione viene eseguita all'interno del modulo \texttt{metrics.py}, 
-che a sua volta utilizza la funzione \texttt{cross\_val\_score} contenuta in 
-\texttt{sklearn.model\_selection} 
-\footnote{scikit-learn.org/stable/modules/generated/sklearn.model\_selection.cross\_val\_score.html}. 
+Le metriche sono state scelte tenendo in considerazione diversi aspetti del dataset.
+A causa della presenza di classi sbilanciate, con un numero elevato di esempi negativi rispetto ai positivi, l'accuratezza risulta una metrica non significativa per il modello che si sta valutando.
+
+\paragraph*{}
+L'accuratezza rappresenta la frazione delle predizioni corrette ed è definita come:
+
+\begin{equation}
+\texttt{accuracy}(y, \hat{y}) = \frac{1}{n_\text{samples}} \sum_{i=0}^{n_\text{samples}-1} 1(\hat{y}_i = y_i)
+\end{equation}
+
+Nella formula soprastante $1(x)$ è la funzione indicatrice. Come si può notare, l'accuratezza fornisce un buon valore nel caso di sbilanciamento, in quanto non discrimina tra valori positivi e negativi nell'effettuare la misurazione.
+
+\paragraph*{}
+Le metriche considerate nel progetto sono la precision, la recall, la f-score, l'AUPRC e l'AUROC.
+
+La \textit{precision} corrisponde all'abilità del classificatore di non etichettare un esempio negativo come positivo. È definita nell'intervallo $[0,1]$. Più la precision è alta, più un classificatore non scambierà gli esempi negativi per positivi.
+
+\begin{equation}
+\text{precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}
+\end{equation}
+
+\paragraph*{}
+La \textit{recall} rappresenta l'abilità di un classificatore di individuare gli esempi postivi. È definita nell'intervallo $[0,1]$. Più la recall è alta, più un classificatore individuerà meglio gli esempi positivi.
+
+\begin{equation}
+\text{recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}
+\end{equation}
+
+\paragraph*{}
+La \textit{F-score} è data dalla media armonica della precision e della recall. È definita nell'intervallo $[0,1]$. Più la f-score è alta, più un classificatore produrrà risultati migliori.
+
+\begin{equation}
+\text{F-score} = \frac{2 \times \text{precision} \times \text{recall}}{\text{precision} + \text{recall}}
+\end{equation}
+
+\paragraph*{}
+L'\textit{Area Under the Precision-Recall Curve (AUPRC)} rappresenta l'area sotto la curva del grafico precision-recall. Assume valori definiti nell'intervallo $[0,1]$. Più il valore è alto, più il classificatore produrrà buoni risultati.
+
+\paragraph*{}
+L'\textit{Area Under the Receiver Operating Characteristic (AUROC)} rappresenta la probabilità che un classificatore associ un valore più alto ad un esempio positivo scelto casualmente rispetto ad uno negativo, sempre scelto in maniera casuale. Assume valori definiti nell'intervallo $[0,1]$. Più il valore è alto, più il classificatore produrrà buoni risultati.
+
+\paragraph*{}
+Come spiegato precedentemente, ciascuna metrica viene calcolata per ogni fold di una classe e i valori ottenuti vengono salvati in un file json. I risultati prodotti sono letti in maniera sequenziale e, per ogni classe, viene calcolata la media tra le metriche dei fold. Ai valori ottenuti sarà nuovamente applicato l'operatore di media per individuare il valor medio che descrive il classificatore su tutte le classi.
 
 \section{Risultati}
 Scrivi qui Pici come devono essere interpretati i risultati, la spiegazione dei grafici, quello che volevamo confrontare e il significato del risultato ottenuto.
