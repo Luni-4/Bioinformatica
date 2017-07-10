@@ -247,12 +247,37 @@ In caso di aderenza perfetta, la procedura di boosting è arrestata prima del ra
 \item[\texttt{algorithm}:]consente di scegliere fra due algoritmi:
 \begin{description}
 \item[SAMME]Algoritmo di boosting discreto: necessario quando $ \mathcal{H} $ è una famiglia di decisori;
-\item[SAMME.R]Algoritmo di boosting reale: tipicamente converge più velocemente, praticabile quando i classificatori $ \mathcal{H} $ restituiscono una probabilità.
+\item[SAMME.R]Algoritmo di boosting reale: tipicamente converge più velocemente, praticabile quando i classificatori $ \mathcal{H} $ restituiscono una probabilità di appartenenza per ogni classe.
 \end{description}
 \end{description}
  
-Si è testato il training set con 5-fold utilizzando alberi di decisione come stimatore di base e fissando il limite di stimatori a 50.
-% Di default si usano stump o alberi più profondi?
+\subsection{Parametri}
+In questo lavoro sono state esplorate diverse configurazioni del predittore AdaBoost.
+Come classificatore di base si è optato per un \emph{decision stump}, cioè un predittore ad albero molto semplice, che presenta un solo test, quindi una sola ramificazione e al massimo due foglie. Si è utilizzata l'implementazione dell'albero di decisione di scikit-learn\footnote{scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html}, impostandone il parametro \texttt{max\_depth} a 1.
+
+Si è variato \texttt{n\_estimators} ponendolo a 10, 50 e 100 stimatori di base.
+
+Si è poi andato a modificare alcune proprietà dello stimatore ad albero di base, impostando un bilanciamento del peso delle classi inversamente proporzionale alla loro frequenza.
+È stato fatto un tentativo utilizzando alberi leggermente più complessi, impostandone la \texttt{max\_depth} a 3.
+
+\begin{tabular}{c|c|c|c|}
+nome & \texttt{n\_estimators} & bilanciamento & \texttt{max\_depth} \\ 
+\hline 
+AdaBoost\_n10 & 10 & No & 1 \\ 
+\hline 
+AdaBoostDefault & 50 & No & 1 \\ 
+\hline 
+AdaBoost\_n100 & 100 & No & 1 \\ 
+\hline 
+AdaBoost\_n5\_Bal & 5 & Auto & 1 \\ 
+\hline 
+AdaBoost\_n10\_Bal & 10 & Auto & 1 \\ 
+\hline 
+AdaBoost\_n50\_Bal & 50 & Auto & 1 \\ 
+\hline 
+AdaBoost\_n50\_Bal\_Dep3 & 5 & Auto &  3\\ 
+\hline 
+\end{tabular} 
 
 \subsection{Implementazione}
 Eventualmente parlare di dettagli su come è costruito il codice

@@ -15,19 +15,22 @@ if __name__ == '__main__':
     # this structure could be more complicated, some parts can be commented out, we can use dicts to pass parameters
     classifiers = {
     # 'SVM_Balanced': SVC(decision_function_shape = "ovr", class_weight = "balanced"),
-    'SVM_Balanced_C2': SVC(decision_function_shape = "ovr", class_weight = "balanced", C=2),
-    'SVM_Balanced_C3': SVC(decision_function_shape = "ovr", class_weight = "balanced", C=3),
+    # 'SVM_Balanced_C2': SVC(decision_function_shape = "ovr", class_weight = "balanced", C=2),
+    # 'SVM_Balanced_C3': SVC(decision_function_shape = "ovr", class_weight = "balanced", C=3),
     # 'SVM_BalaMan': SVC(decision_function_shape = "ovr", class_weight = {0:0.01, 1:0.99}),
-    #'SVM_Balanced_C5': SVC(decision_function_shape = "ovr", class_weight = "balanced", C=5),
-    #'SVM_Balanced_C7': SVC(decision_function_shape = "ovr", class_weight = "balanced", C=7),
-    'SVM_Unbalanced': SVC(decision_function_shape = "ovr"),
-    'AdaBoostDefault': AdaBoostClassifier(),
+    # 'SVM_Balanced_C5': SVC(decision_function_shape = "ovr", class_weight = "balanced", C=5),
+    # 'SVM_Balanced_C7': SVC(decision_function_shape = "ovr", class_weight = "balanced", C=7),
+    # 'SVM_Unbalanced': SVC(decision_function_shape = "ovr"),
+    # 'AdaBoostDefault': AdaBoostClassifier(),
     # 'AdaBoost_n10': AdaBoostClassifier(n_estimators=10),
     # 'AdaBoost_n10_Bal': AdaBoostClassifier(DecisionTreeClassifier(max_depth=1, class_weight = "balanced"), n_estimators=10),
+    # 'AdaBoost_n50_Bal': AdaBoostClassifier(DecisionTreeClassifier(max_depth=1, class_weight = "balanced")),
+    'AdaBoost_n5_Bal': AdaBoostClassifier(DecisionTreeClassifier(max_depth=1, class_weight = "balanced")),
+    # 'AdaBoost_n50_Bal_Dep3': AdaBoostClassifier(DecisionTreeClassifier(max_depth=3, class_weight = "balanced")),
     # 'AdaBoost_n100': AdaBoostClassifier(n_estimators=100),
     # 'Pegasos': Pegasos()
     }
-    for onto_name in ['MF']:
+    for onto_name in ['CC', 'MF']:
         # Filename of the Annotation Matrix
         f_ann = "Data/Dros." + onto_name + ".ann.txt"
         
@@ -45,7 +48,7 @@ if __name__ == '__main__':
             # Save the header as a dictionary
             header = [  ("Ontology", onto_name),
                         ("Classifier", classname),                  
-                        ("Parameters", classifier.get_params()),                                    
+                        #("Parameters", classifier.get_params()),                                    
                         ("Start_Time", time.strftime("%c"))
                      ]
 
