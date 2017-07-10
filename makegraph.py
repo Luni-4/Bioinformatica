@@ -116,7 +116,7 @@ def cmp_MR_graph(mrs, metric_name, ax, offset = 0):
     ax.grid(axis='y')
 
 def level1(ont, learner_fam):
-    metrics = ['auroc', 'auprc', 'fscore1', 'precision1', 'recall1']
+    metrics = ['auroc', 'auprc', 'fscore1','fscore0', 'precision1', 'recall1']
     files = []
     for entry in os.scandir(inputfolder + ont):
         if entry.name.endswith('.json') and entry.is_file():
