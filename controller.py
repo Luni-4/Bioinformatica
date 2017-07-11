@@ -1,7 +1,6 @@
 from sklearn.svm import SVC
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
-# from pegasos import Pegasos
 
 from dataload import load_adj, load_annotation
 from utility import write_json
@@ -13,7 +12,7 @@ import sys
 import os
 import time
 
-# Use: controller.py (ontology) (classifier_configuration)
+# Use: controller.py (ontology) (classifiers_configurations)
 
 if __name__ == '__main__':
     
@@ -22,41 +21,40 @@ if __name__ == '__main__':
         raise ValueError("You must insert the ontology at least")       
         
     # Ontology
-    onto = {"CC", "BP", "MF"}    
+    onto = {"CC", "MF"}    
    
     # Check the ontology inserted
     if sys.argv[1] not in onto:
         raise ValueError("Wrong Ontology") 
         
-    # Range C and Gamma    
-    C_range = np.logspace(-2, 10, 13)
-    gamma_range = np.logspace(-9, 3, 13)
+    # Range of C and Gamma    
+    c = np.logspace(-2, 10, 13)
+    g = np.logspace(-9, 3, 13)
     
+    # String for class_weight parameter
+    b = "balanced"   
 
     # Different configurations of the classifiers
     cl = {
-            # SVM Configurations
-            "SVM_Unbalanced":  SVC(decision_function_shape = "ovr"),
-            "SVM_Balanced":    SVC(decision_function_shape = "ovr", class_weight = "balanced"),
-            "SVM_Balaman":     SVC(decision_function_shape = "ovr", class_weight = {0:0.01, 1:0.99}),
-            "SVM_Balanced_C2": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = 2),
-            "SVM_Balanced_C3": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = 3),
-            "SVM_Balanced_C5": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = 5),
-            "SVM_Balanced_C7": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = 7),
-            "SVM_Balanced_C0_G0": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = C_range[0], gamma = gamma_range[0]),
-            "SVM_Balanced_C2_G2": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = C_range[2], gamma = gamma_range[2]),
-            "SVM_Balanced_C7_G7": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = C_range[7], gamma = gamma_range[7]),
-            "SVM_Balanced_C12_G12": SVC(decision_function_shape = "ovr", class_weight = "balanced", C = C_range[12], gamma = gamma_range[12]),
-            "SVM_Balanced_Poly_4": SVC(decision_function_shape = "ovr", class_weight = "balanced", kernel = "poly", degree = 4),
+           # SVM Configurations
+           "SVM_Unbalanced":       SVC(decision_function_shape = "ovr"),
+           "SVM_Balanced":         SVC(decision_function_shape = "ovr", class_weight = b),
+           "SVM_Balaman":          SVC(decision_function_shape = "ovr", class_weight = {0:0.01, 1:0.99}),
+           "SVM_Balanced_C2":      SVC(decision_function_shape = "ovr", class_weight = b, C = 2),
+           "SVM_Balanced_C3":      SVC(decision_function_shape = "ovr", class_weight = b, C = 3),
+           "SVM_Balanced_C5":      SVC(decision_function_shape = "ovr", class_weight = b, C = 5),
+           "SVM_Balanced_C7":      SVC(decision_function_shape = "ovr", class_weight = b, C = 7),
+           "SVM_Balanced_C0_G0":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[0], gamma = g[0]),
+           "SVM_Balanced_C2_G2":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[2], gamma = g[2]),
+           "SVM_Balanced_C7_G7":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[7], gamma = g[7]),
+           "SVM_Balanced_C12_G12": SVC(decision_function_shape = "ovr", class_weight = b, C = c[12], gamma = g[12]),
+           "SVM_Balanced_Poly_4":  SVC(decision_function_shape = "ovr", class_weight = b, kernel = "poly", degree = 4),
             
-            # AdaBoost Configurations
-            "AdaBoostDefault": AdaBoostClassifier(),
-            "AdaBoost_n10": AdaBoostClassifier(n_estimators = 10),
-            "AdaBoost_n10_Bal": AdaBoostClassifier(DecisionTreeClassifier(max_depth = 1, class_weight = "balanced"), n_estimators = 10),
-            "AdaBoost_n100": AdaBoostClassifier(n_estimators = 100),
-            
-            # Pegasos Configurations
-            #"Pegasos": Pegasos()
+           # AdaBoost Configurations
+           "AdaBoostDefault":      AdaBoostClassifier(),
+           "AdaBoost_n10":         AdaBoostClassifier(n_estimators = 10),
+           "AdaBoost_n10_Bal":     AdaBoostClassifier(DecisionTreeClassifier(max_depth = 1, class_weight = b), n_estimators = 10),
+           "AdaBoost_n100":        AdaBoostClassifier(n_estimators = 100)
          }
     
     # Define what classifiers will be launched
@@ -121,8 +119,7 @@ if __name__ == '__main__':
         # Write the header into the json file 
         write_json(f_temp, header)
             
-        for j in range(0, Y.shape[1], 5):                    
-    
+        for j in range(0, Y.shape[1], 5):   
             metrics(c, X, Y.getdensecol(j), j, f_temp)
         
         # Save the footer as a dictionary

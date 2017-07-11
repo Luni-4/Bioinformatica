@@ -76,6 +76,33 @@
 %Impostare font del documento (Latin Modern Roman)
 \renewcommand*\rmdefault{lmr}
 
+% Definizione dei colori per i commenti, le keyword e le stringhe dei codici
+\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{redstrings}{rgb}{0.9,0,0}
+
+% Opzioni grafiche delle liste contenenti il codice scritto in Python
+\lstdefinestyle{customp}{
+    language=Python, 
+    basicstyle=\ttfamily\footnotesize,   
+    backgroundcolor=\color{gray!10},
+    frame=none,
+    tabsize=2,
+    commentstyle=\color{greencomments},
+    keywordstyle=\color{bluekeywords},
+    stringstyle=\color{redstrings},
+    title=\lstname,    
+    escapeinside={\%*}{*)},
+    breaklines=true,
+    breakatwhitespace=true,    
+    framextopmargin=2pt,
+    framexbottommargin=2pt,
+    inputencoding=utf8,
+    extendedchars=true,
+    showstringspaces=false,
+    literate={à}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {ù}{{\'u}}1,
+}
+
 % //////////////////// DOCUMENTO /////////////////
 
 \begin{document}
@@ -447,5 +474,33 @@ Scrivi qui Pici come devono essere interpretati i risultati, la spiegazione dei 
 Da qui in poi crei le pagine per i grafici 
 
 \chapter{Conclusioni}
+
+\appendix
+\chapter{Software}
+Il programma viene avviato eseguendo il file Python \textit{controller.py}. Questo file viene utilizzato per interfacciarsi con l'utente.
+Di seguito viene mostrata la sintassi di esecuzione con i relativi parametri:
+
+\begin{lstlisting}
+python controller.py (ontologia) (configurazioni)
+\end{lstlisting}
+Il parametro \textbf{\textit{ontologia}} accetta come valori solo le stringhe \textit{CC} e \textit{MF}. \\
+Il parametro \textbf{\textit{configurazioni}} accetta come valori i nomi delle configurazioni della Tabella \ref{tab:b1} e della Tabella \ref{tab:b2} separati da virgole. Se durante l'inserimento si verifica un errore di sintassi o non viene inserito nessun parametro, vengono eseguite tutte le configurazioni disponibili.
+
+Il listato del codice implementato è descritto nelle pagine seguenti.
+
+\newpage
+
+% Viene impostato lo stile del codice relativo a Python
+\lstset{style=customp}
+
+\lstinputlisting{controller.py}
+
+\newpage
+
+\lstinputlisting{dataload.py}
+
+\newpage
+
+\lstinputlisting{metrics.py}
 
 \end{document}
