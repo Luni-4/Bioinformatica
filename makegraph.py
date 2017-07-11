@@ -1,66 +1,11 @@
-import json
 import statistics
 import matplotlib.pyplot as plt
 import os
+from metricresult import *
 
 inputfolder = './Simulation/'
 outputfolder = 'img/'
 
-class MetricResult:
-
-    def __init__(self, filename, remove_ills = False):
-        self.d = {'Data': dict()}
-        with open(filename) as f:
-            for line in f:
-                line = json.loads(line)
-                if 'class' in line:
-                    # line contains metrics from a fold
-                    if not remove_ills or line['precision1'] != 0 or line['fscore1'] != 0:
-                        if line['class'] not in self.d['Data']:
-                            self.d['Data'][line['class']] = []
-                        line['is_ill'] = line['precision1'] == 0 and line['fscore1'] == 0
-                        self.d['Data'][line['class']].append(line)
-                else:
-                    # line contains header or footer
-                    self.d.update(line)
-
-    def foldmean(self, metric_name, classno):
-        """calculate the mean across folds"""
-        return statistics.mean(fold[metric_name] for fold in self.d['Data'][classno])
-    def foldstdev(self, metric_name, classno):
-        """calculate standard deviation across folds"""
-        return statistics.stdev(fold[metric_name] for fold in self.d['Data'][classno])
-    def foldills(self, classno):
-        """calcolate how many folds are ill-defined for a given class"""
-        return len(list(filter(lambda fold: fold['is_ill'] == True, self.d['Data'][classno])))
-
-    def means(self, metric_name):
-        """Returns a list of means for every class"""
-        return [self.foldmean(metric_name, c) for c in sorted(self.d['Data'].keys())]
-    def stdevs(self, metric_name):
-        """Returns a list of standard deviations for every class"""
-        return [self.foldstdev(metric_name, c) for c in sorted(self.d['Data'].keys())]
-
-    def class_population(self, classno):
-        return sum(fold['positives'] for fold in self.d['Data'][classno])
-        
-    def ills(self):
-        """Returns a list: for every class count how many folds are ill-defined"""
-        return [self.foldills(c) for c in sorted(self.d['Data'].keys())]
-  
-    def metric_on_population_graph(self, metricname):
-        plt.clf()
-        # This happens to be already ordered, but is it guaranteed?
-        # populations = [self.class_population(cn) for cn in self.d['Data']]
-        populations = [self.class_population(cn) for cn in sorted(self.d['Data'].keys())]
-        metrics = self.means(metricname)
-        plt.scatter(populations, metrics)
-        ills = self.ills()
-        plt.scatter(populations, ills)
-        plt.semilogx()
-        plt.xlabel("Positives")
-        plt.ylabel(metricname)
-        plt.show()
     
 def precision_recall_graph(precision, recall, auprc):
     plt.clf() # clear the figure and don't close the graph window
@@ -113,7 +58,19 @@ def cmp_MR_graph(mrs, metric_name, ax, offset = 0):
     ax.set_xticks(range(len(mrs)))
     ax.set_xticklabels([mr.d['Classifier'] for mr in mrs], rotation=30, ha='right')
     ax.set_ylabel(metric_name)
+    ax.set_ylim(0,1)
     ax.grid(axis='y')
+
+def load_mrs(ont, learner_fam, remove_ills = False):
+    files = []
+    for entry in os.scandir(inputfolder + ont):
+        if entry.name.endswith('.json') and entry.is_file():
+            files.append(inputfolder + ont + '/' + entry.name)
+    files = list(filter(lambda x: learner_fam in x, files))
+    files = sorted(files)
+    mrs = [MetricResult(fn, remove_ills=remove_ills) for fn in files]
+    mrs = list(filter(lambda x: len(x.d['Data']) > 0, mrs))
+    return mrs
 
 def level1(ont, learner_fam):
     metrics = ['auroc', 'auprc', 'fscore1','fscore0', 'precision1', 'recall1']
@@ -133,11 +90,43 @@ def level1(ont, learner_fam):
     #fig.show()
     fig.savefig(outputfolder + ont + '.' + learner_fam + '.level1.eps')
 
+
+def level2(ont, learner_fam, learners):
+    mrs = [MetricResult(inputfolder + ont + '/M_' + ont + '_' + learnername+ '.json', remove_ills=True) for learnername in learners]
+
+    metrics = ['fscore1', 'precision1', 'recall1']
+    classlist = []
+    #TODO classlist deve compilarsi da solo con qualche statistica?
+    if ont == 'CC':
+        classlist = [0,5,15]
+    if ont == 'MF':
+        classlist = [0,5,15]
+    fig, axs = plt.subplots(len(metrics), len(classlist), sharex=True, sharey=True)
+    for metric_name in metrics:
+        for classno in classlist:
+            ax = axs[metrics.index(metric_name), classlist.index(classno)]
+            x = range(len(mrs))
+            y = [mr.foldmean(metric_name, classno) for mr in mrs]
+            ax.bar(x, y)
+            ax.set_xticks(range(len(mrs)))
+            ax.set_xticklabels([mr.d['Classifier'] for mr in mrs], rotation=30, ha='right')
+            ax.set_ylabel(metric_name)
+            ax.set_ylim(0,1)
+            ax.grid(axis='y')
+            ax.set_title(ont + str(classno))
+    #plt.show()
+    fig.set_size_inches(7,7)
+    fig.savefig(outputfolder + ont + '.' + learner_fam + '.level2.eps')
+
+
 if __name__ == '__main__':
     for ont in ['CC', 'MF']:
         for learner_fam in ['SVM', 'AdaBoost']:
             level1(ont, learner_fam)
             cmp_ills(ont, learner_fam)
+    # this need to define the good learners list (and eventually the classlist)
+    level2('MF', 'AdaBoost', ['AdaBoost_n5_Bal', 'AdaBoost_n50_Bal'])
+
 
     """Return a dictionary, with keys:
     'End_Time', 'Data', 'Classifier', 'Parameters', 'Start_Time', 'Ontology'
