@@ -1,7 +1,6 @@
 from sklearn.svm import SVC
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
-# from pegasos import Pegasos
 
 from dataload import load_adj, load_annotation
 from utility import write_json
@@ -22,7 +21,7 @@ if __name__ == '__main__':
         raise ValueError("You must insert the ontology at least")       
         
     # Ontology
-    onto = {"CC", "BP", "MF"}    
+    onto = {"CC", "MF"}    
    
     # Check the ontology inserted
     if sys.argv[1] not in onto:
@@ -53,10 +52,7 @@ if __name__ == '__main__':
             "AdaBoostDefault": AdaBoostClassifier(),
             "AdaBoost_n10": AdaBoostClassifier(n_estimators = 10),
             "AdaBoost_n10_Bal": AdaBoostClassifier(DecisionTreeClassifier(max_depth = 1, class_weight = "balanced"), n_estimators = 10),
-            "AdaBoost_n100": AdaBoostClassifier(n_estimators = 100),
-            
-            # Pegasos Configurations
-            #"Pegasos": Pegasos()
+            "AdaBoost_n100": AdaBoostClassifier(n_estimators = 100)
          }
     
     # Define what classifiers will be launched
@@ -121,8 +117,7 @@ if __name__ == '__main__':
         # Write the header into the json file 
         write_json(f_temp, header)
             
-        for j in range(0, Y.shape[1], 5):                    
-    
+        for j in range(0, Y.shape[1], 5):   
             metrics(c, X, Y.getdensecol(j), j, f_temp)
         
         # Save the footer as a dictionary
