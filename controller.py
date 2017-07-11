@@ -1,5 +1,6 @@
 from sklearn.svm import SVC
 from sklearn.ensemble import AdaBoostClassifier
+from sklearn.tree import DecisionTreeClassifier
 # from pegasos import Pegasos
 
 from dataload import load_adj, load_annotation
@@ -50,9 +51,9 @@ if __name__ == '__main__':
             
             # AdaBoost Configurations
             "AdaBoostDefault": AdaBoostClassifier(),
-            "AdaBoost_n10": AdaBoostClassifier(n_estimators=10),
-            "AdaBoost_n10_Bal": AdaBoostClassifier(DecisionTreeClassifier(max_depth=1, class_weight = "balanced"), n_estimators=10),
-            "AdaBoost_n100": AdaBoostClassifier(n_estimators=100),
+            "AdaBoost_n10": AdaBoostClassifier(n_estimators = 10),
+            "AdaBoost_n10_Bal": AdaBoostClassifier(DecisionTreeClassifier(max_depth = 1, class_weight = "balanced"), n_estimators = 10),
+            "AdaBoost_n100": AdaBoostClassifier(n_estimators = 100),
             
             # Pegasos Configurations
             #"Pegasos": Pegasos()
