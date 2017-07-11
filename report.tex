@@ -53,6 +53,9 @@
 % Consente di impostare le virgolette del discorso diretto
 \usepackage{dirtytalk}
 
+% Allineamento dei numeri in una tabella
+\usepackage{siunitx}
+
 % //////////////////////////////////////////////////
 
 % Impostare interlinea a 1.5
@@ -225,6 +228,40 @@ Per determinare con quali parametri, sul dataset considerato, la SVM produce dei
 \paragraph*{}
 \textbf{\textit{Poly}}. Viene usato un kernel polinomiale di grado 4. Il valore di class\_weight è \say{balanced}. Tutti i restanti parametri non hanno subito modifiche. La scelta del grado del polinomio è stata effettuata tenendo in considerazione la potenza computazionale delle macchine a disposizione.
 
+\begin{table}[ht]%	
+\centering
+\caption{Configurazioni di SVM}\label{tab:b1}
+\begin{tabular}{|c|c|c|S[table-parse-only = true]|S[table-parse-only = true]|c|}
+\hline
+Nome                    & Bilanciamento & Kernel & C        & Gamma & Degree    \\ 
+\hline 
+SVM\_Unbalanced         & -             & RBF    & 1.0      & auto    & -       \\
+\hline 
+SVM\_Balanced           & balanced      & RBF    & 1.0      & auto    & -       \\
+\hline 
+SVM\_Balaman            & 0:0.01 1:0.99 & RBF    & 1.0      & auto    & -       \\
+\hline 
+SVM\_Balanced\_C2       & balanced      & RBF    & 2.0      & auto    & -       \\
+\hline 
+SVM\_Balanced\_C3       & balanced      & RBF    & 3.0      & auto    & -       \\
+\hline 
+SVM\_Balanced\_C5       & balanced      & RBF    & 5.0      & auto    & -       \\
+\hline 
+SVM\_Balanced\_C7       & balanced      & RBF    & 7.0      & auto    & -       \\
+\hline 
+SVM\_Balanced\_C0\_G0   & balanced      & RBF    & 0.01     & 1.0e-09 & -       \\
+\hline 
+SVM\_Balanced\_C2\_G2   & balanced      & RBF    & 0.1      & 1.0e-08 & -       \\
+\hline 
+SVM\_Balanced\_C7\_G7   & balanced      & RBF    & 1.0e+05  & 0.01    & -       \\
+\hline 
+SVM\_Balanced\_C12\_G12 & balanced      & RBF    & 1.0e+10  & 1000.0  & -       \\
+\hline 
+SVM\_Balanced\_Poly\_4  & balanced      & Poly   & 1.0      & auto    & 4       \\
+\hline 
+\end{tabular} 
+\end{table}
+
 \paragraph*{}
 La complessità in tempo di ciascuna configurazione è un $\mathcal{O}(N^2)$ rispetto al numero degli esempi del training set. La velocità di computazione diminuisce considerevolmente all'aumentare della grandezza dei parametri usati.
 
@@ -264,7 +301,7 @@ Si è poi andato a modificare alcune proprietà dello stimatore ad albero di bas
 
 \begin{table}[ht]%	
 \centering
-\caption{Cosa fa la tabella?}\label{tab:b1}
+\caption{Configurazioni di AdaBoost}\label{tab:b2}
 \begin{tabular}{|c|c|c|c|}
 \hline
 nome & \texttt{n\_estimators} & bilanciamento & \texttt{max\_depth} \\ 
@@ -321,15 +358,15 @@ L'\textit{Header} è un dizionario contenente le seguenti informazioni:
 \end{itemize}
 Le \textit{Metriche} ricavate da ciascun fold di una classe sono le seguenti:
 \begin{itemize}
-\item Identificativo della classe (indice colonna della Matrice delle Annotazioni)
-\item Numero di esempi positivi nel fold
-\item Precision
-\item Recall
-\item F-score
-\item False Positive rate
-\item True Positive rate
-\item Auroc
-\item Auprc
+    \item Identificativo della classe (indice colonna della Matrice delle Annotazioni)
+    \item Numero di esempi positivi nel fold
+    \item Precision
+    \item Recall
+    \item F-score
+    \item False Positive rate
+    \item True Positive rate
+    \item Auroc
+    \item Auprc
 \end{itemize}
 Anche la struttura sopra descritta è contenuta all'interno di un dizionario. Ad ogni classe vengono associati tanti dizionari quanti sono i fold.
 
@@ -389,20 +426,20 @@ La \textit{recall} rappresenta l'abilità di un classificatore di individuare gl
 \end{equation}
 
 \paragraph*{}
-La \textit{F-score} è data dalla media armonica della precision e della recall. È definita nell'intervallo $[0,1]$. Più la f-score è alta, più un classificatore produrrà risultati migliori.
+La \textit{F-score} è data dalla media armonica della precision e della recall. È definita nell'intervallo $[0,1]$. Più la f-score è alta, più un classificatore produrrà buoni risultati.
 
 \begin{equation}
 \text{F-score} = \frac{2 \times \text{precision} \times \text{recall}}{\text{precision} + \text{recall}}
 \end{equation}
 
 \paragraph*{}
-L'\textit{Area Under the Precision-Recall Curve (AUPRC)} rappresenta l'area sotto la curva del grafico precision-recall. Assume valori definiti nell'intervallo $[0,1]$. Più il valore è alto, più il classificatore produrrà buoni risultati.
+L'\textit{Area Under the Precision-Recall Curve (AUPRC)} rappresenta l'area sotto la curva del grafico precision-recall. Assume valori definiti nell'intervallo $[0,1]$. Più il valore è alto, più un classificatore produrrà buoni risultati.
 
 \paragraph*{}
-L'\textit{Area Under the Receiver Operating Characteristic (AUROC)} rappresenta la probabilità che un classificatore associ un valore più alto ad un esempio positivo scelto casualmente rispetto ad uno negativo, sempre scelto in maniera casuale. Assume valori definiti nell'intervallo $[0,1]$. Più il valore è alto, più il classificatore produrrà buoni risultati.
+L'\textit{Area Under the Receiver Operating Characteristic (AUROC)} rappresenta la probabilità che un classificatore associ un valore più alto ad un esempio positivo scelto casualmente rispetto ad uno negativo, sempre scelto in maniera casuale. Assume valori definiti nell'intervallo $[0,1]$. Più il valore è alto, più un classificatore produrrà buoni risultati.
 
 \paragraph*{}
-Come spiegato precedentemente, ciascuna metrica viene calcolata per ogni fold di una classe e i valori ottenuti vengono salvati in un file json. I risultati prodotti sono letti in maniera sequenziale e, per ogni classe, viene calcolata la media tra le metriche dei fold. Ai valori ottenuti sarà nuovamente applicato l'operatore di media per individuare il valor medio che descrive il classificatore su tutte le classi.
+Come spiegato precedentemente, le metriche sono calcolate per ogni fold di una classe e i risultati sono salvati in un file json. Per poter valutare le performance di un classificatore di una classe, viene fatta la media delle metriche di ciascun fold associato alla classe stessa.
 
 \section{Risultati}
 Scrivi qui Pici come devono essere interpretati i risultati, la spiegazione dei grafici, quello che volevamo confrontare e il significato del risultato ottenuto.
