@@ -5,6 +5,8 @@ from metricresult import *
 
 inputfolder = './Simulation/'
 outputfolder = 'img/'
+bestSettings = {'AdaBoost': 'AdaBoost_n10_Bal',
+                 'SVM': 'SVM_Balanced_C7_G7'}
 
     
 def precision_recall_graph(precision, recall, auprc):
@@ -114,18 +116,31 @@ def level2(ont, learner_fam, learners):
             ax.set_ylim(0,1)
             ax.grid(axis='y')
             ax.set_title(ont + str(classno))
-    #plt.show()
+
     fig.set_size_inches(7,7)
-    fig.savefig(outputfolder + ont + '.' + learner_fam + '.level2.eps')
+    fig.show()
+    #fig.savefig(outputfolder + ont + '.' + learner_fam + '.level2.eps')
+
+def level3(ont):
+    mrs = [MetricResult(inputfolder + ont + '/M_' + ont + '_' + v + '.json', remove_ills=True) for k, v in bestSettings.items()]
+    metrics = ['auroc', 'auprc', 'fscore1']
+    fig, axs = plt.subplots(len(metrics), 1, sharex=True)
+    for i in range(len(metrics)):
+        ax = axs[i]
+        cmp_MR_graph(mrs, metrics[i], ax)
+    fig.savefig(outputfolder + ont + '.level3.eps')
+    
 
 
 if __name__ == '__main__':
     for ont in ['CC', 'MF']:
         for learner_fam in ['SVM', 'AdaBoost']:
-            level1(ont, learner_fam)
-            cmp_ills(ont, learner_fam)
+            #level1(ont, learner_fam)
+            #cmp_ills(ont, learner_fam)
+            pass
+        level3(ont)
     # this need to define the good learners list (and eventually the classlist)
-    level2('MF', 'AdaBoost', ['AdaBoost_n5_Bal', 'AdaBoost_n50_Bal'])
+    #level2('MF', 'AdaBoost', ['AdaBoost_n5_Bal', 'AdaBoost_n50_Bal'])
 
 
     """Return a dictionary, with keys:
