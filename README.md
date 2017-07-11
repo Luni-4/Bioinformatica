@@ -35,13 +35,16 @@ Bioinformatica
 
 FEDERICO:
 
-- Fare in modo che le funzioni di load salvino e leggano automaticamente i file npz con le matrici sparse
-- Stampare l'area sotto i grafici e salvarli automaticamente evitando la stampa su schermo
-- usare Timer su Adaboost
+- Non usare i punti nel filename dei grafici perché latex non riesce a caricarli
+- Eliminare la fscore0 presente nei grafici del livello 1 di tutti i classificatori di tutte le ontologie
+- Allargare tutti i grafici senza tagliare le etichette dei classificatori, mettere a posto la scala delle ordinate
+- Fare i grafici prc e roc con la stessa modalità adottata al livello 2
+- Mettere a posto AdaBoost
+- Spiegare il funzionamento dei grafici (posso farlo io domani, se non ce la fai)
 
 MICHELE:
 
-- Formattare i dati delle metriche per latex
+- Rileggere il documento e correggere gli errori
 
 ## 2.2. Link Utili
 
@@ -113,8 +116,6 @@ MICHELE:
 # 6. Dubbi
 
 FEDERICO:
-
-- Com'è lento adaboost! 5-fold parallelizzato ci mette mezzo minuto per ogni classe. Provare a ridurre il numero di classificatori
 
 MICHI:
 
