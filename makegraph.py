@@ -93,33 +93,38 @@ def level1(ont, learner_fam):
     fig.savefig(outputfolder + ont + '.' + learner_fam + '.level1.eps')
 
 
-def level2(ont, learner_fam, learners):
+def level2(ont, learners):
     mrs = [MetricResult(inputfolder + ont + '/M_' + ont + '_' + learnername+ '.json', remove_ills=True) for learnername in learners]
 
     metrics = ['fscore1', 'precision1', 'recall1']
     classlist = []
     #TODO classlist deve compilarsi da solo con qualche statistica?
     if ont == 'CC':
-        classlist = [0,5,15]
+        classlist = [0,5,25]
     if ont == 'MF':
-        classlist = [0,5,15]
-    fig, axs = plt.subplots(len(metrics), len(classlist), sharex=True, sharey=True)
-    for metric_name in metrics:
-        for classno in classlist:
-            ax = axs[metrics.index(metric_name), classlist.index(classno)]
-            x = range(len(mrs))
+        classlist = [0,25,15]
+    fig, axs = plt.subplots(1, len(classlist), sharex=True, sharey=True)
+    
+    for classno in classlist:
+        ax = axs[classlist.index(classno)]
+        for m in range(len(metrics)):
+            metric_name = metrics[m]
+            x = [offset+0.8/len(metrics)*m for offset in range(len(mrs))]
             y = [mr.foldmean(metric_name, classno) for mr in mrs]
-            ax.bar(x, y)
-            ax.set_xticks(range(len(mrs)))
-            ax.set_xticklabels([mr.d['Classifier'] for mr in mrs], rotation=30, ha='right')
-            ax.set_ylabel(metric_name)
-            ax.set_ylim(0,1)
-            ax.grid(axis='y')
-            ax.set_title(ont + str(classno))
+            ax.bar(x, y, label = metric_name, width = 0.8/len(metrics))
+        ax.set_xticks(range(len(mrs)))
+        ax.set_xticklabels([mr.d['Classifier'] for mr in mrs], rotation=30, ha='right')
+        #ax.set_ylabel(metric_name)
+        ax.set_ylim(0,1)
+        ax.grid(axis='y')
+        ax.set_title(ont + str(classno))
+        #ax.legend(loc = 'best')
 
-    fig.set_size_inches(7,7)
-    fig.show()
-    #fig.savefig(outputfolder + ont + '.' + learner_fam + '.level2.eps')
+    #fig.set_size_inches(7,7)
+    plt.legend(bbox_to_anchor=(1, 1), 
+        bbox_transform=plt.gcf().transFigure)
+    #plt.show()
+    fig.savefig(outputfolder + ont + '.level2.eps')
 
 def level3(ont):
     mrs = [MetricResult(inputfolder + ont + '/M_' + ont + '_' + v + '.json', remove_ills=True) for k, v in bestSettings.items()]
@@ -135,12 +140,12 @@ def level3(ont):
 if __name__ == '__main__':
     for ont in ['CC', 'MF']:
         for learner_fam in ['SVM', 'AdaBoost']:
-            #level1(ont, learner_fam)
-            #cmp_ills(ont, learner_fam)
+            level1(ont, learner_fam)
+            cmp_ills(ont, learner_fam)
             pass
         level3(ont)
-    # this need to define the good learners list (and eventually the classlist)
-    #level2('MF', 'AdaBoost', ['AdaBoost_n5_Bal', 'AdaBoost_n50_Bal'])
+        level2(ont, [v for k,v in bestSettings.items()])
+    
 
 
     """Return a dictionary, with keys:
