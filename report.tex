@@ -56,6 +56,9 @@
 % Allineamento dei numeri in una tabella
 \usepackage{siunitx}
 
+% Converte file eps in pdf
+\usepackage{epstopdf}
+
 % //////////////////////////////////////////////////
 
 % Impostare interlinea a 1.5
@@ -72,6 +75,9 @@
 
 % Impostare i margini della pagina
 \geometry{left=2cm,right=2cm, top=2cm, bottom=2cm}
+
+% Definizione della cartella contenente le immagini da usare
+\graphicspath{ {img/} }
 
 %Impostare font del documento (Latin Modern Roman)
 \renewcommand*\rmdefault{lmr}
@@ -471,9 +477,142 @@ Come spiegato precedentemente, le metriche sono calcolate per ogni fold di una c
 \section{Risultati}
 Scrivi qui Pici come devono essere interpretati i risultati, la spiegazione dei grafici, quello che volevamo confrontare e il significato del risultato ottenuto.
 
-Da qui in poi crei le pagine per i grafici 
+Da qui in poi crei le pagine per i grafici
 
-\chapter{Conclusioni}
+% //////////////////// LIVELLO 1 /////////////////
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[hb]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-AdaBoost-level1.eps}%   
+    \caption{Confronto tra le metriche di diverse configurazioni di AdaBoost dell'ontologia CC}%
+    \label{figure:liv1.1}%
+\end{figure}
+
+\vspace*{\fill}
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[hb]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-SVM-level1.eps}%   
+    \caption{Confronto tra le metriche di diverse configurazioni di SVM dell'ontologia CC}%
+    \label{figure:liv1.2}%
+\end{figure}
+
+\vspace*{\fill}
+
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[hb]%
+    \centering
+    \includegraphics[scale = 0.80]{MF-AdaBoost-level1.eps}%   
+    \caption{Confronto tra le metriche di diverse configurazioni di AdaBoost dell'ontologia MF}%
+    \label{figure:liv1.3}%
+\end{figure}
+
+\vspace*{\fill}
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[hb]%
+    \centering
+    \includegraphics[scale = 0.80]{MF-SVM-level1.eps}%   
+    \caption{Confronto tra le metriche di diverse configurazioni di SVM dell'ontologia MF}%
+    \label{figure:liv1.4}%
+\end{figure}
+
+\vspace*{\fill}
+
+% //////////////////// ILL-DEFINED /////////////////
+
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[ht]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-AdaBoost-ills.eps}%
+    \caption{Numero di ill-defined delle configurazioni di AdaBoost dell'ontologia CC}
+    \label{fig:ill1} 
+\end{figure}
+
+\begin{figure}[hb]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-SVM-ills.eps}%   
+    \caption{Numero di ill-defined delle configurazioni di SVM dell'ontologia CC}%
+    \label{figure:ill12}%
+\end{figure}
+
+\vspace*{\fill}
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[ht]%
+    \centering
+    \includegraphics[scale = 0.80]{MF-AdaBoost-ills.eps}%
+    \caption{Numero di ill-defined delle configurazioni di AdaBoost dell'ontologia MF}
+    \label{fig:ill13} 
+\end{figure}
+
+\begin{figure}[hb]%
+    \centering
+    \includegraphics[scale = 0.80]{MF-SVM-ills.eps}%   
+    \caption{Numero di ill-defined delle configurazioni di SVM dell'ontologia MF}%
+    \label{figure:ill14}%
+\end{figure}
+
+\vspace*{\fill}
+
+% //////////////////// LIVELLO 2 /////////////////
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[ht]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-level2.eps}%
+    \caption{Confronto tra i classificatori che hanno le migliori performance su diverse classi dell'ontologia CC. Le classi sono in ordine crescente rispetto al numero di positivi.}%
+    \label{fig:liv2} 
+\end{figure}
+
+\begin{figure}[hb]%
+    \centering
+    \includegraphics[scale = 0.80]{MF-level2.eps}%   
+    \caption{Confronto tra i classificatori che hanno le migliori performance su diverse classi dell'ontologia MF. Le classi sono in ordine crescente rispetto al numero di positivi.}%
+    \label{figure:liv21}%
+\end{figure}
+
+\vspace*{\fill}
+
+% //////////////////// LIVELLO 3 /////////////////
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[ht]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-level3.eps}%
+    \caption{Confronto tra i migliori classificatori dell'ontologia CC}%
+    \label{fig:liv3} 
+\end{figure}
+
+\begin{figure}[hb]%
+    \centering
+    \includegraphics[scale = 0.80]{MF-level3.eps}%   
+    \caption{Confronto tra i migliori classificatori dell'ontologia MF}%
+    \label{figure:liv31}%
+\end{figure}
+
+\vspace*{\fill}
+
 
 \appendix
 \chapter{Software}
