@@ -108,7 +108,7 @@ def level2(ont):
     classlist = sorted(classlist, key = lambda x:mrs[0].class_population(x))
     classlist = [classlist[0], classlist[len(classlist)//2], classlist[-1]]
     fig, axs = plt.subplots(1, len(classlist), sharex=True, sharey=True)
-    fig.autofmt_xdate(bottom=0.3)
+    fig.autofmt_xdate(bottom=0.4)
     fig.subplots_adjust(left = 0.2)
     for classno in classlist:
         ax = axs[classlist.index(classno)]
