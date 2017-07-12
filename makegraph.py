@@ -102,12 +102,11 @@ def level2(ont, learners):
     mrs = [MetricResult(inputfolder + ont + '/M_' + ont + '_' + learnername+ '.json', remove_ills=True) for learnername in learners]
 
     metrics = ['fscore1', 'precision1', 'recall1']
-    classlist = []
-    #TODO classlist deve compilarsi da solo con qualche statistica?
-    if ont == 'CC':
-        classlist = [0,5,25]
-    if ont == 'MF':
-        classlist = [0,25,15]
+    classlist = set(mrs[0].d['Data'].keys())
+    for mr in mrs:
+        classlist = classlist.intersection(set(mr.d['Data'].keys()))
+    classlist = sorted(classlist, key = lambda x:mrs[0].class_population(x))
+    classlist = [classlist[0], classlist[len(classlist)//2], classlist[-1]]
     fig, axs = plt.subplots(1, len(classlist), sharex=True, sharey=True)
     fig.autofmt_xdate(bottom=0.3)
     fig.subplots_adjust(left = 0.2)
@@ -118,7 +117,7 @@ def level2(ont, learners):
             x = [offset+0.8/len(metrics)*m for offset in range(len(mrs))]
             y = [mr.foldmean(metric_name, classno) for mr in mrs]
             ax.bar(x, y, label = metric_name, width = 0.8/len(metrics))
-        ax.set_xticks(range(len(mrs)))
+        ax.set_xticks([i+0.8/len(metrics) for i in range(len(mrs))])
         ax.set_xticklabels([mr.d['Classifier'] for mr in mrs])
         #ax.set_ylabel(metric_name)
         ax.set_ylim(0,1)
@@ -152,15 +151,3 @@ if __name__ == '__main__':
             pass
         level3(ont)
         level2(ont, [v for k,v in bestSettings.items()])
-    
-
-
-    """Return a dictionary, with keys:
-    'End_Time', 'Data', 'Classifier', 'Parameters', 'Start_Time', 'Ontology'
-
-    # return ontology name
-    r['Ontology']
-
-    # return auroc for the fold 2 of class 234
-    r['Data'][234][2]['auroc'] """
-
