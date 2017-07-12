@@ -328,7 +328,7 @@ Si è mantenuto il \texttt{learning\_rate} a 1.
 
 Si è variato \texttt{n\_estimators} ponendolo a 10, 50 e 100 stimatori di base.
 
-Si sono poi modificate delle proprietà dello stimatore ad albero di base, impostando un bilanciamento del peso delle classi inversamente proporzionale alla loro frequenza, usando l'impostazione \texttt{class\_weigth='balanced'}, in analogia col predittore SVM.
+Si sono poi modificate delle proprietà dello stimatore ad albero di base, impostando un bilanciamento del peso delle classi inversamente proporzionale alla loro frequenza, usando l'impostazione \texttt{class\_weight = \say{balanced}}, in analogia col predittore SVM.
 
 Infine, si è tentato l'utilizzo di alberi leggermente più complessi, impostandone la \texttt{max\_depth} a 3. Questo consente di creare alberi a tre livelli di test. Normalmente alzare questo livello in un albero decisione può portare ad avvicinarsi velocemente verso l'overfitting.
 
@@ -475,7 +475,7 @@ Come spiegato precedentemente, le metriche vengono calcolate per ogni fold di un
 
 \section{Risultati}
 
-\paragraph{Ill-defined}
+\subsection*{Ill-defined}
 Durante la fase di validazione è emerso che parte dei classificatori addestrati non ha predetto alcun esempio del test set, dando solo risposte negative. Poichè i 5 fold sono stati costruiti in modo da possedere sempre almeno un esempio positivo, questo significa che il classificatore ha commesso un errore.
 
 Tale errore va oltre alla logica dei normali errori che può commettere un classificatore. Non avendo predetto neanche un positivo (vero o falso che sia), non si può escludere che il classificatore abbia semplicemente appreso a rispondere negativamente a qualunque input, rendendosi di fatto inutilizzabile.
@@ -491,22 +491,20 @@ Il sistema 5-fold prevede che per ogni classe dell'ontologia vengano generati 5 
 
 Possiamo considerare il numero di predittori \emph{ill-defined} alla stregua di un indicatore di qualità dell'algoritmo di apprendimento. A parità di popolazione della classe, avere meno \emph{ill-defined} significa aver sfruttato meglio il valore degli esempi positivi.
 
-I grafici della figura ~\ref{fig:ill1} e ~\ref{figure:ill12} mostrano la quantità di ill-defined di AdaBoost e di Svm tra i 5-fold dell'ontologia CC, Le figure ~\ref{fig:ill13} e ~\ref{figure:ill14} le quantità per l'ontologia MF.
+I grafici della Figura~\ref{fig:ill1} e ~\ref{figure:ill12} mostrano la quantità di ill-defined di AdaBoost e di Svm tra i 5-fold dell'ontologia CC, le Figure~\ref{fig:ill13} e ~\ref{figure:ill14}, le quantità per l'ontologia MF.
 
 Osserviamo quindi che per Adaboost la quantità di \emph{ill-defined} non presenta variazioni significative, e il valore mediano resti compreso tra 2 e 3 per i parametri analizzati.
 
 Per SVM c'è molta meno continuità: il valore si abbassa per valori di C elevati, che però vedremo avere Precision molto bassa.
 
-Menzione d'onore merita l'impostazione "SVM\_C12\_G12", che ha prodotto solo classificatori \emph{ill-defined} per tutte le classi di entrambe le ontologie.
+Menzione d'onore merita l'impostazione \say{SVM\_C12\_G12}, che ha prodotto solo classificatori \emph{ill-defined} per tutte le classi di entrambe le ontologie.
 
 I classificatori difettosi sono inutilizzabili ma facili da identificare ed escludere. In un contesto applicativo reale verrebero esclusi dall'utilizzo. Pertanto le analisi che seguono filtrano il bias introdotto dai classificatori \emph{ill-defined} e analizzano sono i classificatori costruiti correttamente.
 
-\paragraph{Analisi a livelli}
+\subsection*{Analisi a Livelli}
 Per identificare i migliori classificatori e poterli confrontare tra loro, è stata creata una struttura a tre livelli. Nei primi due livelli, i classificatori di modelli diversi non interagiscono tra loro. In ogni livello, le ontologie sono sempre analizzate in maniera indipendente. 
 
-Al \textit{Livello 1} vengono confrontate le metriche prodotte dalle diverse configurazioni di uno stesso classificatore. Questo metodo consente di determinare qual è il migliore classificatore per ogni famiglia di modelli. La Figura~\ref{figure:liv1.1} e la Figura~\ref{figure:liv1.2} mostrano i migliori classificatori dell'ontologia CC, mentre la Figura~\ref{figure:liv1.3} e la Figura~\ref{figure:liv1.4} quelli dell'ontologia MF. 
-
-È stata effettuata un'ulteriore analisi per determinare la distribuzione degli ill-defined tra le configurazioni di classificatori della stessa ontologia. Gli ill-defined rappresentano un'imprecisione nel calcolo delle metriche di un fold causato dallo sbilanciamento delle classi. La Figura~\ref{fig:ill1} e la Figura~\ref{figure:ill12} mostrano la quantità di ill-defined di AdaBoost e di Svm nei rispettivi 5-fold per l'ontologia CC, mentre la Figura~\ref{fig:ill13} e la Figura~\ref{figure:ill14} quelli per l'ontologia MF.
+Al \textit{Livello 1} vengono confrontate le metriche prodotte dalle diverse configurazioni di uno stesso classificatore. Questo metodo consente di determinare qual è il migliore classificatore per ogni famiglia di modelli. La Figura~\ref{figure:liv1.1} e la Figura~\ref{figure:liv1.2} mostrano i migliori classificatori dell'ontologia CC, mentre la Figura~\ref{figure:liv1.3} e la Figura~\ref{figure:liv1.4} quelli dell'ontologia MF.
 
 \paragraph*{}
 Il \textit{Livello 2} confronta la configurazione del classificatore che ha ottenuto i risultati migliori al livello precedente su diverse classi. Lo scopo di questa analisi consiste nel capire come un classificatore varia le sue predizioni a seconda della classe scelta. Le classi considerate sono tre e sono disposte in ordine crescente rispetto al numero di esempi positivi. L'id della classe si ottiene unendo il nome dell'ontologia usata e la relativa colonna della Matrice delle Annotazioni.
@@ -525,8 +523,8 @@ Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei
 \begin{figure}[ht]%
     \centering
     \includegraphics[scale = 0.80]{CC-AdaBoost-ills.eps}%
-    \caption{Numero di ill-defined delle configurazioni di AdaBoost dell'ontologia CC}
-    \label{fig:ill1} 
+    \caption{Numero di ill-defined delle configurazioni di AdaBoost dell'ontologia CC}%
+    \label{fig:ill1}% 
 \end{figure}
 
 \begin{figure}[hb]%
@@ -544,8 +542,8 @@ Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei
 \begin{figure}[ht]%
     \centering
     \includegraphics[scale = 0.80]{MF-AdaBoost-ills.eps}%
-    \caption{Numero di ill-defined delle configurazioni di AdaBoost dell'ontologia MF}
-    \label{fig:ill13} 
+    \caption{Numero di ill-defined delle configurazioni di AdaBoost dell'ontologia MF}%
+    \label{fig:ill13}% 
 \end{figure}
 
 \begin{figure}[hb]%
@@ -619,7 +617,7 @@ Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei
     \centering
     \includegraphics[scale = 0.80]{CC-level2.eps}%
     \caption{Confronto tra i classificatori che hanno le migliori performance su diverse classi dell'ontologia CC.}%
-    \label{fig:liv2} 
+    \label{fig:liv2}% 
 \end{figure}
 
 \begin{figure}[hb]%
