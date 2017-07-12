@@ -217,7 +217,7 @@ La sua funzione di decisione è definita come:
 I support vectors sono gli esempi del training set che, a seconda dell'iperpiano ottenuto, hanno un margine inferiore o pari a 1. La soluzione prodotta da SVM dipende solo da questi esempi.
 
 \paragraph*{}
-L'apprendimento del classificatore è stato effettuato usando la funzione \textit{SVC} \footnote{scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}, implementata nel modulo \textit{sklearn.svm} contenente gli algoritmi SVM della libreria scikit-learn. Nella definizione del metodo sono stati impostati i seguenti parametri:
+L'apprendimento del classificatore è stato effettuato usando la funzione \textit{SVC} \footnote{\url{scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}}, implementata nel modulo \textit{sklearn.svm} contenente gli algoritmi SVM della libreria scikit-learn. Nella definizione del metodo sono stati impostati i seguenti parametri:
 
 \paragraph*{}
 \textbf{\textit{C}}. Penalità sull'errore commesso. È un parametro di tradeoff, un valore elevato di C crea un modello complesso che mira a classificare nel miglior modo possibile gli esempi del training set, mentre un valore piccolo comporta un modello con una funzione di decisione più semplice. È un valore di tipo float. 
@@ -246,6 +246,7 @@ Questa modalità sfrutta i valori delle etichette di una classe per aggiustare i
 numero\_campioni / (numero\_classi * array\_contenente\_cardinalità\_classi)
 \end{center}
 
+%Invece che Implementazione la chiamerei Parametri, o impostazioni
 \subsection{Implementazione}
 Per determinare con quali parametri, sul dataset considerato, la SVM produce dei buoni risultati, vengono eseguite le seguenti configurazioni:
 
@@ -308,7 +309,7 @@ dove $ \vec{w} $ è un vettore di coefficienti reali (pesi) e $ T $ è il numero
 Tipicamente contenere i costi computazionali si sceglie una famiglia $ \mathcal{H} $ di classificatori di base molto semplici. $ T $ può essere un numero fissato o può crescere durante l'apprendimento e fermarsi secondo un dato criterio di stop.
 
 In questo lavoro si è usata l'implementazione \texttt{sklearn.ensemble.AdaBoostClassifier}
-\footnote{scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html}.
+\footnote{\url{scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html}}.
 Questo modulo consente di specificare i seguenti parametri:
 
 \begin{description}
@@ -319,18 +320,23 @@ In caso di aderenza perfetta, la procedura di boosting è arrestata prima del ra
 \item[\texttt{algorithm}:]consente di scegliere fra due algoritmi:
 \begin{description}
 \item[SAMME]Algoritmo di boosting discreto: necessario quando $ \mathcal{H} $ è una famiglia di decisori;
-\item[SAMME.R]Algoritmo di boosting reale: tipicamente converge più velocemente, praticabile quando i classificatori $ \mathcal{H} $ restituiscono una probabilità di appartenenza per ogni classe.
+\item[SAMME.R]Algoritmo di boosting reale: tipicamente converge più velocemente, praticabile quando i classificatori $ \mathcal{H} $ sono in grado di calcolare la probabilità della classe predetta.
 \end{description}
 \end{description}
  
 \subsection{Parametri}
 In questo lavoro sono state esplorate diverse configurazioni del predittore AdaBoost.
-Come classificatore di base si è optato per un \emph{decision stump}, cioè un predittore ad albero molto semplice, che presenta un solo test, quindi una sola ramificazione e al massimo due foglie. Si è utilizzata l'implementazione dell'albero di decisione di scikit-learn\footnote{scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html}, impostandone il parametro \texttt{max\_depth} a 1.
+Come classificatore di base si è optato per un \emph{decision stump}, cioè un predittore ad albero molto semplice, che presenta un solo test, quindi una sola ramificazione e al massimo due foglie. Si è utilizzata l'implementazione dell'albero di decisione di scikit-learn\footnote{\url{scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html}}, impostandone il parametro \texttt{max\_depth} a 1.
+
+Si è mantenuto il \texttt{learning\_rate} a 1. 
 
 Si è variato \texttt{n\_estimators} ponendolo a 10, 50 e 100 stimatori di base.
 
-Si è poi andato a modificare alcune proprietà dello stimatore ad albero di base, impostando un bilanciamento del peso delle classi inversamente proporzionale alla loro frequenza.
-È stato fatto un tentativo utilizzando alberi leggermente più complessi, impostandone la \texttt{max\_depth} a 3.
+Si è poi andato a modificare alcune proprietà dello stimatore ad albero di base, impostando un bilanciamento del peso delle classi inversamente proporzionale alla loro frequenza, usando l'impostazione \texttt{class\_weigth='balanced'}, in analogia col predittore SVM.
+
+Infine, si è tentato l'utilizzo di alberi leggermente più complessi, impostandone la \texttt{max\_depth} a 3. Questo consente di creare alberi a tre livelli di test. Normalmente alzare questo livello in un albero decisione può portare ad avvicinarsi velocemente verso l'overfitting.
+
+La \autoref{tab:b2} elenca le impostazioni di Adaboost che si sono provate in questo lavoro.
 
 \begin{table}[ht]%	
 \centering
@@ -356,8 +362,6 @@ AdaBoost\_n50\_Bal\_Dep3 & 5 & Auto &  3\\
 \end{tabular} 
 \end{table}
 
-\subsection{Implementazione}
-Eventualmente parlare di dettagli su come è costruito il codice
 
 \section{Costruzione del software}
 Il programma Python è costruito in modo tale da calcolare le funzioni di predizione per un'unica ontologia. Questa scelta è stata effettuta per facilitare la gestione del codice e dei risultati prodotti. Se si vogliono eseguire diverse ontologie bisogna mandare nuovamente in esecuzione il processo specificando l'ontologia che si vuole computare.
@@ -379,7 +383,7 @@ I risultati ottenuti dall'esecuzione di una configurazione sono salvati in un fi
 
 \begin{itemize}
     \item Header
-    \item Metriche dei fold di una classe
+    \item Metriche dei fold di ogni classe
     \item Footer
 \end{itemize}
 L'\textit{Header} è un dizionario contenente le seguenti informazioni:
@@ -389,7 +393,7 @@ L'\textit{Header} è un dizionario contenente le seguenti informazioni:
     \item I parametri del metodo
     \item Il tempo di inizio, in formato data e ora, della configurazione
 \end{itemize}
-Le \textit{Metriche} ricavate da ciascun fold di una classe sono le seguenti:
+Le \textit{Metriche} ricavate da ciascun fold di ogni classe sono le seguenti:
 \begin{itemize}
     \item Identificativo della classe (indice colonna della Matrice delle Annotazioni)
     \item Numero di esempi positivi nel fold
@@ -409,7 +413,7 @@ Dai file json verranno estratte le informazioni necessarie per la valutazione de
 
 \paragraph*{}
 Per poter eseguire la cross-validation e calcolare le misure richieste, vengono utilizzate delle funzioni messe a disposizione dalla libreria scikit-learn.
-La funzione \textit{cross\_val\_score} è stata scelta perché riduce il tempo di computazione, in quanto assegna l'esecuzione dei differenti fold di una classe alle diverse unità di elaborazione presenti su una determinata macchina.
+La funzione \textit{cross\_val\_score} è stata scelta perché riduce il tempo di computazione, assegnando l'esecuzione dei differenti fold di una classe alle diverse unità di elaborazione presenti sulla macchina.
 
 Le metriche dei fold vengono calcolate a partire dalle etichette degli esempi contenuti nel test set e dalle predizioni del classificatore del fold. Di seguito una breve lista delle funzioni utilizzate:
 
@@ -475,6 +479,19 @@ L'\textit{Area Under the Receiver Operating Characteristic (AUROC)} rappresenta 
 Come spiegato precedentemente, le metriche vengono calcolate per ogni fold di una classe e i risultati prodotti vengono salvati in un file json. Per poter valutare le performance di un classificatore su una classe specifica, viene fatta la media delle metriche di ciascun fold della classe.
 
 \section{Risultati}
+
+\paragraph{Ill-defined}Durante la fase di validazione è emerso che parte dei classificatori addestrati non ha predetto alcun esempio del test set, dando solo risposte negative. Poichè i 5 fold sono stati costruiti in modo da possedere sempre almeno un esempio positivo, questo significa che il classificatore ha commesso un errore.
+
+Tale errore va oltre alla logica dei normali errori che può commettere un classificatore. Non avendo predetto neanche un positivo (vero o falso che sia), non si può escludere che il classificatore abbia semplicemente appreso a rispondere negativamente a qualunque input, rendendosi di fatto inutilizzabile.
+
+Inoltre, poichè il numero di positivi è zero, il calcolo della precision è impossibile, dal momento che avremmo una divisione per zero. Di conseguenza anche F-score non è computabile. Durante il calcolo delle metriche, scikit-learn intercetta l'errore, solleva un warning e fissa precision e F-score a zero.
+
+\texttt{UndefinedMetricWarning: Precision and F-score are ill-defined and being set to 0.0 in labels with no predicted samples.}
+
+Questi predittori (che diciamo \emph{ill-defined}) sono intrinsecamente difettosi, e siamo in grado di ritrovarli cercando i tra i predittori quelli che abbiano Precision e F-score 0.
+
+Fortunatamente questo difetto appare solo per alcuni fold di alcune classi, quindi possiamo misurarne l'impatto, ed avere comunque dei classificatori validi per alcune classi.
+
 Per identificare i migliori classificatori e poterli confrontare tra loro, è stata creata una struttura a tre livelli. Nei primi due livelli, i classificatori di modelli diversi non interagiscono tra loro. In ogni livello, le ontologie sono sempre analizzate in maniera indipendente. 
 
 Al \textit{Livello 1} vengono confrontate le metriche prodotte dalle diverse configurazioni di uno stesso classificatore. Questo metodo consente di determinare qual è il migliore classificatore per ogni famiglia di modelli. La Figura~\ref{figure:liv1.1} e la Figura~\ref{figure:liv1.2} mostrano i migliori classificatori dell'ontologia CC, mentre la Figura~\ref{figure:liv1.3} e la Figura~\ref{figure:liv1.4} quelli dell'ontologia MF. 
