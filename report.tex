@@ -475,7 +475,7 @@ Come spiegato precedentemente, le metriche vengono calcolate per ogni fold di un
 
 \section{Risultati}
 
-\subsection*{Ill-defined}
+\subsection{Ill-defined}
 Durante la fase di validazione è emerso che parte dei classificatori addestrati non ha predetto alcun esempio del test set, dando solo risposte negative. Poichè i 5 fold sono stati costruiti in modo da possedere sempre almeno un esempio positivo, questo significa che il classificatore ha commesso un errore.
 
 Tale errore va oltre alla logica dei normali errori che può commettere un classificatore. Non avendo predetto neanche un positivo (vero o falso che sia), non si può escludere che il classificatore abbia semplicemente appreso a rispondere negativamente a qualunque input, rendendosi di fatto inutilizzabile.
@@ -493,7 +493,7 @@ Possiamo considerare il numero di predittori \emph{ill-defined} alla stregua di 
 
 I grafici della Figura~\ref{fig:ill1} e ~\ref{figure:ill12} mostrano la quantità di ill-defined di AdaBoost e di Svm tra i 5-fold dell'ontologia CC, le Figure~\ref{fig:ill13} e ~\ref{figure:ill14}, le quantità per l'ontologia MF.
 
-Osserviamo quindi che per Adaboost la quantità di \emph{ill-defined} non presenta variazioni significative, e il valore mediano resti compreso tra 2 e 3 per i parametri analizzati.
+Osserviamo quindi che per Adaboost la quantità di \emph{ill-defined} non presenta variazioni significative, e il valore mediano resta compreso tra 2 e 3 per i parametri analizzati.
 
 Per SVM c'è molta meno continuità: il valore si abbassa per valori di C elevati, che però vedremo avere Precision molto bassa.
 
@@ -501,7 +501,7 @@ Menzione d'onore merita l'impostazione \say{SVM\_C12\_G12}, che ha prodotto solo
 
 I classificatori difettosi sono inutilizzabili ma facili da identificare ed escludere. In un contesto applicativo reale verrebero esclusi dall'utilizzo. Pertanto le analisi che seguono filtrano il bias introdotto dai classificatori \emph{ill-defined} e analizzano sono i classificatori costruiti correttamente.
 
-\subsection*{Analisi a Livelli}
+\subsection{Analisi a Livelli}
 Per identificare i migliori classificatori e poterli confrontare tra loro, è stata creata una struttura a tre livelli. Nei primi due livelli, i classificatori di modelli diversi non interagiscono tra loro. In ogni livello, le ontologie sono sempre analizzate in maniera indipendente. 
 
 Al \textit{Livello 1} vengono confrontate le metriche prodotte dalle diverse configurazioni di uno stesso classificatore. Questo metodo consente di determinare qual è il migliore classificatore per ogni famiglia di modelli. La Figura~\ref{figure:liv1.1} e la Figura~\ref{figure:liv1.2} mostrano i migliori classificatori dell'ontologia CC, mentre la Figura~\ref{figure:liv1.3} e la Figura~\ref{figure:liv1.4} quelli dell'ontologia MF.
@@ -650,7 +650,15 @@ Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei
 \end{figure}
 
 \vspace*{\fill}
+\subsection{Conclusioni}
+Dall'analisi dei grafici di livello 1 di AdaBoost non emergono variazioni significative di performance attraverso i vari parametri. Ci sono diverse possibili cause:
+\begin{itemize}
+\item AdaBoost è in grado di risolvere i problemi di bilanciamento dopo ben poche iterazioni: imporre il bilanciamento all'albero sottostante non ha grande effetto
+\item AdaBoost ferma l'iterazione dopo aver creato un numero sufficiente di alberi, anche se tale numero è inferiore al parametro impostato. Aumentare il numero di classificatori di base non migliora le prestazioni.
+\end{itemize}
+Si è optato per \say{AdaBoost\_n100} perchè presenta una Recall leggermente migliore rispetto alla concorrenza. Si è deciso di premiare una Recall alta perchè significa maggior capacità di adattarsi allo sbilanciamento del dominio di applicazione e perchè consente di utilizzare il classificatore come filtro per un eventuale classificatore successivo, più bilanciato e preciso.
 
+SVM, invece, presenta una grande varianza di performance. Si è reso necessario un lavoro di esplorazione prima di trovare un classificatore accettabile, che non presenti Precision o Recall eccessivamente basse. \say{SVM\_Balanced\_C7\_G7} è una scelta quasi obbligata.
 
 \appendix
 \chapter{Software}

@@ -44,13 +44,13 @@ class MetricResult:
         """Returns a list: for every class count how many folds are ill-defined"""
         return [self.foldills(c) for c in sorted(self.d['Data'].keys())]
   
-    def metric_on_population_graph(self, metricname):
+    def metric_on_population_graph(self, metricname = 'fscore1'):
         plt.clf()
         # This happens to be already ordered, but is it guaranteed?
         # populations = [self.class_population(cn) for cn in self.d['Data']]
         populations = [self.class_population(cn) for cn in sorted(self.d['Data'].keys())]
         metrics = self.means(metricname)
-        plt.scatter(populations, metrics)
+        #plt.scatter(populations, metrics)
         ills = self.ills()
         plt.scatter(populations, ills)
         plt.semilogx()
