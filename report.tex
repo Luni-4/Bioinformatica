@@ -134,7 +134,7 @@
 \newpage
 
 \section*{Introduzione}
-L'obiettivo del progetto consiste nel predire la funzione delle proteine del \textit{Drosophila melanogaster}, un moscerino della frutta, nonché organismo modello per gli insetti, usando dei classificatori prodotti da determinati algoritmi di apprendimento. 
+L'obiettivo del progetto consiste nel predire la funzione delle proteine del \textit{Drosophila melanogaster}, un moscerino della frutta, nonché organismo modello per gli insetti, usando i classificatori prodotti da determinati algoritmi di apprendimento. 
 
 Per affrontare il problema, si è puntato su modelli semplici, rapidi, che consentano di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento scelti sono: 
 
@@ -146,26 +146,26 @@ Per affrontare il problema, si è puntato su modelli semplici, rapidi, che conse
 Ognuno dei metodi sopra elencati verrà applicato alla predizione dei termini MF (Molecular Function) e CC (Cellular Component) della GO (Gene Ontology).
 
 \paragraph*{}
-Il progetto è stato svolto utilizzando il linguaggio \textit{Python}, più precisamente la versione 3.5, e la versione 0.18.1 della libreria per l'apprendimento automatico \textit{scikit-learn}. Il caricamento e l'elaborazione delle strutture dati viene svolto usando la versione 0.19.1 della libreria \textit{SciPy}.
+Il progetto è stato implementato usando il linguaggio \textit{Python}, più precisamente la versione 3.5, e la versione 0.18.1 della libreria per l'apprendimento automatico \textit{scikit-learn}. Il caricamento e l'elaborazione delle strutture è eseguito dalla versione 0.19.1 della libreria \textit{SciPy}.
 
 \paragraph*{}
 L'elaborato descrive i passaggi e le problematiche affrontate durante lo svolgimento del lavoro. Per fare ciò, si è deciso di associare ad ogni singolo stadio lavorativo un capitolo. 
 
-Il \autoref{chap:dati} analizza i dati di input, mostrandone la struttura e le possibili modalità di elaborazione.
+Il \autoref{chap:dati} analizza i dati di input, mostrando la loro struttura e le possibili metodologie di elaborazione. 
 
-Il \autoref{chap:metodi} tratta i metodi di machine learning scelti e la loro implementazione. 
+Il \autoref{chap:metodi} spiega i metodi di machine learning scelti e la loro implementazione pratica. 
 
-Il \autoref{chap:risultati}, l'ultimo, presenta i risultati ottenuti dai clasificatori, per mezzo di grafici e tabelle, e confronta tra loro gli algoritmi per individuare quello che commette il più basso errore di classificiazione.
+Il \autoref{chap:risultati}, l'ultimo, illustra i risultati ottenuti dai clasificatori usando dei grafici e confronta gli algoritmi allo scopo di individuare quello che commette il più basso errore di classificazione.
 
 \chapter{Analisi dei Dati} 
 \label{chap:dati}
 Le feature degli esempi da fornire in input agli algoritmi di apprendimento sono contenute in una matrice bidimensionale chiamata \textit{Matrice di Adiacenza}, mentre le rispettive etichette si trovano nella \textit{Matrice delle Annotazioni}.
 
-Per ognuna delle ontologie considerate, il numero delle classi è variabile e quindi si hanno tante \textit{Matrici delle Annotazioni} quante sono le ontologie.
+Ogni ontologia è composta da un numero diverso di classi, questo significa che si hanno diverse \textit{Matrici delle Annotazioni}.
 
 \paragraph*{}
-La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica ed ha una dimensione effettiva di $3195x3195$. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. Le entry della matrice contengono una misura di similarità, ottenuta a partire da fattori biologici, fra coppie di proteine.
-Ciascuna entry può assumere valori compresi nell'intervallo $[0,1]$. Un valore vicino o uguale a 0 indica che le proteine non sono simili tra loro, mentre valori tendenti o uguali a 1 ne sanciscono la similarità. 
+La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica ed ha una dimensione effettiva di 3195 X 3195. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. Le entry della matrice contengono una misura di similarità, ricavata da fattori biologici, fra coppie di proteine.
+Ciascuna entry può assumere valori tra $[0,1]$. Un valore vicino o uguale a 0 indica che le proteine non sono simili tra loro, mentre valori tendenti o uguali a 1 ne sanciscono la similarità. 
 La matrice risulta essere sparsa, a causa dell'elevato numero di entry pari a 0.
 
 \paragraph*{}
@@ -182,21 +182,21 @@ Per ridurre lo spazio in memoria centrale e garantire una rapida elaborazione de
 
 Le singole colonne delle matrici delle Annotazioni verranno successivamente convertite in array densi, in modo da poterle passare in input ai diversi algoritmi di apprendimento. 
 
-Le classi delle Matrici delle Annotazioni vengono trattate come se fossero indipendenti tra loro, non tenendo conto della gerarchia presente. I classificatori scelti verranno addestrati sulle singole classi e durante la fase di valutazione, si terrà conto di come le loro prestazioni cambiano al variare della classe considerata. 
+Le classi delle Matrici delle Annotazioni vengono trattate come se fossero indipendenti tra loro, non tenendo conto della gerarchia presente. I classificatori scelti verranno addestrati sulle singole classi e le loro prestazioni saranno valutate a partire dai risultati prodotti. Verrà anche analizzato il loro comportamento al variare della classe considerata.
 
 \chapter{Metodi di Machine Learning} 
 \label{chap:metodi}
 
-I metodi di Machine Learning scelti si basano su modelli semplici, rapidi, che consentono di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento presi in considerazione sono le \textit{Support Vector Machine (SVM)} e \textit{AdaBoost}. La scelta dei metodi è stata effettuata con lo scopo di individuare le differenze tra i modelli e decretarne il migliore. Un'ulteriore motivazione è data dal voler confrontare algoritmi di apprendimento lineari, come SVM, con algoritmi basati sull'utilizzo di più classificatori, come AdaBoost.
+I metodi di Machine Learning scelti si basano su modelli semplici, rapidi, che consentono di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento considerati sono le \textit{Support Vector Machine (SVM)} e \textit{AdaBoost}. La scelta dei metodi è stata effettuata con lo scopo di individuare le differenze tra i modelli di classificazione per decretare quello che funziona meglio. Un'ulteriore motivo è dato dal voler confrontare algoritmi di apprendimento lineari, come SVM, con algoritmi basati sull'utilizzo di un numero maggiore di classificatori, come AdaBoost.
 
 \paragraph*{}
 Per poter effettuare il tuning degli iperparametri, sono state create diverse configuarazioni di esecuzione.
-Le configurazioni sono inserite in un dizionario Python che ha come chiavi i nomi delle configurazioni stesse e come oggetti i classificatori della liberia scikit-learn impostati con i parametri che si vogliono testare.
-Utilizzando tutte le classi di un ontologia si ottiene un elevato tempo computazionale per ciascuna configurazione. Per evitare ciò, si è deciso di campionare le classi, prendendone una ogni cinque.
+Le configurazioni sono inserite in un dizionario Python che ha come chiavi i nomi delle configurazioni stesse e come oggetti i classificatori della liberia scikit-learn con impostati i parametri che si vogliono testare.
+Utilizzando tutte le classi di un ontologia, si ottiene un elevato tempo computazionale per ciascuna configurazione. Per evitare ciò, si è deciso di campionare le classi, prendendone una ogni cinque.
  
 
 \section{Support Vector Machine}
-Una \textit{Support Vector Machine}, comunemente abbreviata in \textit{SVM}, costruisce un iperpiano o una serie di iperpiani in uno spazio iperdimensionale i quali possono essere utilizzati per risolvere problemi di classificazione e di regressione. Una buona separazione dei dati si verifica quando si ottiene un iperpiano che massimizza la distanza dal più vicino esempio di ogni classe, in altro modo, quando si individua l'iperpiano di margine massimo. In generale, più è ampio è il margine, più l'errore di classificazione sarà basso.
+Una \textit{Support Vector Machine}, comunemente abbreviata in \textit{SVM}, costruisce un iperpiano, o una serie di iperpiani, in uno spazio iperdimensionale, in modo da poter risolvere problemi di classificazione e di regressione. Una buona separazione dei dati si verifica quando si ottiene un iperpiano che massimizza la distanza dal più vicino esempio di ogni classe, in altro modo, quando si individua l'iperpiano di margine massimo. In generale, più è ampio il margine, più l'errore di classificazione sarà basso.
 
 SVM ricava l'iperpiano di margine massimo risolvendo il seguente problema di ottimizzazione lineare convessa
 
@@ -214,10 +214,10 @@ La sua funzione di decisione è definita come:
 \sgn(\sum_{i=1}^n y_i \alpha_i K(x_i, x) + \rho)
 \end{equation}
 
-I support vectors sono gli esempi del training set che, a seconda dell'iperpiano ottenuto, hanno un margine inferiore o pari a 1. La soluzione di SVM dipende solo da questi esempi.
+I support vectors sono gli esempi del training set che, a seconda dell'iperpiano ottenuto, hanno un margine inferiore o pari a 1. La soluzione prodotta da SVM dipende solo da questi esempi.
 
 \paragraph*{}
-L'apprendimento del classificatore è stato effettuato usando la funzione \textit{SVC} \footnote{scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}, implementata nel modulo \textit{sklearn.svm}, contenente gli algoritmi SVM, della libreria scikit-learn. Sono stati considerati i seguenti parametri principali nella definizione del metodo:
+L'apprendimento del classificatore è stato effettuato usando la funzione \textit{SVC} \footnote{scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}, implementata nel modulo \textit{sklearn.svm} contenente gli algoritmi SVM della libreria scikit-learn. Nella definizione del metodo sono stati impostati i seguenti parametri:
 
 \paragraph*{}
 \textbf{\textit{C}}. Penalità sull'errore commesso. È un parametro di tradeoff, un valore elevato di C crea un modello complesso che mira a classificare nel miglior modo possibile gli esempi del training set, mentre un valore piccolo comporta un modello con una funzione di decisione più semplice. È un valore di tipo float. 
