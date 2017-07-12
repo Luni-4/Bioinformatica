@@ -430,20 +430,20 @@ Le metriche dei fold vengono calcolate a partire dalle etichette degli esempi co
 \label{chap:risultati}
 
 \section{Scelta delle metriche}
-Le metriche sono state scelte tenendo in considerazione diversi aspetti del dataset.
-A causa della presenza di classi sbilanciate, con un numero elevato di esempi negativi rispetto ai positivi, l'accuratezza risulta una metrica non significativa per il modello che si sta valutando.
+Le metriche sono state scelte considerando diversi aspetti del dataset.
+A causa della presenza di classi sbilanciate, che presentano un numero elevato di esempi negativi rispetto a quelli positivi, l'accuratezza non rappresenta una metrica significativa per il modello che si sta valutando.
 
 \paragraph*{}
-L'accuratezza rappresenta la frazione delle predizioni corrette ed è definita come:
+L'accuratezza corrisponde alla frazione delle predizioni corrette ed è definita come:
 
 \begin{equation}
 \texttt{accuracy}(y, \hat{y}) = \frac{1}{n_\text{samples}} \sum_{i=0}^{n_\text{samples}-1} 1(\hat{y}_i = y_i)
 \end{equation}
 
-Nella formula soprastante $1(x)$ è la funzione indicatrice. Come si può notare, l'accuratezza fornisce un buon valore nel caso di sbilanciamento, in quanto non discrimina tra valori positivi e negativi nell'effettuare la misurazione.
+Nella formula soprastante $1(x)$ è la funzione indicatrice. Come si può notare, l'accuratezza non fornisce un buon valore in caso di sbilanciamento, in quanto non è in grado di discriminare i valori positivi da quelli negativi.
 
 \paragraph*{}
-Le metriche considerate nel progetto sono la precision, la recall, la f-score, l'AUPRC e l'AUROC.
+Le metriche considerate durante lo svolgimento del progetto sono la precision, la recall, la f-score, l'AUPRC e l'AUROC.
 
 La \textit{precision} corrisponde all'abilità del classificatore di non etichettare un esempio negativo come positivo. È definita nell'intervallo $[0,1]$. Più la precision è alta, più un classificatore non scambierà gli esempi negativi per positivi.
 
@@ -469,22 +469,24 @@ La \textit{F-score} è data dalla media armonica della precision e della recall.
 L'\textit{Area Under the Precision-Recall Curve (AUPRC)} rappresenta l'area sotto la curva del grafico precision-recall. Assume valori definiti nell'intervallo $[0,1]$. Più il valore è alto, più un classificatore produrrà buoni risultati.
 
 \paragraph*{}
-L'\textit{Area Under the Receiver Operating Characteristic (AUROC)} rappresenta la probabilità che un classificatore associ un valore più alto ad un esempio positivo scelto casualmente rispetto ad uno negativo, sempre scelto in maniera casuale. Assume valori definiti nell'intervallo $[0,1]$. Più il valore è alto, più un classificatore produrrà buoni risultati.
+L'\textit{Area Under the Receiver Operating Characteristic (AUROC)} rappresenta la probabilità che un classificatore associ un valore più alto ad un esempio positivo, scelto casualmente, rispetto ad uno negativo, sempre scelto in maniera casuale. Assume valori definiti nell'intervallo $[0,1]$. Più il valore è alto, più un classificatore produrrà buoni risultati.
 
 \paragraph*{}
-Come spiegato precedentemente, le metriche sono calcolate per ogni fold di una classe e i risultati sono salvati in un file json. Per poter valutare le performance di un classificatore di una classe, viene fatta la media delle metriche di ciascun fold associato alla classe stessa.
+Come spiegato precedentemente, le metriche vengono calcolate per ogni fold di una classe e i risultati prodotti vengono salvati in un file json. Per poter valutare le performance di un classificatore su una classe specifica, viene fatta la media delle metriche di ciascun fold della classe.
 
 \section{Risultati}
-Per identificare i migliori classificatori e poterli confrontare tra loro, è stata creata una struttura a tre livelli. Nei primi due livelli i classificatori appartenenti a modelli diversi non interagiscono tra loro. In ogni livello, le ontologie sono sempre analizzate in maniera indipendente.  
+Per identificare i migliori classificatori e poterli confrontare tra loro, è stata creata una struttura a tre livelli. Nei primi due livelli, i classificatori di modelli diversi non interagiscono tra loro. In ogni livello, le ontologie sono sempre analizzate in maniera indipendente. 
 
 Al \textit{Livello 1} vengono confrontate le metriche prodotte dalle diverse configurazioni di uno stesso classificatore. Questo metodo consente di determinare qual è il migliore classificatore per ogni famiglia di modelli. La Figura~\ref{figure:liv1.1} e la Figura~\ref{figure:liv1.2} mostrano i migliori classificatori dell'ontologia CC, mentre la Figura~\ref{figure:liv1.3} e la Figura~\ref{figure:liv1.4} quelli dell'ontologia MF. 
 
 È stata effettuata un'ulteriore analisi per determinare la distribuzione degli ill-defined tra le configurazioni di classificatori della stessa ontologia. Gli ill-defined rappresentano un'imprecisione nel calcolo delle metriche di un fold causato dallo sbilanciamento delle classi. La Figura~\ref{fig:ill1} e la Figura~\ref{figure:ill12} mostrano la quantità di ill-defined di AdaBoost e di Svm nei rispettivi 5-fold per l'ontologia CC, mentre la Figura~\ref{fig:ill13} e la Figura~\ref{figure:ill14} quelli per l'ontologia MF.
 
 \paragraph*{}
-Il \textit{Livello 2} confronta la configurazione del classificatore che ha ottenuto i risultati migliori al livello precedente su diverse classi. Lo scopo di questa analisi consiste nel capire come un classificatore varia le sue predizioni a seconda della classe scelta. Le classi considerate sono tre e sono disposte in ordine crescente rispetto al numero di esempi positivi.
+Il \textit{Livello 2} confronta la configurazione del classificatore che ha ottenuto i risultati migliori al livello precedente su diverse classi. Lo scopo di questa analisi consiste nel capire come un classificatore varia le sue predizioni a seconda della classe scelta. Le classi considerate sono tre e sono disposte in ordine crescente rispetto al numero di esempi positivi. L'id della classe si ottiene unendo il nome dell'ontologia usata e la relativa colonna della Matrice delle Annotazioni.
 Per ciascun confronto vengono usate come metriche la precision, la recall, e la f-score.
 La Figura~\ref{fig:liv2} mostra le configurazioni di AdaBoost e SVM per l'ontologia CC, mentre la Figura~\ref{figure:liv21} le configurazioni per l'ontologia MF.
+
+Inoltre, si è deciso di calcolare la \textit{Receiving Operating Charateristics Curve (ROC)} e la \textit{Precision-Recall Curve (PRC)} dei classificatori più performanti di ciascuna famiglia, utilizzando le stesse classi descritte precedentemente. La Figura~\ref{fig:liv2rocprc1} mostra le curve ROC e PRC per l'ontologia CC, mentre la Figura~\ref{figure:liv2rocprc2} quelle per l'ontologia MF.  
 
 \paragraph*{}
 Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei classificatori di ogni famiglia di modelli. Le metriche considerate sono AUROC, AUPRC e f-score. La Figura~\ref{fig:liv3} mostra il confronto tra AdaBoost e SVM per l'ontologia CC, mentre la Figura~\ref{figure:liv31} quello per l'ontologia MF.
@@ -589,18 +591,41 @@ Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei
 \begin{figure}[ht]%
     \centering
     \includegraphics[scale = 0.80]{CC-level2.eps}%
-    \caption{Confronto tra i classificatori che hanno le migliori performance su diverse classi dell'ontologia CC. Le classi sono in ordine crescente rispetto al numero di positivi.}%
+    \caption{Confronto tra i classificatori che hanno le migliori performance su diverse classi dell'ontologia CC.}%
     \label{fig:liv2} 
 \end{figure}
 
 \begin{figure}[hb]%
     \centering
     \includegraphics[scale = 0.80]{MF-level2.eps}%   
-    \caption{Confronto tra i classificatori che hanno le migliori performance su diverse classi dell'ontologia MF. Le classi sono in ordine crescente rispetto al numero di positivi.}%
+    \caption{Confronto tra i classificatori che hanno le migliori performance su diverse classi dell'ontologia MF.}%
     \label{figure:liv21}%
 \end{figure}
 
 \vspace*{\fill}
+
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[ht]%
+    \centering
+    %\includegraphics[scale = 0.80]{}%
+    \caption{ROC e PRC curve dei classificatori che hanno le migliori performance su diverse classi dell'ontologia CC. }%
+    \label{fig:liv2rocprc1} 
+\end{figure}
+
+\begin{figure}[hb]%
+    \centering
+    %\includegraphics[scale = 0.80]{}%   
+    \caption{ROC e PRC curve dei classificatori che hanno le migliori performance su diverse classi dell'ontologia MF.}%
+    \label{figure:liv2rocprc2}%
+\end{figure}
+
+\vspace*{\fill}
+
+
+
 
 % //////////////////// LIVELLO 3 /////////////////
 
