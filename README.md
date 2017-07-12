@@ -37,14 +37,13 @@ FEDERICO:
 
 - Fare i grafici prc e roc con la stessa modalità adottata al livello 2 ---> teniamolo opzionale per mancanza di tempo visto che non ce l'ha richiesto
 - Mettere a posto AdaBoost sul report, ovvero cerca di renderlo più simile possibile a svm del report
-- Mettere a posto le proporzioni dei grafici ill-defined
 - Leggere che gli ills scritti da michi non siano cazzate
 - Allungare i grafici livello 1 e 3 (opzionale) 
 
 MICHELE:
 
-- Rileggere il documento e correggere gli errori
-- Spiegare il funzionamento dei grafici
+- Rileggere il documento, correggere gli errori, chiarire delle cose
+- Aggiungere spiegazione di roc e prc curve ai grafici
 
 ## 2.2. Link Utili
 
@@ -115,9 +114,9 @@ MICHELE:
 
 # 6. Dubbi
 
-FEDERICO:
+-PRECISION E RECALL IN GRAFICI OPPURE FSCORE CHE È DATA DALL'UNIONE DELLE DUE? Io opterei per fscore, visto che è la media armonica tra le due,
+però anche mostrare le singole precision e recall specifica al meglio i risultati ottenuti. 
 
-MICHI:
 
 SVM parametri
 
