@@ -486,8 +486,6 @@ Il \textit{Livello 2} confronta la configurazione del classificatore che ha otte
 Per ciascun confronto vengono usate come metriche la precision, la recall, e la f-score.
 La Figura~\ref{fig:liv2} mostra le configurazioni di AdaBoost e SVM per l'ontologia CC, mentre la Figura~\ref{figure:liv21} le configurazioni per l'ontologia MF.
 
-Inoltre, si è deciso di calcolare la \textit{Receiving Operating Charateristics Curve (ROC)} e la \textit{Precision-Recall Curve (PRC)} dei classificatori più performanti di ciascuna famiglia, utilizzando le stesse classi descritte precedentemente. La Figura~\ref{fig:liv2rocprc1} mostra le curve ROC e PRC per l'ontologia CC, mentre la Figura~\ref{figure:liv2rocprc2} quelle per l'ontologia MF.  
-
 \paragraph*{}
 Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei classificatori di ogni famiglia di modelli. Le metriche considerate sono AUROC, AUPRC e f-score. La Figura~\ref{fig:liv3} mostra il confronto tra AdaBoost e SVM per l'ontologia CC, mentre la Figura~\ref{figure:liv31} quello per l'ontologia MF.
 
@@ -603,28 +601,6 @@ Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei
 \end{figure}
 
 \vspace*{\fill}
-
-
-\topskip0pt
-\vspace*{\fill}
-
-\begin{figure}[ht]%
-    \centering
-    %\includegraphics[scale = 0.80]{}%
-    \caption{ROC e PRC curve dei classificatori che hanno le migliori performance su diverse classi dell'ontologia CC. }%
-    \label{fig:liv2rocprc1} 
-\end{figure}
-
-\begin{figure}[hb]%
-    \centering
-    %\includegraphics[scale = 0.80]{}%   
-    \caption{ROC e PRC curve dei classificatori che hanno le migliori performance su diverse classi dell'ontologia MF.}%
-    \label{figure:liv2rocprc2}%
-\end{figure}
-
-\vspace*{\fill}
-
-
 
 
 % //////////////////// LIVELLO 3 /////////////////
