@@ -475,9 +475,19 @@ L'\textit{Area Under the Receiver Operating Characteristic (AUROC)} rappresenta 
 Come spiegato precedentemente, le metriche sono calcolate per ogni fold di una classe e i risultati sono salvati in un file json. Per poter valutare le performance di un classificatore di una classe, viene fatta la media delle metriche di ciascun fold associato alla classe stessa.
 
 \section{Risultati}
-Scrivi qui Pici come devono essere interpretati i risultati, la spiegazione dei grafici, quello che volevamo confrontare e il significato del risultato ottenuto.
+Per identificare i migliori classificatori e poterli confrontare tra loro, è stata creata una struttura a tre livelli. Nei primi due livelli i classificatori appartenenti a modelli diversi non interagiscono tra loro. In ogni livello, le ontologie sono sempre analizzate in maniera indipendente.  
 
-Da qui in poi crei le pagine per i grafici
+Al \textit{Livello 1} vengono confrontate le metriche prodotte dalle diverse configurazioni di uno stesso classificatore. Questo metodo consente di determinare qual è il migliore classificatore per ogni famiglia di modelli. La Figura~\ref{figure:liv1.1} e la Figura~\ref{figure:liv1.2} mostrano i migliori classificatori dell'ontologia CC, mentre la Figura~\ref{figure:liv1.3} e la Figura~\ref{figure:liv1.4} quelli dell'ontologia MF. 
+
+È stata effettuata un'ulteriore analisi per determinare la distribuzione degli ill-defined tra le configurazioni di classificatori della stessa ontologia. Gli ill-defined rappresentano un'imprecisione nel calcolo delle metriche di un fold causato dallo sbilanciamento delle classi. La Figura~\ref{fig:ill1} e la Figura~\ref{figure:ill12} mostrano la quantità di ill-defined di AdaBoost e di Svm nei rispettivi 5-fold per l'ontologia CC, mentre la Figura~\ref{fig:ill13} e la Figura~\ref{figure:ill14} quelli per l'ontologia MF.
+
+\paragraph*{}
+Il \textit{Livello 2} confronta la configurazione del classificatore che ha ottenuto i risultati migliori al livello precedente su diverse classi. Lo scopo di questa analisi consiste nel capire come un classificatore varia le sue predizioni a seconda della classe scelta. Le classi considerate sono tre e sono disposte in ordine crescente rispetto al numero di esempi positivi.
+Per ciascun confronto vengono usate come metriche la precision, la recall, e la f-score.
+La Figura~\ref{fig:liv2} mostra le configurazioni di AdaBoost e SVM per l'ontologia CC, mentre la Figura~\ref{figure:liv21} le configurazioni per l'ontologia MF.
+
+\paragraph*{}
+Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei classificatori di ogni famiglia di modelli. Le metriche considerate sono AUROC, AUPRC e f-score. La Figura~\ref{fig:liv3} mostra il confronto tra AdaBoost e SVM per l'ontologia CC, mentre la Figura~\ref{figure:liv31} quello per l'ontologia MF.
 
 % //////////////////// LIVELLO 1 /////////////////
 
@@ -623,7 +633,7 @@ Di seguito viene mostrata la sintassi di esecuzione con i relativi parametri:
 python controller.py (ontologia) (configurazioni)
 \end{lstlisting}
 Il parametro \textbf{\textit{ontologia}} accetta come valori solo le stringhe \textit{CC} e \textit{MF}. \\
-Il parametro \textbf{\textit{configurazioni}} accetta come valori i nomi delle configurazioni della Tabella \ref{tab:b1} e della Tabella \ref{tab:b2} separati da virgole. Se durante l'inserimento si verifica un errore di sintassi o non viene inserito nessun parametro, vengono eseguite tutte le configurazioni disponibili.
+Il parametro \textbf{\textit{configurazioni}} accetta come valori i nomi delle configurazioni della Tabella~\ref{tab:b1} e della Tabella~\ref{tab:b2} separati da virgole. Se durante l'inserimento si verifica un errore di sintassi o non viene inserito nessun parametro, vengono eseguite tutte le configurazioni disponibili.
 
 Il listato del codice implementato è descritto nelle pagine seguenti.
 
