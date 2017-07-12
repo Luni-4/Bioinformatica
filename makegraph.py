@@ -46,11 +46,12 @@ def cmp_ills(ont, learner_fam):
     positions = range(len(mrs))
     ax.boxplot(x, positions = positions, showfliers = False)
     ax.set_xticks(range(len(mrs)))
-    ax.set_xticklabels([mr.d['Classifier'] for mr in mrs], rotation=30, ha='right')
+    ax.set_xticklabels([mr.d['Classifier'] for mr in mrs]) 
     ax.set_ylabel('#ills')
     ax.grid(axis='y')
-    
-    fig.savefig(outputfolder + ont + '.' + learner_fam + '.ills.eps')
+    fig.autofmt_xdate(bottom=0.3)
+    fig.subplots_adjust(left = 0.2)
+    fig.savefig(outputfolder + ont + '-' + learner_fam + '-ills.eps')
 
 def cmp_MR_graph(mrs, metric_name, ax, offset = 0):
     x = [mr.means(metric_name) for mr in mrs]
@@ -58,9 +59,12 @@ def cmp_MR_graph(mrs, metric_name, ax, offset = 0):
     positions = list(map(lambda x: x+offset, range(len(mrs))))
     ax.boxplot(x, positions = positions, showfliers = False)
     ax.set_xticks(range(len(mrs)))
-    ax.set_xticklabels([mr.d['Classifier'] for mr in mrs], rotation=30, ha='right')
+    ax.set_xticklabels([mr.d['Classifier'] for mr in mrs])
     ax.set_ylabel(metric_name)
-    ax.set_ylim(0,1)
+    if metric_name == 'auroc':
+        ax.set_ylim(0.4,1)
+    else:
+        ax.set_ylim(0,1)
     ax.grid(axis='y')
 
 def load_mrs(ont, learner_fam, remove_ills = False):
@@ -75,7 +79,7 @@ def load_mrs(ont, learner_fam, remove_ills = False):
     return mrs
 
 def level1(ont, learner_fam):
-    metrics = ['auroc', 'auprc', 'fscore1','fscore0', 'precision1', 'recall1']
+    metrics = ['auroc', 'auprc', 'fscore1', 'precision1', 'recall1']
     files = []
     for entry in os.scandir(inputfolder + ont):
         if entry.name.endswith('.json') and entry.is_file():
@@ -86,11 +90,12 @@ def level1(ont, learner_fam):
     mrs = list(filter(lambda x: len(x.d['Data']) > 0, mrs))
     fig, axs = plt.subplots(len(metrics), 1, sharex=True)
     fig.set_size_inches(8,11)
+    fig.autofmt_xdate(bottom=0.3)
     for i in range(len(metrics)):
         ax = axs[i]
         cmp_MR_graph(mrs, metrics[i], ax)
     #fig.show()
-    fig.savefig(outputfolder + ont + '.' + learner_fam + '.level1.eps')
+    fig.savefig(outputfolder + ont + '-' + learner_fam + '-level1.eps')
 
 
 def level2(ont, learners):
@@ -104,7 +109,8 @@ def level2(ont, learners):
     if ont == 'MF':
         classlist = [0,25,15]
     fig, axs = plt.subplots(1, len(classlist), sharex=True, sharey=True)
-    
+    fig.autofmt_xdate(bottom=0.3)
+    fig.subplots_adjust(left = 0.2)
     for classno in classlist:
         ax = axs[classlist.index(classno)]
         for m in range(len(metrics)):
@@ -113,7 +119,7 @@ def level2(ont, learners):
             y = [mr.foldmean(metric_name, classno) for mr in mrs]
             ax.bar(x, y, label = metric_name, width = 0.8/len(metrics))
         ax.set_xticks(range(len(mrs)))
-        ax.set_xticklabels([mr.d['Classifier'] for mr in mrs], rotation=30, ha='right')
+        ax.set_xticklabels([mr.d['Classifier'] for mr in mrs])
         #ax.set_ylabel(metric_name)
         ax.set_ylim(0,1)
         ax.grid(axis='y')
@@ -124,16 +130,17 @@ def level2(ont, learners):
     plt.legend(bbox_to_anchor=(1, 1), 
         bbox_transform=plt.gcf().transFigure)
     #plt.show()
-    fig.savefig(outputfolder + ont + '.level2.eps')
+    fig.savefig(outputfolder + ont + '-level2.eps')
 
 def level3(ont):
     mrs = [MetricResult(inputfolder + ont + '/M_' + ont + '_' + v + '.json', remove_ills=True) for k, v in bestSettings.items()]
     metrics = ['auroc', 'auprc', 'fscore1']
     fig, axs = plt.subplots(len(metrics), 1, sharex=True)
+    fig.autofmt_xdate(bottom=0.3)
     for i in range(len(metrics)):
         ax = axs[i]
         cmp_MR_graph(mrs, metrics[i], ax)
-    fig.savefig(outputfolder + ont + '.level3.eps')
+    fig.savefig(outputfolder + ont + '-level3.eps')
     
 
 

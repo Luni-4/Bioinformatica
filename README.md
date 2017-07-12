@@ -35,10 +35,10 @@ Bioinformatica
 
 FEDERICO:
 
-- Non usare i punti nel filename dei grafici perché latex non riesce a caricarli
-- Eliminare la fscore0 presente nei grafici del livello 1 di tutti i classificatori di tutte le ontologie
-- Allargare tutti i grafici: evitare di tagliare le etichette delle configurazioni di classificatori, 
-mettere a posto la scala delle ordinate (in alcuni grafici non sono ben allineate)
+- Non usare i punti nel filename dei grafici perché latex non riesce a caricarli - FATTO, uso il trattino (-)
+- Eliminare la fscore0 presente nei grafici del livello 1 di tutti i classificatori di tutte le ontologie - FATTO, solo quella è da eliminare?
+- Allargare tutti i grafici: evitare di tagliare le etichette delle configurazioni di classificatori - FATTO
+- mettere a posto la scala delle ordinate (in alcuni grafici non sono ben allineate)
 - Fare i grafici prc e roc con la stessa modalità adottata al livello 2 ---> teniamolo opzionale per mancanza di tempo visto che non ce l'ha richiesto
 - Mettere a posto AdaBoost sul report, ovvero cerca di renderlo più simile possibile a svm del report
 - Mettere a posto le proporzioni dei grafici ill-defined
