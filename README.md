@@ -44,6 +44,10 @@ mettere a posto la scala delle ordinate (in alcuni grafici non sono ben allineat
 - Mettere a posto le proporzioni dei grafici ill-defined
 - Spiegare il funzionamento dei grafici (posso farlo io domani, se non ce la fai)
 
+- Ho pensato al livello 3, direi che possiamo lasciarlo così come è adesso. Fare la media della media non contribuisce per niente al classificatore,
+perché come hai detto si perdono informazioni. Per cui non tocchiamolo più e lasciamolo così. Migliora solo la parte grafica, soffre anche lui dei problemi
+spiegati sopra.
+
 MICHELE:
 
 - Rileggere il documento e correggere gli errori
