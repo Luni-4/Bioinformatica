@@ -514,6 +514,16 @@ La Figura~\ref{fig:liv2} mostra le configurazioni di AdaBoost e SVM per l'ontolo
 \paragraph*{}
 Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei classificatori di ogni famiglia di modelli. Le metriche considerate sono AUROC, AUPRC e f-score. La Figura~\ref{fig:liv3} mostra il confronto tra AdaBoost e SVM per l'ontologia CC, mentre la Figura~\ref{figure:liv31} quello per l'ontologia MF.
 
+\subsection{Conclusioni}
+Dall'analisi dei grafici di livello 1 di AdaBoost non emergono variazioni significative di performance attraverso i vari parametri. Ci sono diverse possibili cause:
+\begin{itemize}
+\item AdaBoost è in grado di risolvere i problemi di bilanciamento dopo ben poche iterazioni: imporre il bilanciamento all'albero sottostante non ha grande effetto
+\item AdaBoost ferma l'iterazione dopo aver creato un numero sufficiente di alberi, anche se tale numero è inferiore al parametro impostato. Aumentare il numero di classificatori di base non migliora le prestazioni.
+\end{itemize}
+Si è optato per \say{AdaBoost\_n100} perchè presenta una Recall leggermente migliore rispetto alla concorrenza. Si è deciso di premiare una Recall alta perchè significa maggior capacità di adattarsi allo sbilanciamento del dominio di applicazione e perchè consente di utilizzare il classificatore come filtro per un eventuale classificatore successivo, più bilanciato e preciso.
+
+SVM, invece, presenta una grande varianza di performance. Si è reso necessario un lavoro di esplorazione prima di trovare un classificatore accettabile, che non presenti Precision o Recall eccessivamente basse. \say{SVM\_Balanced\_C7\_G7} è una scelta quasi obbligata.
+
 % //////////////////// ILL-DEFINED /////////////////
 
 
@@ -650,15 +660,7 @@ Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei
 \end{figure}
 
 \vspace*{\fill}
-\subsection{Conclusioni}
-Dall'analisi dei grafici di livello 1 di AdaBoost non emergono variazioni significative di performance attraverso i vari parametri. Ci sono diverse possibili cause:
-\begin{itemize}
-\item AdaBoost è in grado di risolvere i problemi di bilanciamento dopo ben poche iterazioni: imporre il bilanciamento all'albero sottostante non ha grande effetto
-\item AdaBoost ferma l'iterazione dopo aver creato un numero sufficiente di alberi, anche se tale numero è inferiore al parametro impostato. Aumentare il numero di classificatori di base non migliora le prestazioni.
-\end{itemize}
-Si è optato per \say{AdaBoost\_n100} perchè presenta una Recall leggermente migliore rispetto alla concorrenza. Si è deciso di premiare una Recall alta perchè significa maggior capacità di adattarsi allo sbilanciamento del dominio di applicazione e perchè consente di utilizzare il classificatore come filtro per un eventuale classificatore successivo, più bilanciato e preciso.
 
-SVM, invece, presenta una grande varianza di performance. Si è reso necessario un lavoro di esplorazione prima di trovare un classificatore accettabile, che non presenti Precision o Recall eccessivamente basse. \say{SVM\_Balanced\_C7\_G7} è una scelta quasi obbligata.
 
 \appendix
 \chapter{Software}
