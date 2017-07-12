@@ -57,17 +57,24 @@ class MetricResult:
         plt.xlabel("Positives")
         plt.ylabel(metricname)
         plt.show()
- """       
-    def precision_recall_plot(self, classno, label, ax):
-    	prec = self.d['Data']
-    	plt.plot(precision, recall, linewidth = 2, label = "Precision-Recall Curve")
-	    plt.xlabel("Recall")
-	    plt.ylabel("Precision")
-	    plt.ylim([0.0, 1.05])
-	    plt.xlim([0.0, 1.0])
-	    plt.title("Precision-Recall: AUPRC={0:0.2f}".format(auprc))
-	    plt.legend(loc="lower right") # Position of the label defined in plt.plot
-"""
+
+    # def precision_recall_plot(self, classno, ax, lbl=''):
+    #     prec = []
+    #     rec = []
+    #     #for every point
+    #     for i in range(2):
+    #         print('i = {}'.format(i))
+    #         #mean across folds
+    #         prec.append(statistics.mean([self.d['Data'][classno][foldno]['prc10'][i] for foldno in range(len(self.d['Data'][classno]))]))
+    #         rec.append(statistics.mean([self.d['Data'][classno][foldno]['rec10'][i] for foldno in range(len(self.d['Data'][classno]))]))
+    #     ax.plot(prec, rec, linewidth = 2, label = "Precision-Recall Curve")
+    #     ax.set_xlabel("Recall")
+    #     ax.set_ylabel("Precision")
+    #     ax.set_ylim([0.0, 1.05])
+    #     ax.set_xlim([0.0, 1.0])
+    #     #ax.title("Precision-Recall: AUPRC={0:0.2f}".format(auprc))
+    #     #ax.legend(loc="lower right") # Position of the label defined in plt.plot
+
 
     """Return a dictionary, with keys:
     'End_Time', 'Data', 'Classifier', 'Parameters', 'Start_Time', 'Ontology'
@@ -77,5 +84,3 @@ class MetricResult:
 
     # return auroc for the fold 2 of class 234
     r['Data'][234][2]['auroc'] """
-
-    

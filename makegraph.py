@@ -5,7 +5,7 @@ from metricresult import *
 
 inputfolder = './Simulation/'
 outputfolder = 'img/'
-bestSettings = {'AdaBoost': 'AdaBoost_n10_Bal',
+bestSettings = {'AdaBoost': 'AdaBoost_n100',
                  'SVM': 'SVM_Balanced_C7_G7'}
 
     
@@ -98,10 +98,10 @@ def level1(ont, learner_fam):
     fig.savefig(outputfolder + ont + '-' + learner_fam + '-level1.eps')
 
 
-def level2(ont, learners):
-    mrs = [MetricResult(inputfolder + ont + '/M_' + ont + '_' + learnername+ '.json', remove_ills=True) for learnername in learners]
+def level2(ont):
+    mrs = [MetricResult(inputfolder + ont + '/M_' + ont + '_' + v + '.json', remove_ills=True) for k, v in bestSettings.items()]
 
-    metrics = ['fscore1', 'precision1', 'recall1']
+    metrics = ['auroc', 'auprc', 'fscore1', 'precision1', 'recall1']
     classlist = set(mrs[0].d['Data'].keys())
     for mr in mrs:
         classlist = classlist.intersection(set(mr.d['Data'].keys()))
@@ -124,24 +124,34 @@ def level2(ont, learners):
         ax.grid(axis='y')
         ax.set_title(ont + str(classno))
         #ax.legend(loc = 'best')
+        h, l = ax.get_legend_handles_labels()
 
     #fig.set_size_inches(7,7)
-    plt.legend(bbox_to_anchor=(1, 1), 
-        bbox_transform=plt.gcf().transFigure)
+    fig.legend(h, l, 'lower right')
+    #plt.legend(bbox_to_anchor=(1, 1), 
+    #    bbox_transform=plt.gcf().transFigure)
     #plt.show()
     fig.savefig(outputfolder + ont + '-level2.eps')
 
+    # # Creating a roc and prc curve graph... It doesn't work (yet)
+    # fig, axs = plt.subplots(len(mrs), 2, sharey = True)
+    # for i in range(len(mrs)):
+    #     mr = mrs[i]
+    #     ax = axs[i, 1]
+    #     for classno in classlist:
+    #         mr.precision_recall_plot(classno, ax)
+    # plt.show()
+
+
 def level3(ont):
     mrs = [MetricResult(inputfolder + ont + '/M_' + ont + '_' + v + '.json', remove_ills=True) for k, v in bestSettings.items()]
-    metrics = ['auroc', 'auprc', 'fscore1']
+    metrics = ['auroc', 'auprc', 'fscore1', 'recall1']
     fig, axs = plt.subplots(len(metrics), 1, sharex=True)
     fig.autofmt_xdate(bottom=0.3)
     for i in range(len(metrics)):
         ax = axs[i]
         cmp_MR_graph(mrs, metrics[i], ax)
     fig.savefig(outputfolder + ont + '-level3.eps')
-    
-
 
 if __name__ == '__main__':
     for ont in ['CC', 'MF']:
@@ -150,4 +160,4 @@ if __name__ == '__main__':
             cmp_ills(ont, learner_fam)
             pass
         level3(ont)
-        level2(ont, [v for k,v in bestSettings.items()])
+        level2(ont)
