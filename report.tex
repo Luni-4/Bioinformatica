@@ -306,22 +306,18 @@ Al termine avremo un classificatore nella forma
 \[\hat{y}=\sgn(\sum_{i=1}^{T} w_{i}h_{i}(\vec{x}))\]
 dove $ \vec{w} $ è un vettore di coefficienti reali (pesi) e $ T $ è il numero di classificatori.
 
-Tipicamente contenere i costi computazionali si sceglie una famiglia $ \mathcal{H} $ di classificatori di base molto semplici. $ T $ può essere un numero fissato o può crescere durante l'apprendimento e fermarsi secondo un dato criterio di stop.
+Tipicamente per contenere i costi computazionali si sceglie una famiglia $ \mathcal{H} $ di classificatori di base molto semplici. $ T $ può essere un numero fissato o può crescere durante l'apprendimento e fermarsi secondo un dato criterio di stop.
 
 In questo lavoro si è usata l'implementazione \texttt{sklearn.ensemble.AdaBoostClassifier}
 \footnote{\url{scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html}}.
-Questo modulo consente di specificare i seguenti parametri:
+Tra i parametri di interesse, osserviamo:
 
 \begin{description}
 \item[\texttt{base\_estimator}:]la famiglia $ \mathcal{H} $ di \emph{weak learner};
 \item[\texttt{n\_estimators}:]la quantità massima di stimatori da costruire, limite oltre il quale il boosting è terminato.
 In caso di aderenza perfetta, la procedura di boosting è arrestata prima del raggiungimento del limite.
 \item[\texttt{learning\_rate}:] permette di ridurre il contributo di ogni classificatore.
-\item[\texttt{algorithm}:]consente di scegliere fra due algoritmi:
-\begin{description}
-\item[SAMME]Algoritmo di boosting discreto: necessario quando $ \mathcal{H} $ è una famiglia di decisori;
-\item[SAMME.R]Algoritmo di boosting reale: tipicamente converge più velocemente, praticabile quando i classificatori $ \mathcal{H} $ sono in grado di calcolare la probabilità della classe predetta.
-\end{description}
+
 \end{description}
  
 \subsection{Parametri}
@@ -332,7 +328,7 @@ Si è mantenuto il \texttt{learning\_rate} a 1.
 
 Si è variato \texttt{n\_estimators} ponendolo a 10, 50 e 100 stimatori di base.
 
-Si è poi andato a modificare alcune proprietà dello stimatore ad albero di base, impostando un bilanciamento del peso delle classi inversamente proporzionale alla loro frequenza, usando l'impostazione \texttt{class\_weigth='balanced'}, in analogia col predittore SVM.
+Si sono poi modificate delle proprietà dello stimatore ad albero di base, impostando un bilanciamento del peso delle classi inversamente proporzionale alla loro frequenza, usando l'impostazione \texttt{class\_weigth='balanced'}, in analogia col predittore SVM.
 
 Infine, si è tentato l'utilizzo di alberi leggermente più complessi, impostandone la \texttt{max\_depth} a 3. Questo consente di creare alberi a tre livelli di test. Normalmente alzare questo livello in un albero decisione può portare ad avvicinarsi velocemente verso l'overfitting.
 
@@ -479,19 +475,33 @@ Come spiegato precedentemente, le metriche vengono calcolate per ogni fold di un
 
 \section{Risultati}
 
-\paragraph{Ill-defined}Durante la fase di validazione è emerso che parte dei classificatori addestrati non ha predetto alcun esempio del test set, dando solo risposte negative. Poichè i 5 fold sono stati costruiti in modo da possedere sempre almeno un esempio positivo, questo significa che il classificatore ha commesso un errore.
+\paragraph{Ill-defined}
+Durante la fase di validazione è emerso che parte dei classificatori addestrati non ha predetto alcun esempio del test set, dando solo risposte negative. Poichè i 5 fold sono stati costruiti in modo da possedere sempre almeno un esempio positivo, questo significa che il classificatore ha commesso un errore.
 
 Tale errore va oltre alla logica dei normali errori che può commettere un classificatore. Non avendo predetto neanche un positivo (vero o falso che sia), non si può escludere che il classificatore abbia semplicemente appreso a rispondere negativamente a qualunque input, rendendosi di fatto inutilizzabile.
 
 Inoltre, poichè il numero di positivi è zero, il calcolo della precision è impossibile, dal momento che avremmo una divisione per zero. Di conseguenza anche F-score non è computabile. Durante il calcolo delle metriche, scikit-learn intercetta l'errore, solleva un warning e fissa precision e F-score a zero. 
 
-\texttt{Precision and F-score are ill-defined and being set to 0.0 in labels \\
-with no predicted samples.}
+Durante l'analisi delle metriche possiamo selezionare questi predittori intrinsecamente difettosi cercando tra i predittori quelli che abbiano Precision e F-score uguali a zero. Possiamo dunque misurare l'impatto di questi predittori (che denominiamo \emph{ill-defined}) e quantificarli.
 
-Questi predittori (che diciamo \emph{ill-defined}) sono intrinsecamente difettosi, e siamo in grado di ritrovarli cercando i tra i predittori quelli che abbiano Precision e F-score 0.
+Il numero di predittori \emph{ill-defined} aumenta quando il training set è sbilanciato, cioè quando si apprende da una classe che contiene poche proteine. Ovviamente anche la qualità dell'algoritmo di apprendimento è influente. Gli algoritmi che non bilanciano le classi e che non sono in grado di apprendere da pochi esempi genereranno predittori difettosi.
 
-Fortunatamente questo difetto appare solo per alcuni fold di alcune classi, quindi possiamo misurarne l'impatto, ed avere comunque dei classificatori validi per alcune classi.
+%grafico che mostra come varia qualche metrica e/o il numero di ill defined in base alla popolazione della classe
+Il sistema 5-fold prevede che per ogni classe dell'ontologia vengano generati 5 predittori. I predittori \emph{ill-defined} possono essere numerosi, ma fintantochè una classe possiede almeno un predittore non \emph{ill-defined} possiamo concludere che sia possibile costruire un predittore funzionante.
 
+Possiamo considerare il numero di predittori \emph{ill-defined} alla stregua di un indicatore di qualità dell'algoritmo di apprendimento. A parità di popolazione della classe, avere meno \emph{ill-defined} significa aver sfruttato meglio il valore degli esempi positivi.
+
+I grafici della figura ~\ref{fig:ill1} e ~\ref{figure:ill12} mostrano la quantità di ill-defined di AdaBoost e di Svm tra i 5-fold dell'ontologia CC, Le figure ~\ref{fig:ill13} e ~\ref{figure:ill14} le quantità per l'ontologia MF.
+
+Osserviamo quindi che per Adaboost la quantità di \emph{ill-defined} non presenta variazioni significative, e il valore mediano resti compreso tra 2 e 3 per i parametri analizzati.
+
+Per SVM c'è molta meno continuità: il valore si abbassa per valori di C elevati, che però vedremo avere Precision molto bassa.
+
+Menzione d'onore merita l'impostazione "SVM\_C12\_G12", che ha prodotto solo classificatori \emph{ill-defined} per tutte le classi di entrambe le ontologie.
+
+I classificatori difettosi sono inutilizzabili ma facili da identificare ed escludere. In un contesto applicativo reale verrebero esclusi dall'utilizzo. Pertanto le analisi che seguono filtrano il bias introdotto dai classificatori \emph{ill-defined} e analizzano sono i classificatori costruiti correttamente.
+
+\paragraph{Analisi a livelli}
 Per identificare i migliori classificatori e poterli confrontare tra loro, è stata creata una struttura a tre livelli. Nei primi due livelli, i classificatori di modelli diversi non interagiscono tra loro. In ogni livello, le ontologie sono sempre analizzate in maniera indipendente. 
 
 Al \textit{Livello 1} vengono confrontate le metriche prodotte dalle diverse configurazioni di uno stesso classificatore. Questo metodo consente di determinare qual è il migliore classificatore per ogni famiglia di modelli. La Figura~\ref{figure:liv1.1} e la Figura~\ref{figure:liv1.2} mostrano i migliori classificatori dell'ontologia CC, mentre la Figura~\ref{figure:liv1.3} e la Figura~\ref{figure:liv1.4} quelli dell'ontologia MF. 
@@ -505,6 +515,47 @@ La Figura~\ref{fig:liv2} mostra le configurazioni di AdaBoost e SVM per l'ontolo
 
 \paragraph*{}
 Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei classificatori di ogni famiglia di modelli. Le metriche considerate sono AUROC, AUPRC e f-score. La Figura~\ref{fig:liv3} mostra il confronto tra AdaBoost e SVM per l'ontologia CC, mentre la Figura~\ref{figure:liv31} quello per l'ontologia MF.
+
+% //////////////////// ILL-DEFINED /////////////////
+
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[ht]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-AdaBoost-ills.eps}%
+    \caption{Numero di ill-defined delle configurazioni di AdaBoost dell'ontologia CC}
+    \label{fig:ill1} 
+\end{figure}
+
+\begin{figure}[hb]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-SVM-ills.eps}%   
+    \caption{Numero di ill-defined delle configurazioni di SVM dell'ontologia CC}%
+    \label{figure:ill12}%
+\end{figure}
+
+\vspace*{\fill}
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[ht]%
+    \centering
+    \includegraphics[scale = 0.80]{MF-AdaBoost-ills.eps}%
+    \caption{Numero di ill-defined delle configurazioni di AdaBoost dell'ontologia MF}
+    \label{fig:ill13} 
+\end{figure}
+
+\begin{figure}[hb]%
+    \centering
+    \includegraphics[scale = 0.80]{MF-SVM-ills.eps}%   
+    \caption{Numero di ill-defined delle configurazioni di SVM dell'ontologia MF}%
+    \label{figure:ill14}%
+\end{figure}
+
+\vspace*{\fill}
 
 % //////////////////// LIVELLO 1 /////////////////
 
@@ -557,46 +608,7 @@ Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei
 
 \vspace*{\fill}
 
-% //////////////////// ILL-DEFINED /////////////////
 
-
-\topskip0pt
-\vspace*{\fill}
-
-\begin{figure}[ht]%
-    \centering
-    \includegraphics[scale = 0.80]{CC-AdaBoost-ills.eps}%
-    \caption{Numero di ill-defined delle configurazioni di AdaBoost dell'ontologia CC}
-    \label{fig:ill1} 
-\end{figure}
-
-\begin{figure}[hb]%
-    \centering
-    \includegraphics[scale = 0.80]{CC-SVM-ills.eps}%   
-    \caption{Numero di ill-defined delle configurazioni di SVM dell'ontologia CC}%
-    \label{figure:ill12}%
-\end{figure}
-
-\vspace*{\fill}
-
-\topskip0pt
-\vspace*{\fill}
-
-\begin{figure}[ht]%
-    \centering
-    \includegraphics[scale = 0.80]{MF-AdaBoost-ills.eps}%
-    \caption{Numero di ill-defined delle configurazioni di AdaBoost dell'ontologia MF}
-    \label{fig:ill13} 
-\end{figure}
-
-\begin{figure}[hb]%
-    \centering
-    \includegraphics[scale = 0.80]{MF-SVM-ills.eps}%   
-    \caption{Numero di ill-defined delle configurazioni di SVM dell'ontologia MF}%
-    \label{figure:ill14}%
-\end{figure}
-
-\vspace*{\fill}
 
 % //////////////////// LIVELLO 2 /////////////////
 
