@@ -3,6 +3,7 @@
 
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.preprocessing import LabelEncoder
+from sklearn.svm import SVC
 
 import numpy as np
 from scipy import sparse
@@ -169,6 +170,8 @@ def test_svm():
 def test_svm_sparse():
     X = sparse.csr_matrix([[1,1,1],[1,1,0],[1,0,0],[0,0,0], [0,1,1], [0,0,1]])
     y = np.array([1,1,1,1,0,0])
+    
+    m = SVC(decision_function_shape = "ovr", kernel = "linear").fit(X,y)
 
     svm = Pegasos(iterations=10000, lambda_reg = 0.05)
     svm.fit(X, y)
