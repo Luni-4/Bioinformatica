@@ -478,18 +478,18 @@ Come spiegato precedentemente, le metriche vengono calcolate per ogni fold di un
 \subsection{Ill-defined}
 Durante la fase di validazione è emerso che parte dei classificatori addestrati non ha predetto alcun esempio del test set, dando solo risposte negative. Poichè i 5 fold sono stati costruiti in modo da possedere sempre almeno un esempio positivo, questo significa che il classificatore ha commesso un errore.
 
-Tale errore va oltre alla logica dei normali errori che può commettere un classificatore. Non avendo predetto neanche un positivo (vero o falso che sia), non si può escludere che il classificatore abbia semplicemente appreso a rispondere negativamente a qualunque input, rendendosi di fatto inutilizzabile.
+Tale comportamento va oltre alla logica dei normali errori che può commettere un classificatore. Non avendo predetto neanche un positivo (vero o falso che sia), non si può escludere che il classificatore abbia semplicemente appreso a rispondere negativamente a qualunque input, rendendosi di fatto inutilizzabile.
 
-Inoltre, poichè il numero di positivi è zero, il calcolo della precision è impossibile, dal momento che avremmo una divisione per zero. Di conseguenza anche F-score non è computabile. Durante il calcolo delle metriche, scikit-learn intercetta l'errore, solleva un warning e fissa precision e F-score a zero. 
+Inoltre, poichè il numero di positivi è zero, il calcolo della precision è impossibile, dal momento che avremmo una divisione per zero. Di conseguenza anche F-score non è computabile. L'implementazione di scikit-learn rimedia parzialmente a questo comportamento: durante il calcolo delle metriche, scikit-learn intercetta l'errore, solleva un warning e fissa precision e F-score a zero, affermando che tali valori sono \emph{ill-defined}.
 
-Durante l'analisi delle metriche possiamo selezionare questi predittori intrinsecamente difettosi cercando tra i predittori quelli che abbiano Precision e F-score uguali a zero. Possiamo dunque misurare l'impatto di questi predittori (che denominiamo \emph{ill-defined}) e quantificarli.
+Durante l'analisi delle metriche possiamo selezionare questi predittori intrinsecamente difettosi cercando tra i predittori quelli che abbiano Precision e F-score uguali a zero. Possiamo dunque misurare l'impatto del problema e quantificare i predittori difettosi (che abbiamo battezzato  \emph{ill-defined}).
 
-Il numero di predittori \emph{ill-defined} aumenta quando il training set è sbilanciato, cioè quando si apprende da una classe che contiene poche proteine. Ovviamente anche la qualità dell'algoritmo di apprendimento è influente. Gli algoritmi che non bilanciano le classi e che non sono in grado di apprendere da pochi esempi genereranno predittori difettosi.
+Si osserva che il numero di predittori \emph{ill-defined} aumenta quando il training set è sbilanciato, cioè quando si apprende da una classe che contiene poche proteine. Ovviamente anche la qualità dell'algoritmo di apprendimento è influente. Gli algoritmi che non bilanciano le classi e che non sono in grado di apprendere da pochi esempi genereranno predittori difettosi.
 
 %grafico che mostra come varia qualche metrica e/o il numero di ill defined in base alla popolazione della classe
-Il sistema 5-fold prevede che per ogni classe dell'ontologia vengano generati 5 predittori. I predittori \emph{ill-defined} possono essere numerosi, ma fintantochè una classe possiede almeno un predittore non \emph{ill-defined} possiamo concludere che sia possibile costruire un predittore funzionante.
+Il sistema 5-fold prevede che per ogni classe dell'ontologia vengano generati 5 predittori. I predittori \emph{ill-defined} possono essere numerosi, ma fintantochè una classe possiede almeno un predittore non \emph{ill-defined} possiamo concludere che sia possibile costruire per tale classe dun predittore funzionante.
 
-Possiamo considerare il numero di predittori \emph{ill-defined} alla stregua di un indicatore di qualità dell'algoritmo di apprendimento. A parità di popolazione della classe, avere meno \emph{ill-defined} significa aver sfruttato meglio il valore degli esempi positivi.
+Possiamo considerare il numero di predittori \emph{ill-defined} alla stregua di un indicatore di qualità dell'algoritmo di apprendimento. A parità di cardinalità della classe, avere meno \emph{ill-defined} significa aver sfruttato meglio il valore degli esempi positivi.
 
 I grafici della Figura~\ref{fig:ill1} e ~\ref{figure:ill12} mostrano la quantità di ill-defined di AdaBoost e di Svm tra i 5-fold dell'ontologia CC, le Figure~\ref{fig:ill13} e ~\ref{figure:ill14}, le quantità per l'ontologia MF.
 
