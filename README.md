@@ -10,7 +10,6 @@ Bioinformatica
   3. [Link Utili](#23-link-utili)
 3. [Input](#3-input)
   1. [Drosophila melanogaster](#31-drosophila-melanogaster)
-  2. [Homo sapiens](#32-homo-sapiens)
 4. [Output](#4-output)
 5. [Dubbi](#5-dubbi)
 
@@ -59,15 +58,9 @@ MICHELE:
 
 - Dati: http://homes.di.unimi.it/valentini/DATA/ProgettoBioinf1617
 
-- Specifiche progetto Valentini: https://homes.di.unimi.it/valentini/SlideCorsi/Bioinformatica1617/Bioinf-Project1617.pdf
-
-- Salvataggio dei classificatori come oggetti: http://machinelearningmastery.com/save-load-machine-learning-models-python-scikit-learn/
-
 - Buona spiegazione di AUPRC e AUROC: http://www.chioka.in/differences-between-roc-auc-and-pr-auc/
 
 - Spiegazione sbilanciamento delle classi (Data Imbalance) e possibili metodi per risolverlo: http://www.chioka.in/class-imbalance-problem/
-
-- Spiegazione Precision-Recall Curve su Quora: https://www.quora.com/What-is-Precision-Recall-PR-curve?share=1
 
 - Metodi di scoring: http://scikit-learn.org/stable/modules/model_evaluation.html#scoring-parameter
 
@@ -89,18 +82,7 @@ MICHELE:
 - Matrice di adiacenza 3195 x 3195.Un entry della matrice contiene un valore che indica la similarità tra le proteine, individuate dagli indici della entry stessa.
 
 - Matrice delle annotazioni. Un entry della matrice può assumere solo i valori 0 e 1. Il valore 0 significa che la proteina non è associata alla classe, al contrario con 1 la proteina è associata.
-    - 3195 x 1951 per BP
-    - 3195 x 234 per MF
     - 3195 x 235 per CC
-
-## 3.2. Homo sapiens
-
-- Matrice di adiacenza 19247 x 19247. Un entry della matrice contiene un valore che indica la similarità tra le proteine, individuate dagli indici della entry stessa.
-
-- Matrice delle annotazioni. Un entry della matrice può assumere solo i valori 0 e 1. Il valore 0 significa che la proteina non è associata alla classe, al contrario con 1 la proteina è associata.
-    - 19247 x 3958 per BP
-    - 19247 x 899 per MF
-    - 19247 x 601 per CC
 
 # 4. Output
 
