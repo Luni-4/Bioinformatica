@@ -59,6 +59,9 @@
 % Converte file eps in pdf
 \usepackage{epstopdf}
 
+% Commenta ed esclude parti del file latex dalla compilazione
+\usepackage{comment}
+
 % //////////////////////////////////////////////////
 
 % Impostare interlinea a 1.5
@@ -75,6 +78,9 @@
 
 % Impostare i margini della pagina
 \geometry{left=2cm,right=2cm, top=2cm, bottom=2cm}
+
+% Reinclude nella compilazione le parti escluse
+%\includecomment{comment}
 
 % Definizione della cartella contenente le immagini da usare
 \graphicspath{ {img/} }
@@ -299,6 +305,8 @@ SVM\_Balanced\_Poly\_4  & balanced      & Poly   & 1.0      & auto    & 4       
 \paragraph*{}
 La complessità in tempo di ciascuna configurazione è un $\mathcal{O}(N^2)$ rispetto al numero degli esempi del training set. La velocità di computazione diminuisce considerevolmente all'aumentare della grandezza dei parametri usati.
 
+\begin{comment}
+
 \section{AdaBoost}
 AdaBoost (adaptive boosting) è un algoritmo incrementale che costruisce una serie di classificatori $ h_{i}:\mathbb{R}^{d}\rightarrow \{-1,+1\} $ appartenenti ad una famiglia $ \mathcal{H} $. 
 Il procedimento prevede di addestrare un classificatore di base sul training set, calcolarne l'errore, creare copie del classificatore e addestrarle sullo stesso training set, bilanciando i pesi degli elementi del training set classificati scorrettamente dai classificatori precedenti. I classificatori successivi tenderanno quindi a concentrarsi sui casi più difficili.
@@ -357,6 +365,8 @@ AdaBoost\_n50\_Bal\_Dep3 & 5 & Auto &  3\\
 \hline 
 \end{tabular} 
 \end{table}
+
+\end{comment}
 
 
 \section{Costruzione del software}
@@ -662,6 +672,8 @@ SVM, invece, presenta una grande varianza di performance. Si è reso necessario 
 
 \vspace*{\fill}
 
+\begin{comment}
+
 \appendix
 \chapter{Software}
 Il programma viene avviato eseguendo il file Python \textit{controller.py}. Questo file viene utilizzato per interfacciarsi con l'utente.
@@ -689,5 +701,7 @@ Il listato del codice implementato è descritto nelle pagine seguenti.
 \newpage
 
 \lstinputlisting{metrics.py}
+
+\end{comment}
 
 \end{document}

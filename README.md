@@ -38,12 +38,12 @@ I numeri associati ai punti rappresentano le priorità di risposta alle domande/
 2.  Capire come funziona SVM nello spazio dei kernel RBF, cosa succede al variare dei parametri C e gamma? Fare un’analisi approfondita.
 3.  Analizzare i risultati ottenuti con il progetto di bioinformatica, capire perché i nostri risultati sono buoni e valutare se il Boxplot è la scelta adeguata
 4.  Finire i grafici che volevi aggiungere per Bioinformatica, Pici
-5.  Le curve roc e prc le facciamo? Oppure ce ne freghiamo e andiamo avanti? Sarebbe bello perderci un po' di tempo per capire come funzionano. 
-6.  Eliminare gli ill-defined, durante l’orale ho notato che il prof non li aveva compresi perché erano troppo legati alla parte implementativa. Spieghiamo il problema di fondo che porta agli ill-defined.
-7.  Cercare di risolvere il problema degli ill-defined scegliendo dei pesi più sensati per le classi
-8.  Variare le scale dei grafici, perlopiù le ordinate, almeno abbiamo dei risultati più fighi in visualizzazione
-9.  Pulire il codice in alcuni punti, se fosse possibile. 
-.10 Correggere gli errori grammaticali e le frasi legnose del report
+5.  Eliminare gli ill-defined, durante l’orale ho notato che il prof non li aveva compresi perché erano troppo legati alla parte implementativa. Spieghiamo il problema di fondo che porta agli ill-defined.
+6.  Cercare di risolvere il problema degli ill-defined scegliendo dei pesi più sensati per le classi
+7.  Variare le scale dei grafici, perlopiù le ordinate, almeno abbiamo dei risultati più fighi in visualizzazione
+8.  Pulire il codice in alcuni punti, se fosse possibile. 
+9.  Correggere gli errori grammaticali e le frasi legnose del report
+10. Le curve roc e prc le facciamo? Oppure ce ne freghiamo e andiamo avanti? Sarebbe bello perderci un po' di tempo per capire come funzionano. 
 
 ## 2.2. Divisione dei compiti
 
