@@ -95,3 +95,32 @@ MICHELE:
 FEDERICO:
 
 MICHI:
+
+Come abbiamo già analizzato nel report.
+
+C è il parametro che controlla la penalizzazione sull'errore di classificazione quando si ha a che fare con training set non linearmente separabili. 
+Può essere usato anche senza l'utilizzo di un kernel.
+
+Un C alto comporta un errore di classificazione basso perché penalizza molto la misclassificazione, ma aumenta notevolmente la varianza.
+
+
+Gamma è uguale a 1/(2 * sigma). Ogni singolo punto viene "sollevato" dalla superficie in maniera tale che, nello spazio iperdimensionale, un iperpiano possa dividere gli esempi. 
+Solitamente lo spazio iperdimensionale è a infinite dimensioni. Il "sollevamento" di questi punti è controllato da sigma, quindi da gamma.
+Un altro modo per guardare gamma, forse più intuitivo, consiste nel valutare la relazione del singolo esempio xi rispetto agli esempi catalogati come support vectors, ovvero
+quegli esempi che violano i vincoli o che hanno margine esattamente uguale a 1. Con un gamma molto basso, la gaussiana sarà molto ampia e l'esempio xi
+verrà molto influenzato dai support vectors, mentre con un gamma alto, la gaussiana sarà molto stretta e i support vectors influenzeranno poco.
+
+Gamma alto comporta un errore più alto ma una varianza più bassa, un gamma basso il contrario.
+
+Quello che si vuole fare, è trovare dei valori di gamma e di C che siano bilanciati, in modo da poter controllare la varianza. Da risultati empirici,
+si è verificato che i risultati migliori si ottengono quando C è molto elevato e gamma piccolo. Il nostro caso C7_G7 è un esempio.
+
+Sempre da un'analisi empirica, quando gamma assume valore intermedi e C è elevatissimo, i risultati ottenuti non cambiano.
+
+Politica di lavoro:
+
+- Non usare valori di C e di Gamma che crescano o decrescano contemporaneamente, si otterrebbero dei brutti risultati fin da subito.
+- Esplorare valori di C e di Gamma inversamente proporzionali tra loro
+
+
+
