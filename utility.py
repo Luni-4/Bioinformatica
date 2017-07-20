@@ -2,6 +2,7 @@ from time import time
 import resource
 import json
 from collections import OrderedDict
+from sklearn.svm import SVC
 
 from scipy import sparse
 import numpy as np
@@ -14,6 +15,13 @@ def dot_product(x, y):
         return np.inner(x, y)
         
     raise ValueError("sparsity of arguments is not consistant")
+    
+def is_linearly_separable(X, y):    
+    m = SVC(decision_function_shape = "ovr", kernel = "linear")
+    
+    m.fit(X,y)     
+    
+    return m.score(X,y) == 1.0
 
 def memory(f):
     def k(*args, **kargs):

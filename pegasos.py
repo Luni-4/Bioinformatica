@@ -3,6 +3,7 @@
 
 from sklearn.base import BaseEstimator, ClassifierMixin
 from sklearn.preprocessing import LabelEncoder
+from sklearn.svm import SVC
 
 import numpy as np
 from scipy import sparse

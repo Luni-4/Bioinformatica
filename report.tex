@@ -59,6 +59,9 @@
 % Converte file eps in pdf
 \usepackage{epstopdf}
 
+% Commenta ed esclude parti del file latex dalla compilazione
+\usepackage{comment}
+
 % //////////////////////////////////////////////////
 
 % Impostare interlinea a 1.5
@@ -75,6 +78,9 @@
 
 % Impostare i margini della pagina
 \geometry{left=2cm,right=2cm, top=2cm, bottom=2cm}
+
+% Reinclude nella compilazione le parti escluse
+%\includecomment{comment}
 
 % Definizione della cartella contenente le immagini da usare
 \graphicspath{ {img/} }
@@ -146,7 +152,7 @@ Per affrontare il problema, si è puntato su modelli semplici, rapidi, che conse
 Ognuno dei metodi sopra elencati verrà applicato alla predizione dei termini MF (Molecular Function) e CC (Cellular Component) della GO (Gene Ontology).
 
 \paragraph*{}
-Il progetto è stato implementato usando il linguaggio \textit{Python}, più precisamente la versione 3.5, e la versione 0.18.1 della libreria per l'apprendimento automatico \textit{scikit-learn}. Il caricamento e l'elaborazione delle strutture è eseguito dalla versione 0.19.1 della libreria \textit{SciPy}.
+Il progetto è stato implementato usando il linguaggio \textit{Python}, più precisamente la versione 3.5, e la versione 0.18.1 della libreria per l'apprendimento automatico \textit{scikit-learn}. Il caricamento e l'elaborazione delle strutture dati è eseguito dalla versione 0.19.1 della libreria \textit{SciPy}.
 
 \paragraph*{}
 L'elaborato descrive i passaggi e le problematiche affrontate durante lo svolgimento del lavoro. Per fare ciò, si è deciso di associare ad ogni singolo stadio lavorativo un capitolo. 
@@ -164,7 +170,7 @@ Le feature degli esempi da fornire in input agli algoritmi di apprendimento sono
 Ogni ontologia è composta da un numero diverso di classi, questo significa che si hanno diverse \textit{Matrici delle Annotazioni}.
 
 \paragraph*{}
-La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica ed ha una dimensione effettiva di 3195 X 3195. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. Le entry della matrice contengono una misura di similarità, ricavata da fattori biologici, fra coppie di proteine.
+La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica ed ha una dimensione effettiva di $3195 \times 3195$. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. Le entry della matrice contengono una misura di similarità, ricavata da fattori biologici, fra coppie di proteine.
 Ciascuna entry può assumere valori tra $[0,1]$. Un valore vicino o uguale a 0 indica che le proteine non sono simili tra loro, mentre valori tendenti o uguali a 1 ne sanciscono la similarità. 
 La matrice risulta essere sparsa, a causa dell'elevato numero di entry pari a 0.
 
@@ -299,6 +305,8 @@ SVM\_Balanced\_Poly\_4  & balanced      & Poly   & 1.0      & auto    & 4       
 \paragraph*{}
 La complessità in tempo di ciascuna configurazione è un $\mathcal{O}(N^2)$ rispetto al numero degli esempi del training set. La velocità di computazione diminuisce considerevolmente all'aumentare della grandezza dei parametri usati.
 
+\begin{comment}
+
 \section{AdaBoost}
 AdaBoost (adaptive boosting) è un algoritmo incrementale che costruisce una serie di classificatori $ h_{i}:\mathbb{R}^{d}\rightarrow \{-1,+1\} $ appartenenti ad una famiglia $ \mathcal{H} $. 
 Il procedimento prevede di addestrare un classificatore di base sul training set, calcolarne l'errore, creare copie del classificatore e addestrarle sullo stesso training set, bilanciando i pesi degli elementi del training set classificati scorrettamente dai classificatori precedenti. I classificatori successivi tenderanno quindi a concentrarsi sui casi più difficili.
@@ -357,6 +365,8 @@ AdaBoost\_n50\_Bal\_Dep3 & 5 & Auto &  3\\
 \hline 
 \end{tabular} 
 \end{table}
+
+\end{comment}
 
 
 \section{Costruzione del software}
@@ -662,6 +672,8 @@ SVM, invece, presenta una grande varianza di performance. Si è reso necessario 
 
 \vspace*{\fill}
 
+\begin{comment}
+
 \appendix
 \chapter{Software}
 Il programma viene avviato eseguendo il file Python \textit{controller.py}. Questo file viene utilizzato per interfacciarsi con l'utente.
@@ -689,5 +701,7 @@ Il listato del codice implementato è descritto nelle pagine seguenti.
 \newpage
 
 \lstinputlisting{metrics.py}
+
+\end{comment}
 
 \end{document}
