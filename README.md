@@ -120,7 +120,7 @@ Sempre da un'analisi empirica, quando gamma assume valore intermedi e C è eleva
 Politica di lavoro:
 
 - Non usare valori di C e di Gamma che crescano o decrescano contemporaneamente, si otterrebbero dei brutti risultati fin da subito.
-- Esplorare valori di C e di Gamma inversamente proporzionali tra loro
+- Esplorare valori di C e Gamma che soddisfano la seguente relazione C >> Gamma
 
 
 
