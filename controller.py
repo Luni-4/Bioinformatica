@@ -31,6 +31,13 @@ if __name__ == '__main__':
     c = np.logspace(-2, 10, 13)
     g = np.logspace(-9, 3, 13)
     
+    i = 0
+    for b,a in zip(c,g):
+        print(i, b, a)
+        i += 1
+    
+    sys.exit()
+    
     # String for class_weight parameter
     b = "balanced"   
 
@@ -46,7 +53,10 @@ if __name__ == '__main__':
            "SVM_Balanced_C7":      SVC(decision_function_shape = "ovr", class_weight = b, C = 7),
            "SVM_Balanced_C0_G0":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[0], gamma = g[0]),
            "SVM_Balanced_C2_G2":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[2], gamma = g[2]),
+           "SVM_Balanced_C5_G5":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[5], gamma = g[5]),
+           "SVM_Balanced_C6_G6":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[6], gamma = g[6]),
            "SVM_Balanced_C7_G7":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[7], gamma = g[7]),
+           "SVM_Balanced_C8_G8":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[8], gamma = g[8]),
            "SVM_Balanced_C12_G12": SVC(decision_function_shape = "ovr", class_weight = b, C = c[12], gamma = g[12]),
            "SVM_Balanced_Poly_4":  SVC(decision_function_shape = "ovr", class_weight = b, kernel = "poly", degree = 4),
             
