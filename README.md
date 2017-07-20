@@ -5,15 +5,14 @@ Bioinformatica
 
 1. [Informazioni](#1-informazioni)
 2. [Modalità di lavoro](#2-modalità-di-lavoro)
-  1. [Divisione dei compiti](#21-divisione-dei-compiti)
-  2. [Link Utili](#22-link-utili)
+  1. [Idee](#21-idee)
+  2. [Divisione dei compiti](#22-divisione-dei-compiti)
+  3. [Link Utili](#23-link-utili)
 3. [Input](#3-input)
   1. [Drosophila melanogaster](#31-drosophila-melanogaster)
   2. [Homo sapiens](#32-homo-sapiens)
 4. [Output](#4-output)
-5. [Idee](#5-idee)
-6. [Dubbi](#6-dubbi)
-7. [Creazione Grafici](#7-creazione-grafici)
+5. [Dubbi](#5-dubbi)
 
 
 -----------------
@@ -31,21 +30,32 @@ Bioinformatica
 
 # 2. Modalità di lavoro
 
-## 2.1. Divisione dei compiti
+## 2.1. Idee
+
+I numeri associati ai punti rappresentano le priorità di risposta alle domande/esecuzione del lavoro. Più i valori sono bassi, più sono importanti.
+
+1.  Adaboost è necessario per Cesa? Oppure possiamo usare solo SVM e Pegasos? Tu cosa ne pensi? In questo modo lui ci chiederebbe solo SVM, i kernel e l’online gradient descent. La scelta di SVM è obbligata se vogliamo fare Pegasos, visto che è un’implementazione particolare di SVM. Potremmo confrontare i risultati ottenuti da entrambi.
+2.  Capire come funziona SVM nello spazio dei kernel RBF, cosa succede al variare dei parametri C e gamma? Fare un’analisi approfondita.
+3.  Analizzare i risultati ottenuti con il progetto di bioinformatica, capire perché i nostri risultati sono buoni e valutare se il Boxplot è la scelta adeguata
+4.  Finire i grafici che volevi aggiungere per Bioinformatica, Pici
+5.  Le curve roc e prc le facciamo? Oppure ce ne freghiamo e andiamo avanti? Sarebbe bello perderci un po' di tempo per capire come funzionano. 
+6.  Eliminare gli ill-defined, durante l’orale ho notato che il prof non li aveva compresi perché erano troppo legati alla parte implementativa. Spieghiamo il problema di fondo che porta agli ill-defined.
+7.  Cercare di risolvere il problema degli ill-defined scegliendo dei pesi più sensati per le classi
+8.  Variare le scale dei grafici, perlopiù le ordinate, almeno abbiamo dei risultati più fighi in visualizzazione
+9.  Pulire il codice in alcuni punti, se fosse possibile. 
+.10 Correggere gli errori grammaticali e le frasi legnose del report
+
+## 2.2. Divisione dei compiti
 
 FEDERICO:
 
-- Fare i grafici prc e roc con la stessa modalità adottata al livello 2 ---> teniamolo opzionale per mancanza di tempo visto che non ce l'ha richiesto
-- Mettere a posto AdaBoost sul report, ovvero cerca di renderlo più simile possibile a svm del report
-- Leggere che gli ills scritti da michi non siano cazzate
-- Allungare i grafici livello 1 e 3 (opzionale) 
+- Punti 4 e 8
 
 MICHELE:
 
-- Rileggere il documento, correggere gli errori, chiarire delle cose
-- Aggiungere spiegazione di roc e prc curve ai grafici
+- Vorrei occuparmi del punto 2 e del punto 7
 
-## 2.2. Link Utili
+## 2.3. Link Utili
 
 - Dati: http://homes.di.unimi.it/valentini/DATA/ProgettoBioinf1617
 
@@ -94,125 +104,12 @@ MICHELE:
 
 # 4. Output
 
-- Usare una 5-fold cross-validation per generare il training set e i test set, a partire dalle matrici di adiacenza e delle annotazioni in input.
+- Tanti grafici che mostrino il nostro operato
+- Dei buoni confronti tra i classificatori
+- Un buon report
 
-- Provare diverse soglie t di accettazione secondo un determinato criterio (??).
+# 5. Dubbi
 
-- Calcolare la Precisione (Prec(t)) e la sensibilità (Rec(t)) per le soglie t stabilite precedentemente. Cercare delle librerie che consentono di calcolarle
+FEDERICO:
 
-- Calcolare la F-score gerarchica (convertire in python il file F-hier.R, scritto in R, altrimenti usare una funzione di una libreria per calcolarla)
-
-# 5. Idee
-
-- Cercare una buona implementazione di Pegaso, possibilmente ottimizzata il più possibile
-- SVM normali
-- SVM con class_weight=‘balanced’
-- Approfondire parametro C nelle SVM
-- AdaBoost
-- Adaboost con diversi parametri o classificatori (quali?)
-- Fare grafici che mostrano come variano diverse metriche in funzione di quanto sono popolate le classi.
-
-# 6. Dubbi
-
--PRECISION E RECALL IN GRAFICI OPPURE FSCORE CHE È DATA DALL'UNIONE DELLE DUE? Io opterei per fscore, visto che è la media armonica tra le due,
-però anche mostrare le singole precision e recall specifica al meglio i risultati ottenuti. 
-
-
-SVM parametri
-
-Kernel RBF trasforma i dati in input dallo spazio delle feature in uno spazio kernel composto da gaussiane. Un link che spiega bene come funziona
-è questo https://calculatedcontent.com/2012/02/06/kernels_part_1/ più la pagina di Wikipedia https://en.wikipedia.org/wiki/Radial_basis_function_kernel
-
-Gamma: corrisponde all'inverso del raggio di influenza che determina quali campioni sono selezionati dal modello come support vectors. Con valori piccoli il
-raggio è molto grande, con valori alti il raggio è molto piccolo.
-
-Parametro C: parametro di tradeoff tra capacità di classificare al meglio gli esempi del training set (modello più complesso) e semplicità della funzione di decisione
-(modello più semplice). Un C basso comporta una funzione di decisione più semplice e quindi un modello più semplice, mentre un C alto mira a classificare al meglio
-tutti gli esempi del training set (potrebbe overfittare). C alti comporta una maggiore libertà del modello nel scegliere gli esempi per il support vector
-
-Svm è molto sensibile al parametro gamma. 
-
-Se gamma è troppo grande, il raggio di influenza è troppo piccolo e questo significa che il support vector
-conterrà solo gli esempi sul margine o quelli che violano il vincolo, ovvero il support vector stesso. In questo modo, qualsiasi sia il valore di C, l'overfitting è
-assicurato.
-
-Quando gamma è troppo piccolo, il raggio di influenza è tropp grande. Il support vector è composto da tutti gli esempi del training set. Il modello
-risulta troppo "vincolato" e quindi non riesce a ottenere la forma della funzione discriminante. (modello simile a quello lineare)
-
-I valori migliori si trovano sulla diagonale tra C e gamma.
-
-Delle buone configurazioni potrebbero essere:
-
--  Configurazione 1
-    - Kernel: RBF 
-    - Gamma basso (tanti esempi nel support vector) 
-    - Valori di C grandi (C sceglie più liberamente gli esempi da mettere come support vector)
-
--  Configurazione 2
-    - Kernel: RBF 
-    - Gamma medio (default) 
-    - Valori di C bassi (limitare la scelta dei support vectors e trovare un predittore con meno memoria e più velocemente)
-    
-C_range = [-2, 10]
-gamma_range = [-9, 3, 13]
-
-I range degli esempi sono dati in scala logaritmica in questo modo
-
-C_range = np.logspace(-2, 10, 13)
-gamma_range = np.logspace(-9, 3, 13)
-
-
-
-Kernel lineari: da scartare, in quanto non sappiamo se abbiamo training set linearmente separabili
-
-Kernel polinomiali: direi di provare a usare un degree (parametro ignorato dagli altri kernel) compreso tra 3 e 5. Usare valori più alti comporterebbe
-un elevato tempo di computazione.
-
--  Configurazione 3
-    - Kernel: Poly
-    - Degree: [3,5] 
-    - Gamma basso (tanti esempi nel support vector) 
-    - Valori di C grandi (C sceglie più liberamente gli esempi da mettere come support vector)
-
--  Configurazione 4
-    - Kernel: RBF
-    - Degree: [3,5] 
-    - Gamma medio (default) 
-    - Valori di C bassi (limitare la scelta dei support vectors e trovare un predittore con meno memoria e più velocemente)
-    
-# 7. Creazione Grafici
-
--  Livello 1 (Analisi delle configurazioni di classificatori)
-    - Per ogni ontologia (CC, MF)
-    - Per ogni famiglia (ada, svm) 
-    - Per ogni metrica (auroc, auprc, fscore1) --> precision, recall facoltativi 
-
-Ogni classificatore avrà 3 istogrammi (uno per ogni metrica) di 3 colonne l'uno. Le colonne rappresentano 3 configurazioni di parametri diversi e l'altezza delle colonne
-dipenderà dal valore della metrica considerata.
-
-Totale: 12 grafici 
-
-Non confrontare tra loro classificatori diversi! I grafici devono contenere colonne associate allo stesso classificatore!!!
-
--  Livello 2 (Analisi dei classificatori sulle classi ---> scegliere la configurazione migliore risultante dal livello 1)
-    - Per ogni ontologia (CC, MF)
-    - Per ogni famiglia (ada, svm) 
-    - Per fscore1, precision1, recall1
-
-Scegliere tra le classi delle ontologie quelle con un buon numero di positivi e alcune molto sbilanciate. Confrontare tra loro la precision, recall, fscore della stessa
-classe (metodo degli istogrammi vicini, come ho inviato nella foto su whatsapp). Fare tanti grafici quante sono le classi per il quale si vuole fare il confronto.
-Calcolare per queste classi anche la roc e la prc e valutarne la auroc e auprc. Auroc e Auprc valutate come istogrammi, mentre roc e prc con le loro curve, direi di metterle tutte in un unico grafico,
-come su scikit-learn
-
--  Livello 3 (Confronto classificatori ---> configuarazione migliore livello 1)
-    - Per ogni ontologia (CC, MF)
-    - Per ogni famiglia (ada, svm) 
-    
-In questo livello si usa il grafico di Pici, già creato. 
-Confrontare AdaBoost e Svm, con le configurazioni migliori, sulle migliori classi sbilanciate e le miglori classi ricce di positivi. Fare 2
-grafici. Uno per la classe positiva e una per la classe negativa
-
-
-
-
-
+MICHI:

@@ -146,7 +146,7 @@ Per affrontare il problema, si è puntato su modelli semplici, rapidi, che conse
 Ognuno dei metodi sopra elencati verrà applicato alla predizione dei termini MF (Molecular Function) e CC (Cellular Component) della GO (Gene Ontology).
 
 \paragraph*{}
-Il progetto è stato implementato usando il linguaggio \textit{Python}, più precisamente la versione 3.5, e la versione 0.18.1 della libreria per l'apprendimento automatico \textit{scikit-learn}. Il caricamento e l'elaborazione delle strutture è eseguito dalla versione 0.19.1 della libreria \textit{SciPy}.
+Il progetto è stato implementato usando il linguaggio \textit{Python}, più precisamente la versione 3.5, e la versione 0.18.1 della libreria per l'apprendimento automatico \textit{scikit-learn}. Il caricamento e l'elaborazione delle strutture dati è eseguito dalla versione 0.19.1 della libreria \textit{SciPy}.
 
 \paragraph*{}
 L'elaborato descrive i passaggi e le problematiche affrontate durante lo svolgimento del lavoro. Per fare ciò, si è deciso di associare ad ogni singolo stadio lavorativo un capitolo. 
@@ -164,7 +164,7 @@ Le feature degli esempi da fornire in input agli algoritmi di apprendimento sono
 Ogni ontologia è composta da un numero diverso di classi, questo significa che si hanno diverse \textit{Matrici delle Annotazioni}.
 
 \paragraph*{}
-La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica ed ha una dimensione effettiva di 3195 X 3195. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. Le entry della matrice contengono una misura di similarità, ricavata da fattori biologici, fra coppie di proteine.
+La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica ed ha una dimensione effettiva di $3195 \times 3195$. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. Le entry della matrice contengono una misura di similarità, ricavata da fattori biologici, fra coppie di proteine.
 Ciascuna entry può assumere valori tra $[0,1]$. Un valore vicino o uguale a 0 indica che le proteine non sono simili tra loro, mentre valori tendenti o uguali a 1 ne sanciscono la similarità. 
 La matrice risulta essere sparsa, a causa dell'elevato numero di entry pari a 0.
 
