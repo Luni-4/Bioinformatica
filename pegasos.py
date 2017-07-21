@@ -11,6 +11,7 @@ from scipy import sparse
 from utility import dot_product
 
 import random
+from abc import ABCMeta, abstractmethod
 
 # Class used to create and update the weight vector w
 class Weights:
@@ -86,11 +87,16 @@ def train_pegasos(model, X, Y):
         mean += model.weights.w
     
     # Calculate mean
-    model.weights.w = (mean / model.iterations) 
-             
+    model.weights.w = (mean / model.iterations)
+    
+    
+def with_metaclass(meta, *bases):
+    """Create a base class with a metaclass."""
+    return meta("NewBase", bases, {})             
         
-class Pegasos(BaseEstimator, ClassifierMixin):
-
+class PegasosBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
+    
+    @abstractmethod
     def __init__(self, iterations, lambda_reg):
         
         if iterations < 1:
@@ -133,18 +139,27 @@ class Pegasos(BaseEstimator, ClassifierMixin):
         train_pegasos(self, X, Y)
         
         return self
+        
+    def decision_function(self, X):
+        if not self.weights:
+            raise ValueError("You must call ""fit"" before ""decision_function""")
+
+        # Apply discriminant function f(x) = w * x^T to compute the predictions   
+        if sparse.issparse(X):
+            p = ((self.weights.w * X.T).toarray()).reshape(-1)           
+        else:
+            p = np.dot(self.weights.w, X.T)
+            
+        return p
     
     def predict(self, X):
     
-        # if _enc attribute isn't defined, the user hasn't launched fit function yet
+        # If _enc attribute isn't defined, the user hasn't carried out fit function yet
         if not hasattr(self, "_enc"):
             raise ValueError("You must call ""fit"" before ""predict""")
         
-        # Apply discriminant function f(x) = w * x^T to compute the predictions   
-        if sparse.issparse(X):
-            p = (self.weights.w * X.T.todense()).reshape(-1)
-        else:
-            p = np.dot(self.weights.w, X.T)
+        # Get predictions
+        p = self.decision_function(X)
         
         # Apply sgn function on the discriminant function f(x)    
         p[p>=0] = 1
@@ -154,14 +169,21 @@ class Pegasos(BaseEstimator, ClassifierMixin):
         p = p.astype(np.int32, copy = False)
         
         # Decode labels with their original value
-        return self._enc.inverse_transform(p)       
-    
+        return self._enc.inverse_transform(p)        
+        
+        
+class Pegasos(PegasosBase):
+    def __init__(self, iterations = 1000, lambda_reg = 0.05):
+        
+        super(Pegasos, self).__init__(
+            iterations = iterations, 
+            lambda_reg = lambda_reg)
 
 def test_svm():
     X = np.array([[1,1,1],[1,1,0],[1,0,0],[0,0,0], [0,1,1], [0,0,1]])
     y = np.array([1,1,1,1,0,0])
 
-    svm = Pegasos(iterations=10000, lambda_reg = 0.05)
+    svm = Pegasos()
     svm.fit(X, y)
     
     assert np.all(svm.predict(X) == y)
@@ -171,7 +193,7 @@ def test_svm_sparse():
     X = sparse.csr_matrix([[1,1,1],[1,1,0],[1,0,0],[0,0,0], [0,1,1], [0,0,1]])
     y = np.array([1,1,1,1,0,0])
 
-    svm = Pegasos(iterations=10000, lambda_reg = 0.05)
+    svm = Pegasos()
     svm.fit(X, y)
 
     assert np.all(svm.predict(X) == y)
@@ -179,4 +201,4 @@ def test_svm_sparse():
 if __name__ == '__main__':
 
     print(test_svm())
-    #print(test_svm_sparse())
+    print(test_svm_sparse())

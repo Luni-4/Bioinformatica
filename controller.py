@@ -1,6 +1,7 @@
 from sklearn.svm import SVC
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
+from pegasos import Pegasos
 
 from dataload import load_adj, load_annotation
 from utility import write_json
@@ -31,13 +32,6 @@ if __name__ == '__main__':
     c = np.logspace(-2, 10, 13)
     g = np.logspace(-9, 3, 13)
     
-    i = 0
-    for b,a in zip(c,g):
-        print(i, b, a)
-        i += 1
-    
-    sys.exit()
-    
     # String for class_weight parameter
     b = "balanced"   
 
@@ -64,15 +58,17 @@ if __name__ == '__main__':
            "AdaBoostDefault":      AdaBoostClassifier(),
            "AdaBoost_n10":         AdaBoostClassifier(n_estimators = 10),
            "AdaBoost_n10_Bal":     AdaBoostClassifier(DecisionTreeClassifier(max_depth = 1, class_weight = b), n_estimators = 10),
-           "AdaBoost_n100":        AdaBoostClassifier(n_estimators = 100)
+           "AdaBoost_n100":        AdaBoostClassifier(n_estimators = 100),
+           
+           # Pegasos Configurations
+           "Pegasos_Default":      Pegasos()
          }
     
     # Define what classifiers will be launched
     if len(sys.argv) < 3:
         cla = cl.keys()
     else:    
-        cla = sys.argv[2].split(",")
-       
+        cla = sys.argv[2].split(",")       
     
     # Check if the classifiers are into the classifiers dictionary
     if not set(cla) <= set(cl.keys()):
@@ -129,7 +125,7 @@ if __name__ == '__main__':
         # Write the header into the json file 
         write_json(f_temp, header)        
             
-        for j in range(0, Y.shape[1], 5):   
+        for j in range(0, Y.shape[1], 5):  
             metrics(c, X, Y.getdensecol(j), j, f_temp)
         
         # Save the footer as a dictionary
