@@ -6,7 +6,8 @@ from metricresult import *
 inputfolder = './Simulation/'
 outputfolder = 'img/'
 bestSettings = {'AdaBoost': 'AdaBoost_n100',
-                 'SVM': 'SVM_Balanced_C7_G7'}
+                 'SVM': 'SVM_Balanced_C7_G7',
+                 'Pegasos': 'Pegasos_Default'}
 
     
 def precision_recall_graph(precision, recall, auprc):
@@ -152,13 +153,13 @@ def level3(ont):
         ax = axs[i]
         cmp_MR_graph(mrs, metrics[i], ax)
     #fig.savefig(outputfolder + ont + '-level3.eps')
-    mrs[0].metric_on_population_graph()
+    #mrs[0].metric_on_population_graph()
 
 if __name__ == '__main__':
     for ont in ['CC', 'MF']:
-        for learner_fam in ['SVM', 'AdaBoost']:
-            #level1(ont, learner_fam)
-            #cmp_ills(ont, learner_fam)
+        for learner_fam in ['SVM', 'AdaBoost', 'Pegasos']:
+            level1(ont, learner_fam)
+            cmp_ills(ont, learner_fam)
             pass
         level3(ont)
-        #level2(ont)
+        level2(ont)
