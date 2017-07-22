@@ -11,7 +11,7 @@ Bioinformatica
 3. [Input](#3-input)
   1. [Drosophila melanogaster](#31-drosophila-melanogaster)
 4. [Output](#4-output)
-5. [Dubbi](#5-dubbi)
+5. [Comunicazioni](#5-comunicazioni)
 
 
 -----------------
@@ -48,11 +48,11 @@ I numeri associati ai punti rappresentano le priorità di risposta alle domande/
 
 FEDERICO:
 
-- Punti 4 e 8
+- Punti 4 e 7
 
 MICHELE:
 
-- Vorrei occuparmi del punto 2 e del punto 7
+- Vorrei occuparmi del punto 2 e del punto 6
 
 ## 2.3. Link Utili
 
@@ -90,11 +90,23 @@ MICHELE:
 - Dei buoni confronti tra i classificatori
 - Un buon report
 
-# 5. Dubbi
+# 5. Comunicazioni
 
-FEDERICO:
+DA FEDERICO:
 
-MICHI:
+
+
+A FEDERICO:
+
+Ho guardato AdaBoost, ottimo! Farei in modo di implementarlo con le classi astratte, come ho fatto per Pegasos. Ho spudoratamente copiato l'implementazione
+di scikit-learn di SVC. Prova a guardare come hanno fatto AdaBoost queli di scikit-learn. Basta che apri "[source]" nella segnatura del metodo sulla pagina
+di spiegazione.
+
+
+
+DA MICHI:
+
+SVM
 
 Come abbiamo già analizzato nel report.
 
@@ -121,6 +133,30 @@ Politica di lavoro:
 
 - Non usare valori di C e di Gamma che crescano o decrescano contemporaneamente, si otterrebbero dei brutti risultati fin da subito.
 - Esplorare valori di C e Gamma che soddisfano la seguente relazione C >> Gamma
+
+
+Pegasos
+
+Ho guardato i risultati di Pegasos e fanno totalmente schifo. Noi sappiamo che Pegasos funziona male su training set non linearmente separabili,
+ma a differenza del Perceptrone termina.
+
+Pegasos dipende da 2 parametri principali: 
+- Il numero di cicli T. Definisce quante volte deve essere ripetuto l'algoritmo, io lo terrei piuttosto alto. Di default l'ho messo a 1000.
+- Il coefficiente di regolarizzazione lambda_reg. Questo parametro imposta il peso di misclassificazione. Essendo definito come 1/lambda_reg nell'
+algoritmo, un valore piccolo comporta un errore elevato. Di default è posto a 0.05.
+
+Politica di lavoro: 
+- Creare configurazioni con un T compreso tra [10,000, 100,000] (tempo di esecuzione molto elevato) e scegliere un lambda_reg piccolo [0.00001, 0.000000001]
+- Uso dei kernel per Pegasos. In questo modo si proverebbe a risolvere il problema del training set non linearmente separabile.
+(Cesa non li ha richiesti, tu cosa ne dici? Rispondi qui sotto.)
+
+
+Ill-defined
+Le configurazioni di SVM non hanno portato a miglioramenti, io propongo di provare, oltre alla scelta dei parametri, nuovi approcci legati 
+a class_weight. Ci devo pensare su.
+
+A MICHI:
+    
 
 
 

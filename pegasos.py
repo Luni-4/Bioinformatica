@@ -8,7 +8,7 @@ from sklearn.svm import SVC
 import numpy as np
 from scipy import sparse
 
-from utility import dot_product
+from utility import dot_product, with_metaclass
 
 import random
 from abc import ABCMeta, abstractmethod
@@ -16,7 +16,6 @@ from abc import ABCMeta, abstractmethod
 # Class used to create and update the weight vector w
 class Weights:
     def __init__(self, X):        
-        #self.scale = 1.0
         self.dimensionality = X.shape[1]
 
         if sparse.issparse(X):
@@ -24,12 +23,7 @@ class Weights:
         else:
             self.w = np.zeros(self.dimensionality)              
 
-    def scale_to(self, scaling_factor):
-        # The author of the code uses this technique to update the weights only when (1 - 1/t) is very small
-        '''
-        if self.scale < constants.MIN_SCALE:
-            self.w *= self.scale
-            self.scale = 1.0'''       
+    def scale_to(self, scaling_factor): 
        
         # Update the weights 
         self.w *= scaling_factor        
@@ -56,9 +50,7 @@ def train_pegasos(model, X, Y):
     for iteration in range(1, model.iterations):
         
         # Choose the index of the random example
-        #i = random.randint(0, X.shape[0] - 1)
-        
-        i = iteration % 6
+        i = random.randint(0, X.shape[0] - 1)
         
         # Exctract X
         xi = X[i]
@@ -87,12 +79,7 @@ def train_pegasos(model, X, Y):
         mean += model.weights.w
     
     # Calculate mean
-    model.weights.w = (mean / model.iterations)
-    
-    
-def with_metaclass(meta, *bases):
-    """Create a base class with a metaclass."""
-    return meta("NewBase", bases, {})             
+    model.weights.w = (mean / model.iterations)           
         
 class PegasosBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
     
@@ -178,27 +165,3 @@ class Pegasos(PegasosBase):
         super(Pegasos, self).__init__(
             iterations = iterations, 
             lambda_reg = lambda_reg)
-
-def test_svm():
-    X = np.array([[1,1,1],[1,1,0],[1,0,0],[0,0,0], [0,1,1], [0,0,1]])
-    y = np.array([1,1,1,1,0,0])
-
-    svm = Pegasos()
-    svm.fit(X, y)
-    
-    assert np.all(svm.predict(X) == y)
-
-
-def test_svm_sparse():
-    X = sparse.csr_matrix([[1,1,1],[1,1,0],[1,0,0],[0,0,0], [0,1,1], [0,0,1]])
-    y = np.array([1,1,1,1,0,0])
-
-    svm = Pegasos()
-    svm.fit(X, y)
-
-    assert np.all(svm.predict(X) == y)
-    
-if __name__ == '__main__':
-
-    print(test_svm())
-    print(test_svm_sparse())

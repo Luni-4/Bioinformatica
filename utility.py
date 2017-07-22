@@ -7,6 +7,8 @@ from sklearn.svm import SVC
 from scipy import sparse
 import numpy as np
 
+''' Training set functions '''
+
 def dot_product(x, y):
     if sparse.issparse(x) and sparse.issparse(y):
         return (x * y.T)[0,0]
@@ -22,6 +24,22 @@ def is_linearly_separable(X, y):
     m.fit(X,y)     
     
     return m.score(X,y) == 1.0
+    
+    
+''' Class functions '''    
+    
+def with_metaclass(meta, *bases):
+    """Create a base class with a metaclass."""
+    return meta("NewBase", bases, {}) 
+    
+
+''' Json functions '''
+
+def write_json(filename, w):
+    with open(filename, "a") as f:
+        f.write(json.dumps(OrderedDict(w)) + "\n")
+
+''' Debug functions '''     
 
 def memory(f):
     def k(*args, **kargs):
@@ -40,10 +58,6 @@ def timer(f, l = ""):
         print("{0} Function {1}: {2} seconds".format(l, f.__name__, elapsed))
         return result
     return k
-    
-def write_json(filename, w):
-    with open(filename, "a") as f:
-        f.write(json.dumps(OrderedDict(w)) + "\n")
         
 def debug(*args):
     for x in args:
