@@ -32,6 +32,10 @@ if __name__ == '__main__':
     c = np.logspace(-2, 10, 13)
     g = np.logspace(-9, 3, 13)
     
+    # Range of T and lambda_reg
+    t = np.array([x for x in range(10000, 110000, 10000)])
+    l = np.sort(np.array([x/100000 for x in range(1, 11)]))[::-1]
+    
     # String for class_weight parameter
     b = "balanced"   
 
@@ -61,7 +65,9 @@ if __name__ == '__main__':
            "AdaBoost_n100":        AdaBoostClassifier(n_estimators = 100),
            
            # Pegasos Configurations
-           "Pegasos_Default":      Pegasos()
+           "Pegasos_Default":      Pegasos(),
+           "Pegasos_I0_L0":        Pegasos(iterations = t[0], lambda_reg = l[0]),
+           "Pegasos_I9_L9":        Pegasos(iterations = t[9], lambda_reg = l[9])
          }
     
     # Define what classifiers will be launched
