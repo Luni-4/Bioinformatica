@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     # Different configurations of the classifiers
     cl = {
-           # SVM Configurations
+           # Bad SVM Configurations
            "SVM_Unbalanced":       SVC(decision_function_shape = "ovr"),
            "SVM_Balanced":         SVC(decision_function_shape = "ovr", class_weight = b),
            "SVM_Balaman":          SVC(decision_function_shape = "ovr", class_weight = {0:0.01, 1:0.99}),
@@ -53,10 +53,28 @@ if __name__ == '__main__':
            "SVM_Balanced_C2_G2":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[2], gamma = g[2]),
            "SVM_Balanced_C5_G5":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[5], gamma = g[5]),
            "SVM_Balanced_C6_G6":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[6], gamma = g[6]),
-           "SVM_Balanced_C7_G7":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[7], gamma = g[7]),
-           "SVM_Balanced_C8_G8":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[8], gamma = g[8]),
            "SVM_Balanced_C12_G12": SVC(decision_function_shape = "ovr", class_weight = b, C = c[12], gamma = g[12]),
            "SVM_Balanced_Poly_4":  SVC(decision_function_shape = "ovr", class_weight = b, kernel = "poly", degree = 4),
+           
+           
+           # Good SVM Configurations
+           "SVM_Balanced_C7_G7":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[7], gamma = g[7]),
+           "SVM_Balanced_C8_G8":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[8], gamma = g[8]),
+           "SVM_Balanced_C9_G9":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[9], gamma = g[9]),
+           
+           # Try different class_weight for good SVM configurations
+           "SVM_Balaman_C7_G7":   SVC(decision_function_shape = "ovr", class_weight = {0:0.01, 1:0.99}, C = c[7], gamma = g[7]),
+           "SVM_Balaman_C8_G8":   SVC(decision_function_shape = "ovr", class_weight = {0:0.01, 1:0.99}, C = c[8], gamma = g[8]),
+           "SVM_Balaman_C9_G9":   SVC(decision_function_shape = "ovr", class_weight = {0:0.01, 1:0.99}, C = c[9], gamma = g[9]),
+           
+           # Try to modify class 1 only. Changing regularization parameter because weight doesn't sum 1 
+           "SVM_Balaman1_C7_G7":   SVC(decision_function_shape = "ovr", class_weight = {1: 1000}, C = c[7], gamma = g[7]),
+           "SVM_Balaman1_C8_G8":   SVC(decision_function_shape = "ovr", class_weight = {1: 1000}, C = c[8], gamma = g[8]),
+           "SVM_Balaman1_C9_G9":   SVC(decision_function_shape = "ovr", class_weight = {1: 1000}, C = c[9], gamma = g[9]),
+           
+           
+           
+           
             
            # AdaBoost Configurations
            "AdaBoostDefault":      AdaBoostClassifier(),
