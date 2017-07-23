@@ -145,6 +145,9 @@ Pegasos dipende da 2 parametri principali:
 - Il coefficiente di regolarizzazione lambda_reg. Questo parametro imposta il peso di misclassificazione. Essendo definito come 1/lambda_reg nell'
 algoritmo, un valore piccolo comporta un errore elevato. Di default è posto a 0.05.
 
+Leggendo il documento ufficiale dell'algoritmo, ho scoperto che Pegasos dipende solo da lambda_reg per cui da ora in poi testo tenendo fisso
+il parametro T e modificando solo lambda_reg (per gli esperimenti, l'autore ha usato 10^(-4), 2 x 10^(-4), 10^(-6)) 
+
 Politica di lavoro: 
 - Creare configurazioni con un T compreso tra [10,000, 100,000] (tempo di esecuzione molto elevato) e scegliere un lambda_reg piccolo [0.00001, 0.000000001]
 - Uso dei kernel per Pegasos. In questo modo si proverebbe a risolvere il problema del training set non linearmente separabile.

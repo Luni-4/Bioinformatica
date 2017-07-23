@@ -1,5 +1,6 @@
 from sklearn.svm import SVC
 from sklearn.ensemble import AdaBoostClassifier
+from sklearn.linear_model import SGDClassifier
 from sklearn.tree import DecisionTreeClassifier
 from pegasos import Pegasos
 
@@ -35,6 +36,7 @@ if __name__ == '__main__':
     # Range of T and lambda_reg
     t = np.array([x for x in range(10000, 110000, 10000)])
     l = np.sort(np.array([x/100000 for x in range(1, 11)]))[::-1]
+    l1 = np.array([0.0000000001, 0.00000000001, 2.0, 100.0, 1000.0, 1000000.0])
     
     # String for class_weight parameter
     b = "balanced"   
@@ -82,14 +84,27 @@ if __name__ == '__main__':
            "AdaBoost_n10_Bal":     AdaBoostClassifier(DecisionTreeClassifier(max_depth = 1, class_weight = b), n_estimators = 10),
            "AdaBoost_n100":        AdaBoostClassifier(n_estimators = 100),
            
-           # Pegasos Configurations
+           # Good Pegasos Configurations
            "Pegasos_Default":      Pegasos(),
            "Pegasos_I0_L0":        Pegasos(iterations = t[0], lambda_reg = l[0]),
-           "Pegasos_I9_L9":        Pegasos(iterations = t[9], lambda_reg = l[9])
-         }
+           "Pegasos_I9_L9":        Pegasos(iterations = t[9], lambda_reg = l[9]),
+           "Pegasos_I9_L1_0":      Pegasos(iterations = t[9], lambda_reg = l1[0]),
+           "Pegasos_I9_L1_1":      Pegasos(iterations = t[9], lambda_reg = l1[1]),
+           
+           # Bad Pegasos Configurations (they should be worse than the other ones)
+           "Pegasos_I0_L1_5":      Pegasos(iterations = t[0], lambda_reg = l1[5]),
+           "Pegasos_I9_L1_2":      Pegasos(iterations = t[9], lambda_reg = l1[2]),
+           "Pegasos_I9_L1_3":      Pegasos(iterations = t[9], lambda_reg = l1[3]),
+           "Pegasos_I9_L1_4":      Pegasos(iterations = t[9], lambda_reg = l1[4]),
+           
+           
+           # Try Pegasos of scikit-learn
+           "SGD":   SGDClassifier(power_t = 1, learning_rate = "invscaling", class_weight = b, n_iter = t[9], eta0 = 0.01),           
+         }    
     
     # Define what classifiers will be launched
     if len(sys.argv) < 3:
+    
         cla = cl.keys()
     else:    
         cla = sys.argv[2].split(",")       
