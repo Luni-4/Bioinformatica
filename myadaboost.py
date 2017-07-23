@@ -22,8 +22,6 @@ class AdaBoostBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
         self.est_weights = []
 
     def fit(self, X, y):
-        # X = np.array(X)
-        # y = np.array(y)
         # Encode labels with value between 0 and n_classes-1
         self._enc = LabelEncoder()
 
@@ -44,14 +42,18 @@ class AdaBoostBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
                              "X has %s samples, but y has %s." % (X.shape[0], Y.shape[0]))
         
         sample_weights = np.ones(X.shape[0]) / X.shape[0]
-        while len(self.estimators) <= self.n_estimator:
+        while len(self.estimators) < self.n_estimator:
             weak = DecisionTreeClassifier(max_depth=1)
             weak.fit(X, y, sample_weight=sample_weights)
             errors = np.array([weak.predict(t[0]) != t[1] for t in zip(X, y)])
-            e = np.sum([b * sw for b, sw in zip(errors, sample_weights)])
-
-            alpha = 0.5 * np.log((1 - e) / e)
-            print('e=%.2f a=%.2f' % (e, alpha))
+            epsilon = np.sum([b * sw for b, sw in zip(errors, sample_weights)])
+            if epsilon == 0:
+                self.estimators.append(weak)
+                self.est_weights.append(1)
+                # print('epsilon=%.5f a=%.5f' % (epsilon, 1))
+                break
+            alpha = 0.5 * np.log((1 - epsilon) / epsilon)
+            # print('epsilon=%.5f a=%.5f' % (epsilon, alpha))
             w = np.zeros(len(y))
             for i in range(len(y)):
                 if errors[i] == 1:
@@ -61,6 +63,7 @@ class AdaBoostBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
             sample_weights = w / w.sum()
             self.estimators.append(weak)
             self.est_weights.append(alpha)
+        # print('{} weaks. Their weights: {}'.format(len(self.estimators), self.est_weights))
 
     def decision_function(self, X):
         if not self.weights:
@@ -71,20 +74,19 @@ class AdaBoostBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
         # if _enc attribute isn't defined, the user hasn't launched fit function yet
         if not hasattr(self, "_enc"):
             raise ValueError("You must call ""fit"" before ""predict""")
-        # print('predico x = {}'.format(X))
 
-        if sparse.issparse(X):
-            print("X is sparse!")
+        # if sparse.issparse(X):
+        #     print("X is sparse!")
         p = [weak.predict(X) * w for w, weak in zip(self.est_weights, self.estimators)]
         p = reduce(lambda x, y: x+y, p)
 
         # Apply sgn function on the discriminant function f(x)    
         p[p>=0] = 1
         p[p<0] = 0
-                
+
         # Convert predictions floating-point values into int32 values
         p = p.astype(np.int32, copy = False)
-        
+
         # Decode labels with their original value
         return self._enc.inverse_transform(p)
 

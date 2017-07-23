@@ -32,7 +32,7 @@ if __name__ == '__main__':
     # 'Pegasos': Pegasos(),
     'MyAda_n10': AdaBoost()
     }
-    for onto_name in ['CC']:
+    for onto_name in ['CC', 'MF']:
         # Filename of the Annotation Matrix
         f_ann = "Data/Dros." + onto_name + ".ann.txt"
         
