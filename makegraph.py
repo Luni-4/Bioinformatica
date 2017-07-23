@@ -52,6 +52,7 @@ def cmp_ills(ont, learner_fam):
     ax.grid(axis='y')
     fig.autofmt_xdate(bottom=0.3)
     fig.subplots_adjust(left = 0.2)
+    fig.set_size_inches(5,4)
     fig.savefig(outputfolder + ont + '-' + learner_fam + '-ills.eps')
 
 def cmp_MR_graph(mrs, metric_name, ax, offset = 0):

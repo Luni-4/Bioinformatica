@@ -1,7 +1,8 @@
 from sklearn.svm import SVC
 from sklearn.ensemble import AdaBoostClassifier
 from sklearn.tree import DecisionTreeClassifier
-# from pegasos import Pegasos
+from pegasos import Pegasos
+from myadaboost import AdaBoost
 from dataload import load_adj, load_annotation
 from metrics import metrics 
 from utility import write_json
@@ -25,12 +26,13 @@ if __name__ == '__main__':
     # 'AdaBoost_n10': AdaBoostClassifier(n_estimators=10),
     # 'AdaBoost_n10_Bal': AdaBoostClassifier(DecisionTreeClassifier(max_depth=1, class_weight = "balanced"), n_estimators=10),
     # 'AdaBoost_n50_Bal': AdaBoostClassifier(DecisionTreeClassifier(max_depth=1, class_weight = "balanced")),
-    'AdaBoost_n5_Bal': AdaBoostClassifier(DecisionTreeClassifier(max_depth=1, class_weight = "balanced")),
+    #'AdaBoost_n5_Bal': AdaBoostClassifier(DecisionTreeClassifier(max_depth=1, class_weight = "balanced")),
     # 'AdaBoost_n50_Bal_Dep3': AdaBoostClassifier(DecisionTreeClassifier(max_depth=3, class_weight = "balanced")),
     # 'AdaBoost_n100': AdaBoostClassifier(n_estimators=100),
-    # 'Pegasos': Pegasos()
+    # 'Pegasos': Pegasos(),
+    'MyAda_n10': AdaBoost()
     }
-    for onto_name in ['CC', 'MF']:
+    for onto_name in ['CC']:
         # Filename of the Annotation Matrix
         f_ann = "Data/Dros." + onto_name + ".ann.txt"
         
