@@ -75,6 +75,9 @@ def train_pegasos(model, X, Y):
             # Calculate eta * yi * xi and update weights
             model.weights.add(xi, (eta * yi))
         
+        # Add class_weight to w_t+1
+        model.weights.scale_to(model.class_weight) 
+        
         # Sum w_t+1 model for mean
         mean += model.weights.w
     
@@ -84,18 +87,23 @@ def train_pegasos(model, X, Y):
 class PegasosBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
     
     @abstractmethod
-    def __init__(self, iterations, lambda_reg):
+    def __init__(self, iterations, lambda_reg, class_weight):
         
         if iterations < 1:
            raise ValueError("Iterations must be greater than 0")
            
         if lambda_reg <= 0.0:
-           raise ValueError("lambda_reg must be greater than 0") 
+           raise ValueError("lambda_reg must be greater than 0")
+           
+        if class_weight <= 0.0:
+           raise ValueError("class_weight must be greater than 0")  
            
         # T parameter
         self.iterations = iterations
         # Lambda parameter
-        self.lambda_reg = lambda_reg       
+        self.lambda_reg = lambda_reg 
+        # Class_weight parameter
+        self.class_weight = class_weight      
         # Weight Vector
         self.weights = None
     
@@ -160,8 +168,9 @@ class PegasosBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
         
         
 class Pegasos(PegasosBase):
-    def __init__(self, iterations = 1000, lambda_reg = 0.05):
+    def __init__(self, iterations = 1000, lambda_reg = 0.05, class_weight = 1):
         
         super(Pegasos, self).__init__(
             iterations = iterations, 
-            lambda_reg = lambda_reg)
+            lambda_reg = lambda_reg,
+            class_weight = class_weight)
