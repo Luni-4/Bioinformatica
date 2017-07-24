@@ -164,7 +164,7 @@ if __name__ == '__main__':
         header = [
                     ("Ontology",   sys.argv[1]),
                     ("Classifier", x ),                  
-                    ("Parameters", c.get_params()),                                    
+                    #("Parameters", c.get_params()),                                    
                     ("Start_Time", time.strftime("%c"))
                  ]
 

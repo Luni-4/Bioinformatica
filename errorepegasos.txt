@@ -1,0 +1,493 @@
+/usr/local/lib/python3.5/dist-packages/scipy/sparse/data.py:54: RuntimeWarning: overflow encountered in multiply
+  self.data *= other
+/usr/local/lib/python3.5/dist-packages/scipy/sparse/data.py:54: RuntimeWarning: overflow encountered in multiply
+  self.data *= other
+/usr/local/lib/python3.5/dist-packages/scipy/sparse/data.py:54: RuntimeWarning: overflow encountered in multiply
+  self.data *= other
+/usr/local/lib/python3.5/dist-packages/scipy/sparse/data.py:54: RuntimeWarning: overflow encountered in multiply
+  self.data *= other
+/usr/local/lib/python3.5/dist-packages/scipy/sparse/data.py:54: RuntimeWarning: overflow encountered in multiply
+  self.data *= other
+/home/federico/Dropbox/programmi/Bioinformatica/pegasos.py:160: RuntimeWarning: invalid value encountered in greater_equal
+  p[p>=0] = 1
+/home/federico/Dropbox/programmi/Bioinformatica/pegasos.py:161: RuntimeWarning: invalid value encountered in less
+  p[p<0] = 0
+/home/federico/Dropbox/programmi/Bioinformatica/pegasos.py:160: RuntimeWarning: invalid value encountered in greater_equal
+  p[p>=0] = 1
+/home/federico/Dropbox/programmi/Bioinformatica/pegasos.py:161: RuntimeWarning: invalid value encountered in less
+  p[p<0] = 0
+multiprocessing.pool.RemoteTraceback: 
+"""
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/_parallel_backends.py", line 344, in __call__
+    return self.func(*args, **kwargs)
+  File "/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py", line 131, in __call__
+    return [func(*args, **kwargs) for func, args, kwargs in self.items]
+  File "/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py", line 131, in <listcomp>
+    return [func(*args, **kwargs) for func, args, kwargs in self.items]
+  File "/usr/local/lib/python3.5/dist-packages/sklearn/model_selection/_validation.py", line 260, in _fit_and_score
+    test_score = _score(estimator, X_test, y_test, scorer)
+  File "/usr/local/lib/python3.5/dist-packages/sklearn/model_selection/_validation.py", line 288, in _score
+    score = scorer(estimator, X_test, y_test)
+  File "/usr/local/lib/python3.5/dist-packages/sklearn/metrics/scorer.py", line 91, in __call__
+    y_pred = estimator.predict(X)
+  File "/home/federico/Dropbox/programmi/Bioinformatica/pegasos.py", line 167, in predict
+    return self._enc.inverse_transform(p)
+  File "/usr/local/lib/python3.5/dist-packages/sklearn/preprocessing/label.py", line 172, in inverse_transform
+    raise ValueError("y contains new labels: %s" % str(diff))
+ValueError: y contains new labels: [-2147483648]
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3.5/multiprocessing/pool.py", line 119, in worker
+    result = (True, func(*args, **kwds))
+  File "/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/_parallel_backends.py", line 353, in __call__
+    raise TransportableException(text, e_type)
+sklearn.externals.joblib.my_exceptions.TransportableException: TransportableException
+___________________________________________________________________________
+ValueError                                         Mon Jul 24 11:16:54 2017
+PID: 1224                                    Python 3.5.2: /usr/bin/python3
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py in __call__(self=<sklearn.externals.joblib.parallel.BatchedCalls object>)
+    126     def __init__(self, iterator_slice):
+    127         self.items = list(iterator_slice)
+    128         self._size = len(self.items)
+    129 
+    130     def __call__(self):
+--> 131         return [func(*args, **kwargs) for func, args, kwargs in self.items]
+        self.items = [(<function _fit_and_score>, (Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), <3195x3195 sparse matrix of type '<class 'numpy.... stored elements in Compressed Sparse Row format>, array([False, False, False, ..., False, False, False], dtype=bool), make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0), array([ 635,  636,  637, ..., 3192, 3193, 3194]), array([   0,    1,    2,    3,    4,    5,    6,... 633,  634,  718,  773,  840,
+       1203, 1631]), 0, None, None), {})]
+    132 
+    133     def __len__(self):
+    134         return self._size
+    135 
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py in <listcomp>(.0=<list_iterator object>)
+    126     def __init__(self, iterator_slice):
+    127         self.items = list(iterator_slice)
+    128         self._size = len(self.items)
+    129 
+    130     def __call__(self):
+--> 131         return [func(*args, **kwargs) for func, args, kwargs in self.items]
+        func = <function _fit_and_score>
+        args = (Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), <3195x3195 sparse matrix of type '<class 'numpy.... stored elements in Compressed Sparse Row format>, array([False, False, False, ..., False, False, False], dtype=bool), make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0), array([ 635,  636,  637, ..., 3192, 3193, 3194]), array([   0,    1,    2,    3,    4,    5,    6,... 633,  634,  718,  773,  840,
+       1203, 1631]), 0, None, None)
+        kwargs = {}
+    132 
+    133     def __len__(self):
+    134         return self._size
+    135 
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/model_selection/_validation.py in _fit_and_score(estimator=Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), X=<3195x3195 sparse matrix of type '<class 'numpy.... stored elements in Compressed Sparse Row format>, y=array([False, False, False, ..., False, False, False], dtype=bool), scorer=make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0), train=array([ 635,  636,  637, ..., 3192, 3193, 3194]), test=array([   0,    1,    2,    3,    4,    5,    6,... 633,  634,  718,  773,  840,
+       1203, 1631]), verbose=0, parameters=None, fit_params={}, return_train_score=False, return_parameters=False, return_n_test_samples=False, return_times=False, error_score='raise')
+    255                              " numeric value. (Hint: if using 'raise', please"
+    256                              " make sure that it has been spelled correctly.)")
+    257 
+    258     else:
+    259         fit_time = time.time() - start_time
+--> 260         test_score = _score(estimator, X_test, y_test, scorer)
+        test_score = undefined
+        estimator = Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05)
+        X_test = <640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>
+        y_test = array([False, False, False, False, False, False,...,  True,  True,  True,  True,  True], dtype=bool)
+        scorer = make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0)
+    261         score_time = time.time() - start_time - fit_time
+    262         if return_train_score:
+    263             train_score = _score(estimator, X_train, y_train, scorer)
+    264 
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/model_selection/_validation.py in _score(estimator=Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), X_test=<640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>, y_test=array([False, False, False, False, False, False,...,  True,  True,  True,  True,  True], dtype=bool), scorer=make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0))
+    283 def _score(estimator, X_test, y_test, scorer):
+    284     """Compute the score of an estimator on a given test set."""
+    285     if y_test is None:
+    286         score = scorer(estimator, X_test)
+    287     else:
+--> 288         score = scorer(estimator, X_test, y_test)
+        score = undefined
+        scorer = make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0)
+        estimator = Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05)
+        X_test = <640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>
+        y_test = array([False, False, False, False, False, False,...,  True,  True,  True,  True,  True], dtype=bool)
+    289     if hasattr(score, 'item'):
+    290         try:
+    291             # e.g. unwrap memmapped scalars
+    292             score = score.item()
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/metrics/scorer.py in __call__(self=make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0), estimator=Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), X=<640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>, y_true=array([False, False, False, False, False, False,...,  True,  True,  True,  True,  True], dtype=bool), sample_weight=None)
+     86         score : float
+     87             Score function applied to prediction of estimator on X.
+     88         """
+     89         super(_PredictScorer, self).__call__(estimator, X, y_true,
+     90                                              sample_weight=sample_weight)
+---> 91         y_pred = estimator.predict(X)
+        y_pred = undefined
+        estimator.predict = <bound method PegasosBase.predict of Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05)>
+        X = <640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>
+     92         if sample_weight is not None:
+     93             return self._sign * self._score_func(y_true, y_pred,
+     94                                                  sample_weight=sample_weight,
+     95                                                  **self._kwargs)
+
+...........................................................................
+/home/federico/Dropbox/programmi/Bioinformatica/pegasos.py in predict(self=Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), X=<640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>)
+    162                 
+    163         # Convert predictions floating-point values into int32 values
+    164         p = p.astype(np.int32, copy = False)
+    165         
+    166         # Decode labels with their original value
+--> 167         return self._enc.inverse_transform(p)        
+        self._enc.inverse_transform = <bound method LabelEncoder.inverse_transform of LabelEncoder()>
+        p = array([-2147483648, -2147483648, -2147483648, -2...47483648, -2147483648, -2147483648], dtype=int32)
+    168         
+    169         
+    170 class Pegasos(PegasosBase):
+    171     def __init__(self, iterations = 1000, lambda_reg = 0.05, class_weight = 1):
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/preprocessing/label.py in inverse_transform(self=LabelEncoder(), y=array([-2147483648, -2147483648, -2147483648, -2...47483648, -2147483648, -2147483648], dtype=int32))
+    167         """
+    168         check_is_fitted(self, 'classes_')
+    169 
+    170         diff = np.setdiff1d(y, np.arange(len(self.classes_)))
+    171         if diff:
+--> 172             raise ValueError("y contains new labels: %s" % str(diff))
+        diff = array([-2147483648], dtype=int32)
+    173         y = np.asarray(y)
+    174         return self.classes_[y]
+    175 
+    176 
+
+ValueError: y contains new labels: [-2147483648]
+___________________________________________________________________________
+"""
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py", line 682, in retrieve
+    self._output.extend(job.get(timeout=self.timeout))
+  File "/usr/lib/python3.5/multiprocessing/pool.py", line 608, in get
+    raise self._value
+sklearn.externals.joblib.my_exceptions.TransportableException: TransportableException
+___________________________________________________________________________
+ValueError                                         Mon Jul 24 11:16:54 2017
+PID: 1224                                    Python 3.5.2: /usr/bin/python3
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py in __call__(self=<sklearn.externals.joblib.parallel.BatchedCalls object>)
+    126     def __init__(self, iterator_slice):
+    127         self.items = list(iterator_slice)
+    128         self._size = len(self.items)
+    129 
+    130     def __call__(self):
+--> 131         return [func(*args, **kwargs) for func, args, kwargs in self.items]
+        self.items = [(<function _fit_and_score>, (Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), <3195x3195 sparse matrix of type '<class 'numpy.... stored elements in Compressed Sparse Row format>, array([False, False, False, ..., False, False, False], dtype=bool), make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0), array([ 635,  636,  637, ..., 3192, 3193, 3194]), array([   0,    1,    2,    3,    4,    5,    6,... 633,  634,  718,  773,  840,
+       1203, 1631]), 0, None, None), {})]
+    132 
+    133     def __len__(self):
+    134         return self._size
+    135 
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py in <listcomp>(.0=<list_iterator object>)
+    126     def __init__(self, iterator_slice):
+    127         self.items = list(iterator_slice)
+    128         self._size = len(self.items)
+    129 
+    130     def __call__(self):
+--> 131         return [func(*args, **kwargs) for func, args, kwargs in self.items]
+        func = <function _fit_and_score>
+        args = (Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), <3195x3195 sparse matrix of type '<class 'numpy.... stored elements in Compressed Sparse Row format>, array([False, False, False, ..., False, False, False], dtype=bool), make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0), array([ 635,  636,  637, ..., 3192, 3193, 3194]), array([   0,    1,    2,    3,    4,    5,    6,... 633,  634,  718,  773,  840,
+       1203, 1631]), 0, None, None)
+        kwargs = {}
+    132 
+    133     def __len__(self):
+    134         return self._size
+    135 
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/model_selection/_validation.py in _fit_and_score(estimator=Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), X=<3195x3195 sparse matrix of type '<class 'numpy.... stored elements in Compressed Sparse Row format>, y=array([False, False, False, ..., False, False, False], dtype=bool), scorer=make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0), train=array([ 635,  636,  637, ..., 3192, 3193, 3194]), test=array([   0,    1,    2,    3,    4,    5,    6,... 633,  634,  718,  773,  840,
+       1203, 1631]), verbose=0, parameters=None, fit_params={}, return_train_score=False, return_parameters=False, return_n_test_samples=False, return_times=False, error_score='raise')
+    255                              " numeric value. (Hint: if using 'raise', please"
+    256                              " make sure that it has been spelled correctly.)")
+    257 
+    258     else:
+    259         fit_time = time.time() - start_time
+--> 260         test_score = _score(estimator, X_test, y_test, scorer)
+        test_score = undefined
+        estimator = Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05)
+        X_test = <640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>
+        y_test = array([False, False, False, False, False, False,...,  True,  True,  True,  True,  True], dtype=bool)
+        scorer = make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0)
+    261         score_time = time.time() - start_time - fit_time
+    262         if return_train_score:
+    263             train_score = _score(estimator, X_train, y_train, scorer)
+    264 
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/model_selection/_validation.py in _score(estimator=Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), X_test=<640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>, y_test=array([False, False, False, False, False, False,...,  True,  True,  True,  True,  True], dtype=bool), scorer=make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0))
+    283 def _score(estimator, X_test, y_test, scorer):
+    284     """Compute the score of an estimator on a given test set."""
+    285     if y_test is None:
+    286         score = scorer(estimator, X_test)
+    287     else:
+--> 288         score = scorer(estimator, X_test, y_test)
+        score = undefined
+        scorer = make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0)
+        estimator = Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05)
+        X_test = <640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>
+        y_test = array([False, False, False, False, False, False,...,  True,  True,  True,  True,  True], dtype=bool)
+    289     if hasattr(score, 'item'):
+    290         try:
+    291             # e.g. unwrap memmapped scalars
+    292             score = score.item()
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/metrics/scorer.py in __call__(self=make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0), estimator=Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), X=<640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>, y_true=array([False, False, False, False, False, False,...,  True,  True,  True,  True,  True], dtype=bool), sample_weight=None)
+     86         score : float
+     87             Score function applied to prediction of estimator on X.
+     88         """
+     89         super(_PredictScorer, self).__call__(estimator, X, y_true,
+     90                                              sample_weight=sample_weight)
+---> 91         y_pred = estimator.predict(X)
+        y_pred = undefined
+        estimator.predict = <bound method PegasosBase.predict of Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05)>
+        X = <640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>
+     92         if sample_weight is not None:
+     93             return self._sign * self._score_func(y_true, y_pred,
+     94                                                  sample_weight=sample_weight,
+     95                                                  **self._kwargs)
+
+...........................................................................
+/home/federico/Dropbox/programmi/Bioinformatica/pegasos.py in predict(self=Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), X=<640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>)
+    162                 
+    163         # Convert predictions floating-point values into int32 values
+    164         p = p.astype(np.int32, copy = False)
+    165         
+    166         # Decode labels with their original value
+--> 167         return self._enc.inverse_transform(p)        
+        self._enc.inverse_transform = <bound method LabelEncoder.inverse_transform of LabelEncoder()>
+        p = array([-2147483648, -2147483648, -2147483648, -2...47483648, -2147483648, -2147483648], dtype=int32)
+    168         
+    169         
+    170 class Pegasos(PegasosBase):
+    171     def __init__(self, iterations = 1000, lambda_reg = 0.05, class_weight = 1):
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/preprocessing/label.py in inverse_transform(self=LabelEncoder(), y=array([-2147483648, -2147483648, -2147483648, -2...47483648, -2147483648, -2147483648], dtype=int32))
+    167         """
+    168         check_is_fitted(self, 'classes_')
+    169 
+    170         diff = np.setdiff1d(y, np.arange(len(self.classes_)))
+    171         if diff:
+--> 172             raise ValueError("y contains new labels: %s" % str(diff))
+        diff = array([-2147483648], dtype=int32)
+    173         y = np.asarray(y)
+    174         return self.classes_[y]
+    175 
+    176 
+
+ValueError: y contains new labels: [-2147483648]
+___________________________________________________________________________
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "controller.py", line 175, in <module>
+    metrics(c, X, Y.getdensecol(j), j, f_temp)
+  File "/home/federico/Dropbox/programmi/Bioinformatica/metrics.py", line 58, in metrics
+    cross_val_score(c, X, Y, cv = 5, scoring = ftwo_scorer, n_jobs = 5) 
+  File "/usr/local/lib/python3.5/dist-packages/sklearn/model_selection/_validation.py", line 140, in cross_val_score
+    for train, test in cv_iter)
+  File "/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py", line 768, in __call__
+    self.retrieve()
+  File "/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py", line 719, in retrieve
+    raise exception
+sklearn.externals.joblib.my_exceptions.JoblibValueError: JoblibValueError
+___________________________________________________________________________
+Multiprocessing exception:
+...........................................................................
+/home/federico/Dropbox/programmi/Bioinformatica/controller.py in <module>()
+    170 
+    171         # Write the header into the json file 
+    172         write_json(f_temp, header)        
+    173             
+    174         for j in range(0, Y.shape[1], 5):  
+--> 175             metrics(c, X, Y.getdensecol(j), j, f_temp)
+    176         
+    177         # Save the footer as a dictionary
+    178         footer = [("End_Time", time.strftime("%c"))]
+    179              
+
+...........................................................................
+/home/federico/Dropbox/programmi/Bioinformatica/metrics.py in metrics(c=Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), X=<3195x3195 sparse matrix of type '<class 'numpy.... stored elements in Compressed Sparse Row format>, Y=array([False, False, False, ..., False, False, False], dtype=bool), nc=0, f='Simulation/CC/M_CC_Pegasos_Bal_Default.json')
+     53 
+     54 def metrics(c, X, Y, nc, f):
+     55     
+     56     ftwo_scorer = make_scorer(my_custom_loss_func, n = nc, json = f)
+     57         
+---> 58     cross_val_score(c, X, Y, cv = 5, scoring = ftwo_scorer, n_jobs = 5) 
+        c = Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05)
+        X = <3195x3195 sparse matrix of type '<class 'numpy.... stored elements in Compressed Sparse Row format>
+        Y = array([False, False, False, ..., False, False, False], dtype=bool)
+        ftwo_scorer = make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0)
+     59 
+     60 
+     61 
+     62 
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/model_selection/_validation.py in cross_val_score(estimator=Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), X=<3195x3195 sparse matrix of type '<class 'numpy.... stored elements in Compressed Sparse Row format>, y=array([False, False, False, ..., False, False, False], dtype=bool), groups=None, scoring=make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0), cv=StratifiedKFold(n_splits=5, random_state=None, shuffle=False), n_jobs=5, verbose=0, fit_params=None, pre_dispatch='2*n_jobs')
+    135     parallel = Parallel(n_jobs=n_jobs, verbose=verbose,
+    136                         pre_dispatch=pre_dispatch)
+    137     scores = parallel(delayed(_fit_and_score)(clone(estimator), X, y, scorer,
+    138                                               train, test, verbose, None,
+    139                                               fit_params)
+--> 140                       for train, test in cv_iter)
+        cv_iter = [(array([ 635,  636,  637, ..., 3192, 3193, 3194]), array([   0,    1,    2,    3,    4,    5,    6,... 633,  634,  718,  773,  840,
+       1203, 1631])), (array([   0,    1,    2, ..., 3192, 3193, 3194]), array([ 635,  636,  637,  638,  639,  640,  641,...1272, 1273, 1736, 1815, 2384,
+       2452, 2453])), (array([   0,    1,    2, ..., 3192, 3193, 3194]), array([1274, 1275, 1276, 1277, 1278, 1279, 1280,...1909, 1910, 1911, 2525, 2731, 2732,
+       2734])), (array([   0,    1,    2, ..., 3192, 3193, 3194]), array([1912, 1913, 1914, 1915, 1916, 1917, 1918,... 2546, 2547, 2548, 2549, 2739, 2740, 2743, 2744])), (array([   0,    1,    2, ..., 2740, 2743, 2744]), array([2550, 2551, 2552, 2553, 2554, 2555, 2556,... 3187, 3188, 3189, 3190, 3191, 3192, 3193, 3194]))]
+    141     return np.array(scores)[:, 0]
+    142 
+    143 
+    144 def _fit_and_score(estimator, X, y, scorer, train, test, verbose,
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py in __call__(self=Parallel(n_jobs=5), iterable=<generator object cross_val_score.<locals>.<genexpr>>)
+    763             if pre_dispatch == "all" or n_jobs == 1:
+    764                 # The iterable was consumed all at once by the above for loop.
+    765                 # No need to wait for async callbacks to trigger to
+    766                 # consumption.
+    767                 self._iterating = False
+--> 768             self.retrieve()
+        self.retrieve = <bound method Parallel.retrieve of Parallel(n_jobs=5)>
+    769             # Make sure that we get a last message telling us we are done
+    770             elapsed_time = time.time() - self._start_time
+    771             self._print('Done %3i out of %3i | elapsed: %s finished',
+    772                         (len(self._output), len(self._output),
+
+---------------------------------------------------------------------------
+Sub-process traceback:
+---------------------------------------------------------------------------
+ValueError                                         Mon Jul 24 11:16:54 2017
+PID: 1224                                    Python 3.5.2: /usr/bin/python3
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py in __call__(self=<sklearn.externals.joblib.parallel.BatchedCalls object>)
+    126     def __init__(self, iterator_slice):
+    127         self.items = list(iterator_slice)
+    128         self._size = len(self.items)
+    129 
+    130     def __call__(self):
+--> 131         return [func(*args, **kwargs) for func, args, kwargs in self.items]
+        self.items = [(<function _fit_and_score>, (Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), <3195x3195 sparse matrix of type '<class 'numpy.... stored elements in Compressed Sparse Row format>, array([False, False, False, ..., False, False, False], dtype=bool), make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0), array([ 635,  636,  637, ..., 3192, 3193, 3194]), array([   0,    1,    2,    3,    4,    5,    6,... 633,  634,  718,  773,  840,
+       1203, 1631]), 0, None, None), {})]
+    132 
+    133     def __len__(self):
+    134         return self._size
+    135 
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/externals/joblib/parallel.py in <listcomp>(.0=<list_iterator object>)
+    126     def __init__(self, iterator_slice):
+    127         self.items = list(iterator_slice)
+    128         self._size = len(self.items)
+    129 
+    130     def __call__(self):
+--> 131         return [func(*args, **kwargs) for func, args, kwargs in self.items]
+        func = <function _fit_and_score>
+        args = (Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), <3195x3195 sparse matrix of type '<class 'numpy.... stored elements in Compressed Sparse Row format>, array([False, False, False, ..., False, False, False], dtype=bool), make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0), array([ 635,  636,  637, ..., 3192, 3193, 3194]), array([   0,    1,    2,    3,    4,    5,    6,... 633,  634,  718,  773,  840,
+       1203, 1631]), 0, None, None)
+        kwargs = {}
+    132 
+    133     def __len__(self):
+    134         return self._size
+    135 
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/model_selection/_validation.py in _fit_and_score(estimator=Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), X=<3195x3195 sparse matrix of type '<class 'numpy.... stored elements in Compressed Sparse Row format>, y=array([False, False, False, ..., False, False, False], dtype=bool), scorer=make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0), train=array([ 635,  636,  637, ..., 3192, 3193, 3194]), test=array([   0,    1,    2,    3,    4,    5,    6,... 633,  634,  718,  773,  840,
+       1203, 1631]), verbose=0, parameters=None, fit_params={}, return_train_score=False, return_parameters=False, return_n_test_samples=False, return_times=False, error_score='raise')
+    255                              " numeric value. (Hint: if using 'raise', please"
+    256                              " make sure that it has been spelled correctly.)")
+    257 
+    258     else:
+    259         fit_time = time.time() - start_time
+--> 260         test_score = _score(estimator, X_test, y_test, scorer)
+        test_score = undefined
+        estimator = Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05)
+        X_test = <640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>
+        y_test = array([False, False, False, False, False, False,...,  True,  True,  True,  True,  True], dtype=bool)
+        scorer = make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0)
+    261         score_time = time.time() - start_time - fit_time
+    262         if return_train_score:
+    263             train_score = _score(estimator, X_train, y_train, scorer)
+    264 
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/model_selection/_validation.py in _score(estimator=Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), X_test=<640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>, y_test=array([False, False, False, False, False, False,...,  True,  True,  True,  True,  True], dtype=bool), scorer=make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0))
+    283 def _score(estimator, X_test, y_test, scorer):
+    284     """Compute the score of an estimator on a given test set."""
+    285     if y_test is None:
+    286         score = scorer(estimator, X_test)
+    287     else:
+--> 288         score = scorer(estimator, X_test, y_test)
+        score = undefined
+        scorer = make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0)
+        estimator = Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05)
+        X_test = <640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>
+        y_test = array([False, False, False, False, False, False,...,  True,  True,  True,  True,  True], dtype=bool)
+    289     if hasattr(score, 'item'):
+    290         try:
+    291             # e.g. unwrap memmapped scalars
+    292             score = score.item()
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/metrics/scorer.py in __call__(self=make_scorer(my_custom_loss_func, json=Simulation/CC/M_CC_Pegasos_Bal_Default.json, n=0), estimator=Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), X=<640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>, y_true=array([False, False, False, False, False, False,...,  True,  True,  True,  True,  True], dtype=bool), sample_weight=None)
+     86         score : float
+     87             Score function applied to prediction of estimator on X.
+     88         """
+     89         super(_PredictScorer, self).__call__(estimator, X, y_true,
+     90                                              sample_weight=sample_weight)
+---> 91         y_pred = estimator.predict(X)
+        y_pred = undefined
+        estimator.predict = <bound method PegasosBase.predict of Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05)>
+        X = <640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>
+     92         if sample_weight is not None:
+     93             return self._sign * self._score_func(y_true, y_pred,
+     94                                                  sample_weight=sample_weight,
+     95                                                  **self._kwargs)
+
+...........................................................................
+/home/federico/Dropbox/programmi/Bioinformatica/pegasos.py in predict(self=Pegasos(class_weight=1000, iterations=1000, lambda_reg=0.05), X=<640x3195 sparse matrix of type '<class 'numpy.f... stored elements in Compressed Sparse Row format>)
+    162                 
+    163         # Convert predictions floating-point values into int32 values
+    164         p = p.astype(np.int32, copy = False)
+    165         
+    166         # Decode labels with their original value
+--> 167         return self._enc.inverse_transform(p)        
+        self._enc.inverse_transform = <bound method LabelEncoder.inverse_transform of LabelEncoder()>
+        p = array([-2147483648, -2147483648, -2147483648, -2...47483648, -2147483648, -2147483648], dtype=int32)
+    168         
+    169         
+    170 class Pegasos(PegasosBase):
+    171     def __init__(self, iterations = 1000, lambda_reg = 0.05, class_weight = 1):
+
+...........................................................................
+/usr/local/lib/python3.5/dist-packages/sklearn/preprocessing/label.py in inverse_transform(self=LabelEncoder(), y=array([-2147483648, -2147483648, -2147483648, -2...47483648, -2147483648, -2147483648], dtype=int32))
+    167         """
+    168         check_is_fitted(self, 'classes_')
+    169 
+    170         diff = np.setdiff1d(y, np.arange(len(self.classes_)))
+    171         if diff:
+--> 172             raise ValueError("y contains new labels: %s" % str(diff))
+        diff = array([-2147483648], dtype=int32)
+    173         y = np.asarray(y)
+    174         return self.classes_[y]
+    175 
+    176 
+
+ValueError: y contains new labels: [-2147483648]
