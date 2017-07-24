@@ -30,7 +30,7 @@ if __name__ == '__main__':
     # 'AdaBoost_n50_Bal_Dep3': AdaBoostClassifier(DecisionTreeClassifier(max_depth=3, class_weight = "balanced")),
     # 'AdaBoost_n100': AdaBoostClassifier(n_estimators=100),
     # 'Pegasos': Pegasos(),
-    'MyAda_n10': AdaBoost()
+    'AdaBoost_My_n10': AdaBoost()
     }
     for onto_name in ['CC', 'MF']:
         # Filename of the Annotation Matrix
