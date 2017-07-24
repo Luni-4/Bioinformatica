@@ -27,6 +27,7 @@
 
 % Gestisce il codice del documento
 \usepackage{listings}
+\renewcommand{\ttdefault}{txtt}
 
 % Gestisce i link
 \usepackage{hyperref}
@@ -80,7 +81,7 @@
 \geometry{left=2cm,right=2cm, top=2cm, bottom=2cm}
 
 % Reinclude nella compilazione le parti escluse
-%\includecomment{comment}
+\includecomment{comment}
 
 % Definizione della cartella contenente le immagini da usare
 \graphicspath{ {img/} }
@@ -94,6 +95,25 @@
 \definecolor{redstrings}{rgb}{0.9,0,0}
 
 % Opzioni grafiche delle liste contenenti il codice scritto in Python
+\lstset{
+    language=Python, 
+    basicstyle=\ttfamily\footnotesize,   
+    frame=single,
+    tabsize=2,
+    commentstyle=\color{greencomments},
+    keywordstyle=\bfseries\color{bluekeywords},
+    stringstyle=\color{redstrings},
+    title=\lstname,    
+    escapeinside={\%*}{*)},
+    breaklines=true,
+    breakatwhitespace=true,    
+    %framextopmargin=2pt,
+    %framexbottommargin=2pt,
+    inputencoding=utf8,
+    extendedchars=true,
+    showstringspaces=false,
+    literate={à}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {ù}{{\'u}}1,
+}
 \lstdefinestyle{customp}{
     language=Python, 
     basicstyle=\ttfamily\footnotesize,   
@@ -312,16 +332,75 @@ La complessità in tempo di ciascuna configurazione è un $\mathcal{O}(N^2)$ ris
 
 \section{AdaBoost}
 AdaBoost (adaptive boosting) è un algoritmo incrementale che costruisce una serie di classificatori $ h_{i}:\mathbb{R}^{d}\rightarrow \{-1,+1\} $ appartenenti ad una famiglia $ \mathcal{H} $. 
-Il procedimento prevede di addestrare un classificatore di base sul training set, calcolarne l'errore, creare copie del classificatore e addestrarle sullo stesso training set, bilanciando i pesi degli elementi del training set classificati scorrettamente dai classificatori precedenti. I classificatori successivi tenderanno quindi a concentrarsi sui casi più difficili.
+Il procedimento prevede di addestrare un classificatore di base sul training set, calcolarne l'errore, creare copie del classificatore e addestrarle sullo stesso training set, aumentando i pesi degli elementi del training set classificati scorrettamente dai classificatori precedenti. I classificatori successivi tenderanno quindi a concentrarsi sui casi più difficili.
 Al termine avremo un classificatore nella forma
 \[\hat{y}=\sgn(\sum_{i=1}^{T} w_{i}h_{i}(\vec{x}))\]
 dove $ \vec{w} $ è un vettore di coefficienti reali (pesi) e $ T $ è il numero di classificatori.
 
 Tipicamente per contenere i costi computazionali si sceglie una famiglia $ \mathcal{H} $ di classificatori di base molto semplici. $ T $ può essere un numero fissato o può crescere durante l'apprendimento e fermarsi secondo un dato criterio di stop.
 
-In questo lavoro si è usata l'implementazione \texttt{sklearn.ensemble.AdaBoostClassifier}
-\footnote{\url{scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html}}.
-Tra i parametri di interesse, osserviamo:
+\subsection{Implementazione}
+
+Si è implementato l'algoritmo AdaBoost e si è confrontata la nostra implementazione con quella presente nelle librerie scikit-learn (\texttt{sklearn.ensemble.AdaBoostClassifier}
+\footnote{\url{scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html}}).
+
+Illustrare la nostra implementazione può essere utile anche per comprendere meglio il funzionamento di base di AdaBoost. 
+Il codice è stato scritto per rispettare le API di scikit-learn, in modo da poter essere integrato e chiamato dalle funzioni di scoring. Rispettando lo standard, si è creata una classe \texttt{AdaBoost} con i metodi \texttt{fit(X, y)} e \texttt{predict(X)}. Il codice presenta numerosi altri elementi per la compatibilità, ma si tratta di dettagli che tralasceremo in questa sede. 
+
+Il metodo \texttt{\_\_init\_\_} crea un'istanza del classificatore:
+\begin{lstlisting}
+class AdaBoost:
+    def __init__(self, n_estimators=10):
+        if n_estimator < 1:
+            raise ValueError("n_estimator must be greater than 0")
+        self.n_estimators = n_estimators
+        self.estimators = []
+        self.est_weights = []
+\end{lstlisting}
+
+\texttt{n\_estimators} è il numero massimo di stimatori \textit{weak} da costruire per il boost. Si è fissato a 10 il valore di default. 
+\texttt{self.estimators} conterrà i classificatori $ h_{i} $ della classe $ \mathcal{H} $, mentre \texttt{self.est\_weights} corrisponde al vettore $ \vec{w} $ dei pesi degli stimatori.
+
+Vediamo ora l'implementazione del metodo che esegue l'apprendimento:
+\begin{lstlisting}
+    def fit(self, X, y):
+        ## OMISSIS ## Encode labels, validate input...
+
+        # Map 0 labels as -1
+        y[y == 0] = -1
+        
+        # Init sample_weights as a constant, normalized vector
+        sample_weights = np.ones(X.shape[0]) / X.shape[0]
+        
+        # Start creating weak learners and training them
+        while len(self.estimators) < self.n_estimators:
+            weak = DecisionTreeClassifier(max_depth=1)
+            weak.fit(X, y, sample_weight=sample_weights)
+            errors = np.array([weak.predict(t[0]) != t[1] for t in zip(X, y)])
+            
+            # epsilon: error on the training set whose elements are weighted.
+            epsilon = np.sum([b * sw for b, sw in zip(errors, sample_weights)])
+            if epsilon == 0:
+            	# This learner is perfect for this sample weights.
+            	# Push it and terminate learning.
+                self.estimators.append(weak)
+                self.est_weights.append(1)
+                break
+            # wi: weigth of this estimator
+            wi = 0.5 * np.log((1 - epsilon) / epsilon)
+            # recalculate sample_weights, increasing the importance of misclassified samples.
+            # the new weights will be used in the next iteration
+            for i in range(len(y)):
+                if errors[i] == 1:
+                    sample_weights[i] *= np.exp(wi)
+                else:
+                    sample_weights[i] *= np.exp(-wi)
+            # normalize
+            sample_weights = sample_weights / sample_weights.sum()
+            self.estimators.append(weak)
+            self.est_weights.append(wi)
+\end{lstlisting}
+Tra i parametri di interesse messi a disposizione dall'implementazione di scikit-learn, osserviamo:
 
 \begin{description}
 \item[\texttt{base\_estimator}:]la famiglia $ \mathcal{H} $ di \emph{weak learner};

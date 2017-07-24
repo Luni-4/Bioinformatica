@@ -14,10 +14,10 @@ from functools import reduce
 class AdaBoostBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
     
     @abstractmethod
-    def __init__(self, n_estimator):
-        if n_estimator < 1:
-            raise ValueError("n_estimator must be greater than 0")
-        self.n_estimator = n_estimator
+    def __init__(self, n_estimators):
+        if n_estimators < 1:
+            raise ValueError("n_estimators must be greater than 0")
+        self.n_estimators = n_estimators
         self.estimators = []
         self.est_weights = []
 
@@ -25,32 +25,37 @@ class AdaBoostBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
         # Encode labels with value between 0 and n_classes-1
         self._enc = LabelEncoder()
 
-        # Y contains the encoded labels
+        # y contains the encoded labels
         y = self._enc.fit_transform(y)
 
         # Number of classes
         if len(self._enc.classes_) != 2:
             raise ValueError("The number of classes must be 2")
 
-        # Map 0 labels as -1
-        y[y == 0] = -1
-
         # Check if X and Y have the same dimension
-        
         if X.shape[0] != y.shape[0]:
             raise ValueError("X and y don't have the same dimension\n"
                              "X has %s samples, but y has %s." % (X.shape[0], Y.shape[0]))
+
+        # Map 0 labels as -1
+        y[y == 0] = -1
         
+        # Init w as a constant, normalized vector
         sample_weights = np.ones(X.shape[0]) / X.shape[0]
-        while len(self.estimators) < self.n_estimator:
+
+
+        while len(self.estimators) < self.n_estimators:
             weak = DecisionTreeClassifier(max_depth=1)
             weak.fit(X, y, sample_weight=sample_weights)
             errors = np.array([weak.predict(t[0]) != t[1] for t in zip(X, y)])
+
+            # epsilon: error on the training set whose elements are weighted.
             epsilon = np.sum([b * sw for b, sw in zip(errors, sample_weights)])
             if epsilon == 0:
+                # This learner is perfect for this sample weights.
+                # Push it and terminate learning.
                 self.estimators.append(weak)
                 self.est_weights.append(1)
-                # print('epsilon=%.5f a=%.5f' % (epsilon, 1))
                 break
             alpha = 0.5 * np.log((1 - epsilon) / epsilon)
             # print('epsilon=%.5f a=%.5f' % (epsilon, alpha))
@@ -64,18 +69,11 @@ class AdaBoostBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
             self.est_weights.append(alpha)
         # print('{} weaks. Their weights: {}'.format(len(self.estimators), self.est_weights))
 
-    def decision_function(self, X):
-        if not self.weights:
-            raise ValueError("You must call ""fit"" before ""decision_function""")
-
-
     def predict(self, X):
         # if _enc attribute isn't defined, the user hasn't launched fit function yet
         if not hasattr(self, "_enc"):
             raise ValueError("You must call ""fit"" before ""predict""")
 
-        # if sparse.issparse(X):
-        #     print("X is sparse!")
         p = [weak.predict(X) * w for w, weak in zip(self.est_weights, self.estimators)]
         p = reduce(lambda x, y: x+y, p)
 
@@ -90,10 +88,10 @@ class AdaBoostBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
         return self._enc.inverse_transform(p)
 
 class AdaBoost(AdaBoostBase):
-    def __init__(self, n_estimator = 10):
+    def __init__(self, n_estimators = 10):
         
         super(AdaBoost, self).__init__(
-            n_estimator = n_estimator)
+            n_estimators = n_estimators)
 if __name__ == '__main__':
     X = np.array([[1,1,1], [1,1,0], [1,0,0], [0,0,0], [0,1,1], [0,0,1]])
     y = np.array([1,1,1,1,0,0])
