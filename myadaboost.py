@@ -54,13 +54,12 @@ class AdaBoostBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
                 break
             alpha = 0.5 * np.log((1 - epsilon) / epsilon)
             # print('epsilon=%.5f a=%.5f' % (epsilon, alpha))
-            w = np.zeros(len(y))
             for i in range(len(y)):
                 if errors[i] == 1:
-                    w[i] = sample_weights[i] * np.exp(alpha)
+                    sample_weights[i] *= np.exp(alpha)
                 else:
-                    w[i] = sample_weights[i] * np.exp(-alpha)
-            sample_weights = w / w.sum()
+                    sample_weights[i] *= np.exp(-alpha)
+            sample_weights = sample_weights / sample_weights.sum()
             self.estimators.append(weak)
             self.est_weights.append(alpha)
         # print('{} weaks. Their weights: {}'.format(len(self.estimators), self.est_weights))
