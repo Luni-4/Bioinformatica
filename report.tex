@@ -365,7 +365,6 @@ Vediamo ora l'implementazione del metodo che esegue l'apprendimento:
 \begin{lstlisting}
     def fit(self, X, y):
         ## OMISSIS ## Encode labels, validate input...
-
         # Map 0 labels as -1
         y[y == 0] = -1
         
@@ -400,11 +399,39 @@ Vediamo ora l'implementazione del metodo che esegue l'apprendimento:
             self.estimators.append(weak)
             self.est_weights.append(wi)
 \end{lstlisting}
-Tra i parametri di interesse messi a disposizione dall'implementazione di scikit-learn, osserviamo:
+
+Come classificatore di base si è optato per un \emph{decision stump}, cioè un predittore ad albero molto semplice, che presenta un solo test, quindi una sola ramificazione e al massimo due foglie. 
+Si è utilizzata l'implementazione dell'albero di decisione di scikit-learn\footnote{\url{scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html}}, impostandone il parametro \texttt{max\_depth} a 1.
+
+Ad ogni iterazione viene creato un nuovo \emph{stump} e viene addestrato sul training set opportunamente pesato attraverso il vettore \texttt{sample\_weights}, che assegna un peso ad ogni sample e influenza così la funzione di perdita dello \emph{stump}.
+Alla prima iterazione il peso è uguale per ogni sample, ma nelle iterazioni successive i sample classificati correttamente perdono peso a favore di quelli classificati scorrettamente.
+
+La funzione \texttt{predict} accetta una matrice \texttt{X} di feature, in cui ogni riga rappresenta un sample, per cui $ x_{i,j} $ contiene la $ j $-esima feature dell'$ i $-esimo sample\footnote{La funzione \texttt{predict} non è fatta per predire un singolo esempio, ma un vettore di esempi. Questa scelta, imposta dalle API di scikit-learn, rende purtroppo meno leggibile la funzione.}.
+
+\begin{lstlisting}
+    def predict(self, X):
+        ## OMISSIS ## validate input
+
+        p = [weak.predict(X) * w for w, weak in zip(self.est_weights, self.estimators)]
+        p = reduce(lambda x, y: x+y, p)
+
+        # Apply sgn function on the discriminant function f(x)    
+        p[p>=0] = 1
+        p[p<0] = 0
+
+        ## OMISSIS ## encode labels in p
+        return p
+\end{lstlisting}
+Per ogni vettore di feature di un esempio $\vec{x}$, questa funzione restituisce
+$ \hat{y}=\sgn(\sum_{i=1}^{T} w_{i}h_{i}(\vec{x})) $
+cioè la somma pesata delle predizioni di ogni \emph{stump} sull'esempio fornito.
+
+\paragraph{Implementazione di libreria}
+Si è confrontata la nostra implementazione con quella fornita dalla libreria scikit-learn. Tra i parametri di interesse messi a disposizione dalla libreria, osserviamo:
 
 \begin{description}
 \item[\texttt{base\_estimator}:]la famiglia $ \mathcal{H} $ di \emph{weak learner};
-\item[\texttt{n\_estimators}:]la quantità massima di stimatori da costruire, limite oltre il quale il boosting è terminato.
+\item[\texttt{n\_estimators}:]analogo alla nostra implementazione, è la quantità massima di stimatori da costruire, limite oltre il quale il boosting è terminato.
 In caso di aderenza perfetta, la procedura di boosting è arrestata prima del raggiungimento del limite.
 \item[\texttt{learning\_rate}:] permette di ridurre il contributo di ogni classificatore.
 
@@ -412,7 +439,6 @@ In caso di aderenza perfetta, la procedura di boosting è arrestata prima del ra
  
 \subsection{Parametri}
 In questo lavoro sono state esplorate diverse configurazioni del predittore AdaBoost.
-Come classificatore di base si è optato per un \emph{decision stump}, cioè un predittore ad albero molto semplice, che presenta un solo test, quindi una sola ramificazione e al massimo due foglie. Si è utilizzata l'implementazione dell'albero di decisione di scikit-learn\footnote{\url{scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html}}, impostandone il parametro \texttt{max\_depth} a 1.
 
 Si è mantenuto il \texttt{learning\_rate} a 1. 
 
