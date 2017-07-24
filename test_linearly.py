@@ -37,6 +37,8 @@ if __name__ == '__main__':
     # Open txt file and write the results into it
     with open(f_sim, "w", encoding = "UTF-8") as f:   
         for j in range(Y.shape[1]):
+            print('\rChecking class {}...'.format(j), end='')
             if is_linearly_separable(X, Y.getdensecol(j)):
+                print(' Is linearly separable!')
                 f.write(str(j) + "\n")  
     
