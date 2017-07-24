@@ -26,7 +26,7 @@ if __name__ == '__main__':
     f_ann = "Data/Dros." + sys.argv[1] + ".ann.txt"
     
      # Filename used to save results produced by linearly separable function
-    f_sim = p_sim + sys.argv[1] + ".json"
+    f_sim = p_sim + sys.argv[1] + ".txt"
     
     # Read Adjacent Matrix
     X = load_adj(f_adj)
@@ -34,13 +34,9 @@ if __name__ == '__main__':
     # Read Annotation Matrix
     Y = load_annotation(f_ann)
     
-    # For each class save if dataset is linearly separable
-    linear = []                
-    
-    for j in range(Y.shape[1]): 
-        linear.append(tuple(["class" + str(j), str(is_linearly_separable(X, Y.getdensecol(j)))]))
-    
-    # Write results into json file
-    write_json(f_sim, linear)
-    
+    # Open txt file and write the results into it
+    with open(f_sim, "w", encoding = "UTF-8") as f:   
+        for j in range(Y.shape[1]):
+            if is_linearly_separable(X, Y.getdensecol(j)):
+                f.write(str(j) + "\n")  
     

@@ -95,18 +95,10 @@ if __name__ == '__main__':
            "Pegasos_I0_L1_5":      Pegasos(iterations = t[0], lambda_reg = l1[5]),
            "Pegasos_I9_L1_2":      Pegasos(iterations = t[9], lambda_reg = l1[2]),
            "Pegasos_I9_L1_3":      Pegasos(iterations = t[9], lambda_reg = l1[3]),
-           "Pegasos_I9_L1_4":      Pegasos(iterations = t[9], lambda_reg = l1[4]),
-           
-           # Try good Pegasos configuration with balanced parameters
-           "Pegasos_Bal_Default":      Pegasos(class_weight = 1000),
-           "Pegasos_Bal_I0_L0":        Pegasos(iterations = t[0], lambda_reg = l[0],  class_weight = 1000),
-           "Pegasos_Bal_I9_L9":        Pegasos(iterations = t[9], lambda_reg = l[9],  class_weight = 1000),
-           "Pegasos_Bal_I9_L1_0":      Pegasos(iterations = t[9], lambda_reg = l1[0], class_weight = 1000),
-           "Pegasos_Bal_I9_L1_1":      Pegasos(iterations = t[9], lambda_reg = l1[1], class_weight = 1000),
-           
+           "Pegasos_I9_L1_4":      Pegasos(iterations = t[9], lambda_reg = l1[4]),      
            
            # Try Pegasos of scikit-learn
-           "SGD":   SGDClassifier(power_t = 1, learning_rate = "invscaling", class_weight = b, n_iter = t[9], eta0 = 0.01),           
+           "Pegasos_SGD":   SGDClassifier(power_t = 1, learning_rate = "invscaling", class_weight = b, n_iter = t[9], eta0 = 0.01),           
          }
          
     # Define what classifiers will be launched
@@ -171,7 +163,8 @@ if __name__ == '__main__':
         # Write the header into the json file 
         write_json(f_temp, header)        
             
-        for j in range(0, Y.shape[1], 5):
+        #for j in range(0, Y.shape[1], 5):
+        for j in range(2):
             metrics(c, X, Y.getdensecol(j), j, f_temp)
         
         # Save the footer as a dictionary

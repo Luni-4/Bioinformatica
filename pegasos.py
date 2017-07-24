@@ -73,10 +73,7 @@ def train_pegasos(model, X, Y):
         # I{h_st(w) < 1}
         if h_st < 1.0:      
             # Calculate eta * yi * xi and update weights
-            model.weights.add(xi, (eta * yi))
-        
-        # Add class_weight to w_t+1
-        model.weights.scale_to(model.class_weight) 
+            model.weights.add(xi, (eta * yi))      
         
         # Sum w_t+1 model for mean
         mean += model.weights.w
@@ -93,17 +90,12 @@ class PegasosBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
            raise ValueError("Iterations must be greater than 0")
            
         if lambda_reg <= 0:
-           raise ValueError("lambda_reg must be greater than 0")
-           
-        if class_weight <= 0:
-           raise ValueError("class_weight must be greater than 0")  
+           raise ValueError("lambda_reg must be greater than 0")      
            
         # T parameter
         self.iterations = iterations
         # Lambda parameter
-        self.lambda_reg = lambda_reg 
-        # Class_weight parameter
-        self.class_weight = class_weight      
+        self.lambda_reg = lambda_reg        
         # Weight Vector
         self.weights = None
     
@@ -138,6 +130,8 @@ class PegasosBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
     def decision_function(self, X):
         if not self.weights:
             raise ValueError("You must call ""fit"" before ""decision_function""")
+            
+        print(self.weights.w)
 
         # Apply discriminant function f(x) = w * x^T to compute the predictions   
         if sparse.issparse(X):
@@ -159,7 +153,7 @@ class PegasosBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
         # Apply sgn function on the discriminant function f(x)    
         p[p>=0] = 1
         p[p<0] = 0
-                
+                        
         # Convert predictions floating-point values into int32 values
         p = p.astype(np.int32, copy = False)
         
@@ -168,9 +162,8 @@ class PegasosBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
         
         
 class Pegasos(PegasosBase):
-    def __init__(self, iterations = 1000, lambda_reg = 0.05, class_weight = 1.0):
+    def __init__(self, iterations = 1000, lambda_reg = 0.05):
         
         super(Pegasos, self).__init__(
             iterations = iterations, 
-            lambda_reg = lambda_reg,
-            class_weight = class_weight)
+            lambda_reg = lambda_reg)

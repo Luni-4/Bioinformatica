@@ -4,6 +4,10 @@ import json
 from collections import OrderedDict
 from sklearn.svm import SVC
 
+from sklearn.model_selection import cross_val_score
+from sklearn.metrics import precision_score
+from sklearn.metrics import make_scorer
+
 from scipy import sparse
 import numpy as np
 
@@ -19,12 +23,11 @@ def dot_product(x, y):
     raise ValueError("sparsity of arguments is not consistant")
     
 def is_linearly_separable(X, y):    
-    m = SVC(decision_function_shape = "ovr", kernel = "linear")
+    m = SVC(decision_function_shape = "ovr", kernel = "linear")  
     
-    m.fit(X,y)     
+    m.fit(X,y)
     
-    return m.score(X,y) == 1.0
-    
+    return m.score(X,y) == 1.0    
     
 ''' Class functions '''    
     
