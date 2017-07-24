@@ -84,7 +84,7 @@ def train_pegasos(model, X, Y):
 class PegasosBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
     
     @abstractmethod
-    def __init__(self, iterations, lambda_reg, class_weight):
+    def __init__(self, iterations, lambda_reg):
         
         if iterations < 1:
            raise ValueError("Iterations must be greater than 0")
@@ -130,8 +130,6 @@ class PegasosBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
     def decision_function(self, X):
         if not self.weights:
             raise ValueError("You must call ""fit"" before ""decision_function""")
-            
-        print(self.weights.w)
 
         # Apply discriminant function f(x) = w * x^T to compute the predictions   
         if sparse.issparse(X):
