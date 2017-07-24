@@ -92,10 +92,10 @@ class PegasosBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
         if iterations < 1:
            raise ValueError("Iterations must be greater than 0")
            
-        if lambda_reg <= 0.0:
+        if lambda_reg <= 0:
            raise ValueError("lambda_reg must be greater than 0")
            
-        if class_weight <= 0.0:
+        if class_weight <= 0:
            raise ValueError("class_weight must be greater than 0")  
            
         # T parameter
@@ -168,7 +168,7 @@ class PegasosBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
         
         
 class Pegasos(PegasosBase):
-    def __init__(self, iterations = 1000, lambda_reg = 0.05, class_weight = 1):
+    def __init__(self, iterations = 1000, lambda_reg = 0.05, class_weight = 1.0):
         
         super(Pegasos, self).__init__(
             iterations = iterations, 
