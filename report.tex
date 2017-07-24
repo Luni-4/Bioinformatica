@@ -140,28 +140,29 @@
 \newpage
 
 \section*{Introduzione}
-L'obiettivo del progetto consiste nel predire la funzione delle proteine del \textit{Drosophila melanogaster}, un moscerino della frutta, nonché organismo modello per gli insetti, usando i classificatori prodotti da determinati algoritmi di apprendimento. 
+Il progetto ambisce ad utilizzare degli algoritmi di apprendimento automatico per costruire dei classificatori in grado di predire la funzione delle proteine della \textit{Drosophila melanogaster} (moscerino della frutta), organismo modello per gli insetti. Si vogliono sperimentare diversi algoritmi in modo da analizzarne il comportamento e le performance. 
 
-Per affrontare il problema, si è puntato su modelli semplici, rapidi, che consentano di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento scelti sono: 
+Per affrontare il problema si è puntato su modelli semplici, rapidi, che consentano di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento scelti sono: 
 
 \begin{itemize}
     \item Support Vector Machine (SVM)
     \item AdaBoost
+    \item Pegasos
 \end{itemize}
 
 Ognuno dei metodi sopra elencati verrà applicato alla predizione dei termini MF (Molecular Function) e CC (Cellular Component) della GO (Gene Ontology).
 
 \paragraph*{}
-Il progetto è stato implementato usando il linguaggio \textit{Python}, più precisamente la versione 3.5, e la versione 0.18.1 della libreria per l'apprendimento automatico \textit{scikit-learn}. Il caricamento e l'elaborazione delle strutture dati è eseguito dalla versione 0.19.1 della libreria \textit{SciPy}.
+Il progetto è stato implementato utilizzando \textit{Python} 3.5, e la versione 0.18.1 della libreria per l'apprendimento automatico \textit{scikit-learn}. Le strutture di memoria per i dati sono realizzate con l'ausilio della libreria \textit{SciPy} 0.19.1.
 
 \paragraph*{}
-L'elaborato descrive i passaggi e le problematiche affrontate durante lo svolgimento del lavoro. Per fare ciò, si è deciso di associare ad ogni singolo stadio lavorativo un capitolo. 
+L'elaborato descrive i passaggi e le problematiche affrontate durante lo svolgimento del lavoro. Si è deciso di associare ad ogni singolo stadio lavorativo un capitolo. 
 
 Il \autoref{chap:dati} analizza i dati di input, mostrando la loro struttura e le possibili metodologie di elaborazione. 
 
 Il \autoref{chap:metodi} spiega i metodi di machine learning scelti e la loro implementazione pratica. 
 
-Il \autoref{chap:risultati}, l'ultimo, illustra i risultati ottenuti dai clasificatori usando dei grafici e confronta gli algoritmi allo scopo di individuare quello che commette il più basso errore di classificazione.
+Il \autoref{chap:risultati} illustra i risultati ottenuti dai clasificatori usando dei grafici e confronta gli algoritmi allo scopo di individuare quello che commette il più basso errore di classificazione.
 
 \chapter{Analisi dei Dati} 
 \label{chap:dati}
@@ -170,28 +171,30 @@ Le feature degli esempi da fornire in input agli algoritmi di apprendimento sono
 Ogni ontologia è composta da un numero diverso di classi, questo significa che si hanno diverse \textit{Matrici delle Annotazioni}.
 
 \paragraph*{}
-La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica ed ha una dimensione effettiva di $3195 \times 3195$. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. Le entry della matrice contengono una misura di similarità, ricavata da fattori biologici, fra coppie di proteine.
+La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica di dimensione $3195 \times 3195$. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. Le entry della matrice contengono una misura di similarità, ricavata da fattori biologici, fra coppie di proteine.
 Ciascuna entry può assumere valori tra $[0,1]$. Un valore vicino o uguale a 0 indica che le proteine non sono simili tra loro, mentre valori tendenti o uguali a 1 ne sanciscono la similarità. 
 La matrice risulta essere sparsa, a causa dell'elevato numero di entry pari a 0.
 
 \paragraph*{}
 La \textit{Matrice delle Annotazioni} è una matrice rettangolare con un numero di righe pari al numero delle proteine e tante colonne quante sono le classi dell'ontologia considerata.
 
-Il numero delle classi per ciascuna ontologia è descritto di seguito:
-
 \begin{itemize}
     \item Cellular Component (CC) si compone di 235 classi
     \item Molecular Function (MF) si compone di 234 classi
 \end{itemize}
   
-Per ridurre lo spazio in memoria centrale e garantire una rapida elaborazione dei dati, la Matrice delle Adiacenze e la Matrice delle Annotazioni vengono entrambe caricate e convertite in matrici sparse. La funzione utilizzata per la conversione è contenuta nella libreria SciPy.
+Per ridurre lo spazio utilizzato in memoria centrale, le matrici vengono entrambe caricate e convertite in forma sparsa. La funzione utilizzata per la conversione è contenuta nella libreria SciPy.
 
 Le singole colonne delle matrici delle Annotazioni verranno successivamente convertite in array densi, in modo da poterle passare in input ai diversi algoritmi di apprendimento. 
 
-Le classi delle Matrici delle Annotazioni vengono trattate come se fossero indipendenti tra loro, non tenendo conto della gerarchia presente. I classificatori scelti verranno addestrati sulle singole classi e le loro prestazioni saranno valutate a partire dai risultati prodotti. Verrà anche analizzato il loro comportamento al variare della classe considerata.
+Ogni proteina può appartenere a una o più classi delle diverse ontologie considerate. Ogni esempio del training set può avere quindi più etichette, ed è per questo motivo che le etichette sono salvate come matrici e non come simboli. 
 
 \chapter{Metodi di Machine Learning} 
 \label{chap:metodi}
+
+Non sarebbe corretto affrontare il problema con dei classificatori multiclasse, dal momento che questi assegnerebbero una sola etichetta ad ogni esempio. Si è deciso quindi di creare dei classificatori binari indipendenti fra di loro, uno per ogni classe di ogni ontologia.
+
+Le classi delle Matrici delle Annotazioni vengono trattate come se fossero indipendenti tra loro, non tenendo conto della gerarchia (che esiste nelle ontologie ma non è indicata nei dati forniti). I classificatori scelti verranno addestrati sulle singole classi e le loro prestazioni saranno valutate a partire dai risultati prodotti. Verrà anche analizzato il loro comportamento al variare della classe considerata.
 
 I metodi di Machine Learning scelti si basano su modelli semplici, rapidi, che consentono di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento considerati sono le \textit{Support Vector Machine (SVM)} e \textit{AdaBoost}. La scelta dei metodi è stata effettuata con lo scopo di individuare le differenze tra i modelli di classificazione per decretare quello che funziona meglio. Un'ulteriore motivo è dato dal voler confrontare algoritmi di apprendimento lineari, come SVM, con algoritmi basati sull'utilizzo di un numero maggiore di classificatori, come AdaBoost.
 
@@ -508,6 +511,7 @@ Osserviamo quindi che per Adaboost la quantità di \emph{ill-defined} non presen
 Per SVM c'è molta meno continuità: il valore si abbassa per valori di C elevati, che però vedremo avere Precision molto bassa.
 
 Menzione d'onore merita l'impostazione \say{SVM\_C12\_G12}, che ha prodotto solo classificatori \emph{ill-defined} per tutte le classi di entrambe le ontologie.
+Con questi parametri i classificatori generalizzano troppo il problema e apprendono a dare solo risposte negative.
 
 I classificatori difettosi sono inutilizzabili ma facili da identificare ed escludere. In un contesto applicativo reale verrebero esclusi dall'utilizzo. Pertanto le analisi che seguono filtrano il bias introdotto dai classificatori \emph{ill-defined} e analizzano sono i classificatori costruiti correttamente.
 
@@ -533,6 +537,8 @@ Dall'analisi dei grafici di livello 1 di AdaBoost non emergono variazioni signif
 \end{itemize}
 
 Si è optato per \say{AdaBoost\_n100} perchè presenta una Recall leggermente migliore rispetto alla concorrenza. Si è deciso di premiare una Recall alta perchè significa maggior capacità di adattarsi allo sbilanciamento del dominio di applicazione e perchè consente di utilizzare il classificatore come filtro per un eventuale classificatore successivo, più bilanciato e preciso.
+
+Si osserva come AdaBoost sia un algoritmo piuttosto robusto. Le performance sono buone, variano   a seconda delle caratteristiche della classe in esame, ma le modifiche agli iperparametri non migliorano nè peggiorano le metriche.
 
 SVM, invece, presenta una grande varianza di performance. Si è reso necessario un lavoro di esplorazione prima di trovare un classificatore accettabile, che non presenti Precision o Recall eccessivamente basse. \say{SVM\_Balanced\_C7\_G7} è una scelta quasi obbligata.
 
