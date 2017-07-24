@@ -171,7 +171,7 @@ if __name__ == '__main__':
         # Write the header into the json file 
         write_json(f_temp, header)        
             
-        for j in range(0, Y.shape[1], 5):  
+        for j in range(0, Y.shape[1], 5):
             metrics(c, X, Y.getdensecol(j), j, f_temp)
         
         # Save the footer as a dictionary
