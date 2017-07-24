@@ -5,7 +5,7 @@ from sklearn.tree import DecisionTreeClassifier
 from pegasos import Pegasos
 
 from dataload import load_adj, load_annotation
-from utility import write_json
+from utility import write_json, read_file
 from metrics import metrics
 
 import numpy as np
@@ -101,9 +101,8 @@ if __name__ == '__main__':
            "Pegasos_SGD":   SGDClassifier(power_t = 1, learning_rate = "invscaling", class_weight = b, n_iter = t[9], eta0 = 0.01),           
          }
          
-    # Define what classifiers will be launched
-    if len(sys.argv) < 3:
-    
+    # Define which classifiers will be executed
+    if len(sys.argv) < 3:    
         cla = cl.keys()
     else:    
         cla = sys.argv[2].split(",")       
@@ -113,10 +112,22 @@ if __name__ == '__main__':
        raise ValueError("Wrong Classifiers")
     
     # Path to the directory of the chosen ontology
-    p_sim = "Simulation/" + sys.argv[1] + "/"
+    p_sim = "Simulation/" + sys.argv[1] + "/"       
     
     # List of files into the directory of the chosen ontology
     l_dir = os.listdir(p_sim)
+    
+    # Linearly separable class filename
+    f_lc = sys.argv[1] + ".txt"
+    
+    # Switch
+    switch = False
+    
+    # Read linearly separable class
+    if f_lc in l_dir:
+        switch = True
+        lc = read_file(p_sim + f_lc)
+        l_dir.remove(sys.argv[1] + ".txt") 
     
     # Filename of the Adjacent Matrix
     f_adj = "Data/Dros.adjmatrix.txt"
@@ -161,11 +172,16 @@ if __name__ == '__main__':
                  ]
 
         # Write the header into the json file 
-        write_json(f_temp, header)        
-            
-        #for j in range(0, Y.shape[1], 5):
-        for j in range(2):
-            metrics(c, X, Y.getdensecol(j), j, f_temp)
+        write_json(f_temp, header) 
+        
+        # Different branches for linearly and non-linearly separable classes
+        if switch:      
+            for j in range(Y.shape[1]):
+                if j in lc:
+                    metrics(c, X, Y.getdensecol(j), j, f_temp)
+        else:
+            for j in range(0, Y.shape[1], 5):
+                metrics(c, X, Y.getdensecol(j), j, f_temp)
         
         # Save the footer as a dictionary
         footer = [("End_Time", time.strftime("%c"))]

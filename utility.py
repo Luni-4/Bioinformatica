@@ -41,6 +41,15 @@ def with_metaclass(meta, *bases):
 def write_json(filename, w):
     with open(filename, "a") as f:
         f.write(json.dumps(OrderedDict(w)) + "\n")
+        
+''' Txt functions '''
+        
+def read_file(filename):
+    l = []
+    with open(filename, "r", encoding = "UTF-8") as f:
+        for line in f:
+            l.append(int(line))
+    return l
 
 ''' Debug functions '''     
 
