@@ -123,11 +123,14 @@ if __name__ == '__main__':
     # Switch
     switch = False
     
+    f_sim = ""
+    
     # Read linearly separable class
     if f_lc in l_dir:
         switch = True
         lc = read_file(p_sim + f_lc)
-        l_dir.remove(sys.argv[1] + ".txt") 
+        l_dir.remove(sys.argv[1] + ".txt")
+        f_sim = "LS_" 
     
     # Filename of the Adjacent Matrix
     f_adj = "Data/Dros.adjmatrix.txt"
@@ -136,7 +139,7 @@ if __name__ == '__main__':
     f_ann = "Data/Dros." + sys.argv[1] + ".ann.txt"
     
     # Part of the filenames associated to the Json files
-    f_sim = "M_" + sys.argv[1] + "_"
+    f_sim = f_sim + "M_" + sys.argv[1] + "_"
     
     # Read Adjacent Matrix
     X = load_adj(f_adj)
