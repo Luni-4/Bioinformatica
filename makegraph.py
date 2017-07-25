@@ -6,7 +6,7 @@ from metricresult import *
 inputfolder = './Simulation/'
 outputfolder = 'img/'
 bestSettings = {'AdaBoost': 'AdaBoost_n100',
-                 'SVM': 'SVM_Balanced_C7_G7',
+                 'SVM': 'SVM_Balanced_C8_G8',
                  'Pegasos': 'Pegasos_Default'}
 
     
@@ -94,7 +94,7 @@ def level1(ont, learner_fam, prefix = 'M_'):
     mrs = [MetricResult(fn, remove_ills=True) for fn in files]
     mrs = list(filter(lambda x: len(x.d['Data']) > 0, mrs))
     fig, axs = plt.subplots(len(metrics), 1, sharex=True)
-    fig.set_size_inches(8,11)
+    fig.set_size_inches(8,10)
     fig.autofmt_xdate(bottom=0.3)
     for i in range(len(metrics)):
         ax = axs[i]
@@ -159,12 +159,12 @@ def level3(ont):
     for i in range(len(metrics)):
         ax = axs[i]
         cmp_MR_graph(mrs, metrics[i], ax)
-    #fig.savefig(outputfolder + ont + '-level3.eps')
+    fig.savefig(outputfolder + ont + '-level3.eps')
     #mrs[0].metric_on_population_graph()
 
 if __name__ == '__main__':
     for ont in ['CC']:
-        for learner_fam in ['SVM', 'AdaBoost', 'Pegasos']:
+        for learner_fam in ['AdaBoost']:
             level1(ont, learner_fam)
             cmp_ills(ont, learner_fam)
             pass
