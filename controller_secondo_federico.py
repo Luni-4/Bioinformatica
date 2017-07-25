@@ -30,9 +30,10 @@ if __name__ == '__main__':
     # 'AdaBoost_n50_Bal_Dep3': AdaBoostClassifier(DecisionTreeClassifier(max_depth=3, class_weight = "balanced")),
     # 'AdaBoost_n100': AdaBoostClassifier(n_estimators=100),
     # 'Pegasos': Pegasos(),
-    'AdaBoost_My_n10': AdaBoost()
+    # 'AdaBoost_My_n10': AdaBoost()
+    'AdaBoost_My_n10_Bal': AdaBoost()
     }
-    for onto_name in ['CC', 'MF']:
+    for onto_name in ['CC']:
         # Filename of the Annotation Matrix
         f_ann = "Data/Dros." + onto_name + ".ann.txt"
         

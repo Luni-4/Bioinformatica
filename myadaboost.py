@@ -45,7 +45,7 @@ class AdaBoostBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
 
 
         while len(self.estimators) < self.n_estimators:
-            weak = DecisionTreeClassifier(max_depth=1)
+            weak = DecisionTreeClassifier(max_depth=1, class_weight = 'balanced')
             weak.fit(X, y, sample_weight=sample_weights)
             errors = np.array([weak.predict(t[0]) != t[1] for t in zip(X, y)])
 
@@ -57,17 +57,21 @@ class AdaBoostBase(with_metaclass(ABCMeta, BaseEstimator, ClassifierMixin)):
                 self.estimators.append(weak)
                 self.est_weights.append(1)
                 break
-            alpha = 0.5 * np.log((1 - epsilon) / epsilon)
-            # print('epsilon=%.5f a=%.5f' % (epsilon, alpha))
+            # wi: weigth of this estimator
+            wi = 0.5 * np.log((1 - epsilon) / epsilon)
+
+            # recalculate sample_weights, increasing the importance of misclassified samples.
+            # the new weights will be used in the next iteration
             for i in range(len(y)):
                 if errors[i] == 1:
-                    sample_weights[i] *= np.exp(alpha)
+                    sample_weights[i] *= np.exp(wi)
                 else:
-                    sample_weights[i] *= np.exp(-alpha)
+                    sample_weights[i] *= np.exp(-wi)
+            # normalize
             sample_weights = sample_weights / sample_weights.sum()
             self.estimators.append(weak)
-            self.est_weights.append(alpha)
-        # print('{} weaks. Their weights: {}'.format(len(self.estimators), self.est_weights))
+            self.est_weights.append(wi)
+        print('{} weaks.'.format(len(self.estimators)))
 
     def predict(self, X):
         # if _enc attribute isn't defined, the user hasn't launched fit function yet
