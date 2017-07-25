@@ -633,6 +633,8 @@ La Figura~\ref{fig:liv2} mostra le configurazioni di AdaBoost e SVM per l'ontolo
 Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei classificatori di ogni famiglia di modelli. Le metriche considerate sono AUROC, AUPRC e f-score. La Figura~\ref{fig:liv3} mostra il confronto tra AdaBoost e SVM per l'ontologia CC, mentre la Figura~\ref{figure:liv31} quello per l'ontologia MF.
 
 \subsection{Risultati di AdaBoost}
+Si osserva come AdaBoost sia un algoritmo piuttosto robusto. Le performance sui test set sono buone, variano a seconda delle caratteristiche della classe in esame, ma le modifiche agli iperparametri non migliorano nè peggiorano le metriche.
+
 Dall'analisi dei grafici di livello 1 di AdaBoost non emergono variazioni significative di performance attraverso i vari parametri. Ci sono diverse possibili cause:
 
 \begin{itemize}
@@ -642,7 +644,7 @@ Dall'analisi dei grafici di livello 1 di AdaBoost non emergono variazioni signif
 
 Si è optato per \say{AdaBoost\_n100} perchè presenta una Recall leggermente migliore rispetto alla concorrenza. Si è deciso di premiare una Recall alta perchè significa maggior capacità di adattarsi allo sbilanciamento del dominio di applicazione e perchè consente di utilizzare il classificatore come filtro per un eventuale classificatore successivo, più bilanciato e preciso.
 
-Si osserva come AdaBoost sia un algoritmo piuttosto robusto. Le performance sono buone, variano   a seconda delle caratteristiche della classe in esame, ma le modifiche agli iperparametri non migliorano nè peggiorano le metriche.
+
 
 \subsection{Risultati di SVM}
 SVM presenta una grande varianza di performance. Si è reso necessario un lavoro di esplorazione prima di trovare un classificatore accettabile, che non presenti Precision o Recall eccessivamente basse. \say{SVM\_Balanced\_C7\_G7} è una scelta quasi obbligata.
