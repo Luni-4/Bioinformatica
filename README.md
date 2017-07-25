@@ -33,26 +33,16 @@ Bioinformatica
 
 I numeri associati ai punti rappresentano le priorità di risposta alle domande/esecuzione del lavoro. Più i valori sono bassi, più sono importanti.
 
-1.  Adaboost è necessario per Cesa? Oppure possiamo usare solo SVM e Pegasos? Tu cosa ne pensi? In questo modo lui ci chiederebbe solo SVM, i kernel e l’online gradient descent. La scelta di SVM è obbligata se vogliamo fare Pegasos, visto che è un’implementazione particolare di SVM. Potremmo confrontare i risultati ottenuti da entrambi.
-2.  Capire come funziona SVM nello spazio dei kernel RBF, cosa succede al variare dei parametri C e gamma? Fare un’analisi approfondita.
-3.  Analizzare i risultati ottenuti con il progetto di bioinformatica, capire perché i nostri risultati sono buoni e valutare se il Boxplot è la scelta adeguata
-4.  Finire i grafici che volevi aggiungere per Bioinformatica, Pici
-5.  Eliminare gli ill-defined, durante l’orale ho notato che il prof non li aveva compresi perché erano troppo legati alla parte implementativa. Spieghiamo il problema di fondo che porta agli ill-defined.
-6.  Cercare di risolvere il problema degli ill-defined scegliendo dei pesi più sensati per le classi
-7.  Variare le scale dei grafici, perlopiù le ordinate, almeno abbiamo dei risultati più fighi in visualizzazione
-8.  Pulire il codice in alcuni punti, se fosse possibile. 
-9.  Correggere gli errori grammaticali e le frasi legnose del report
-10. Le curve roc e prc le facciamo? Oppure ce ne freghiamo e andiamo avanti? Sarebbe bello perderci un po' di tempo per capire come funzionano. 
+1.  Variare le scale dei grafici, perlopiù le ordinate, almeno abbiamo dei risultati più fighi in visualizzazione 
+2.  Correggere gli errori grammaticali e le frasi legnose del report
+ 
 
 ## 2.2. Divisione dei compiti
 
 FEDERICO:
 
-- Punti 4 e 7
 
 MICHELE:
-
-- Vorrei occuparmi del punto 2 e del punto 6
 
 ## 2.3. Link Utili
 
