@@ -45,44 +45,13 @@ if __name__ == '__main__':
     cl = {
            # Bad SVM Configurations
            "SVM_Unbalanced":       SVC(decision_function_shape = "ovr"),
-           "SVM_Balanced":         SVC(decision_function_shape = "ovr", class_weight = b),
-           "SVM_Balaman":          SVC(decision_function_shape = "ovr", class_weight = {0:0.01, 1:0.99}),
-           "SVM_Balanced_C2":      SVC(decision_function_shape = "ovr", class_weight = b, C = 2),
-           "SVM_Balanced_C3":      SVC(decision_function_shape = "ovr", class_weight = b, C = 3),
-           "SVM_Balanced_C5":      SVC(decision_function_shape = "ovr", class_weight = b, C = 5),
-           "SVM_Balanced_C7":      SVC(decision_function_shape = "ovr", class_weight = b, C = 7),
-           "SVM_Balanced_C0_G0":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[0], gamma = g[0]),
-           "SVM_Balanced_C2_G2":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[2], gamma = g[2]),
-           "SVM_Balanced_C5_G5":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[5], gamma = g[5]),
-           "SVM_Balanced_C6_G6":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[6], gamma = g[6]),
-           "SVM_Balanced_C12_G12": SVC(decision_function_shape = "ovr", class_weight = b, C = c[12], gamma = g[12]),
+           "SVM_Balanced":         SVC(decision_function_shape = "ovr", class_weight = b),           
            "SVM_Balanced_Poly_4":  SVC(decision_function_shape = "ovr", class_weight = b, kernel = "poly", degree = 4),
            
            
            # Good SVM Configurations
            "SVM_Balanced_C7_G7":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[7], gamma = g[7]),
-           "SVM_Balanced_C8_G8":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[8], gamma = g[8]),
-           "SVM_Balanced_C9_G9":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[9], gamma = g[9]),
-           
-           # Try different class_weight for good SVM configurations
-           "SVM_Balaman_C7_G7":   SVC(decision_function_shape = "ovr", class_weight = {0:0.01, 1:0.99}, C = c[7], gamma = g[7]),
-           "SVM_Balaman_C8_G8":   SVC(decision_function_shape = "ovr", class_weight = {0:0.01, 1:0.99}, C = c[8], gamma = g[8]),
-           "SVM_Balaman_C9_G9":   SVC(decision_function_shape = "ovr", class_weight = {0:0.01, 1:0.99}, C = c[9], gamma = g[9]),
-           
-           # Try to modify class 1 only. Changing regularization parameter because weight doesn't sum 1 
-           "SVM_Balaman1_C7_G7":   SVC(decision_function_shape = "ovr", class_weight = {1: 1000}, C = c[7], gamma = g[7]),
-           "SVM_Balaman1_C8_G8":   SVC(decision_function_shape = "ovr", class_weight = {1: 1000}, C = c[8], gamma = g[8]),
-           "SVM_Balaman1_C9_G9":   SVC(decision_function_shape = "ovr", class_weight = {1: 1000}, C = c[9], gamma = g[9]),
-           
-           
-           
-           
-            
-           # AdaBoost Configurations
-           "AdaBoostDefault":      AdaBoostClassifier(),
-           "AdaBoost_n10":         AdaBoostClassifier(n_estimators = 10),
-           "AdaBoost_n10_Bal":     AdaBoostClassifier(DecisionTreeClassifier(max_depth = 1, class_weight = b), n_estimators = 10),
-           "AdaBoost_n100":        AdaBoostClassifier(n_estimators = 100),
+           "SVM_Balanced_C8_G8":   SVC(decision_function_shape = "ovr", class_weight = b, C = c[8], gamma = g[8]),          
            
            # Good Pegasos Configurations
            "Pegasos_Default":      Pegasos(),
@@ -98,7 +67,13 @@ if __name__ == '__main__':
            "Pegasos_I9_L1_4":      Pegasos(iterations = t[9], lambda_reg = l1[4]),      
            
            # Try Pegasos of scikit-learn
-           "Pegasos_SGD":   SGDClassifier(power_t = 1, learning_rate = "invscaling", class_weight = b, n_iter = t[9], eta0 = 0.01),           
+           "Pegasos_SGD":          SGDClassifier(power_t = 1, learning_rate = "invscaling", class_weight = b, n_iter = t[9], eta0 = 0.01),
+           
+           # AdaBoost Configurations
+           "AdaBoostDefault":      AdaBoostClassifier(),
+           "AdaBoost_n10":         AdaBoostClassifier(n_estimators = 10),
+           "AdaBoost_n10_Bal":     AdaBoostClassifier(DecisionTreeClassifier(max_depth = 1, class_weight = b), n_estimators = 10),
+           "AdaBoost_n100":        AdaBoostClassifier(n_estimators = 100),           
          }
          
     # Define which classifiers will be executed
