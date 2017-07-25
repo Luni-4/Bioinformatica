@@ -147,7 +147,8 @@
         con metodi di Machine Learning}
   
 \author{Federico Picetti \\
-        Michele Valsesia}
+        %Michele Valsesia
+        }
 
 \date{Anno accademico 2017/2018} 
 
@@ -621,16 +622,20 @@ La Figura~\ref{fig:liv2} mostra le metriche delle migliori configurazioni di Ada
 Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei classificatori di ogni famiglia di modelli. Le metriche considerate sono AUROC, AUPRC e F-score. La Figura~\ref{fig:liv3} mostra il confronto tra AdaBoost e SVM.
 
 \subsection{Risultati di AdaBoost}
-Si osserva come AdaBoost sia un algoritmo piuttosto robusto. Le performance sui test set sono buone, variano a seconda delle caratteristiche della classe in esame, ma le modifiche agli iperparametri non migliorano nè peggiorano le metriche.
+Si osserva come AdaBoost sia un algoritmo piuttosto robusto. Le performance sui test set sono buone, variano a seconda delle caratteristiche della classe in esame, ma le diverse configurazioni riportano risultati sempre validi, seppur con piccole variazioni.
 
-Dall'analisi dei grafici di livello 1 di AdaBoost non emergono variazioni significative di performance attraverso i vari parametri. Ci sono diverse possibili cause:
+Osserviamo dunque che le performance migliorano leggermente aumentando il numero di iterazioni di Adaboost. Ad ogni iterazione vengono corretti gli errori dell'iterazione precedente, ed è lecito aspettarsi che si arrivi ad un punto in cui l'errore è piccolo ed oscillante, cioè ogni iterazione tenta di correggere degli errori ma ne introduce degli altri.
 
-\begin{itemize}
-\item AdaBoost è in grado di risolvere i problemi di bilanciamento dopo ben poche iterazioni: imporre il bilanciamento all'albero sottostante non ha grande effetto
-\item AdaBoost ferma l'iterazione dopo aver creato un numero sufficiente di alberi, anche se tale numero è inferiore al parametro impostato. Aumentare il numero di classificatori di base non migliora le prestazioni.
-\end{itemize}
+AdaBoost, inoltre, rispetto ad altri classificatori, è capace di correggere in modo efficace lo sbilanciamento delle classi. In questo contesto applicativo, infatti, per ogni classe ci sono numerosi elementi che non vi appartengono (quindi con etichetta 0) e pochi elementi che vi appartengono (etichetta 1). La conseguenza è che altri classificatori hanno difficoltà ad apprendere a classificare correttamente gli esempi con etichetta 1, dal momento che sarà sufficiente predire sempre 0 per ottenere uno score alto. AdaBoost soffre del problema durante la prima iterazione (come dimostrato dalle performance di AdaBoost\_My\_n1\_Bal), ma le iterazioni successive stanno già bilanciando le classi problematiche.
 
-Si è optato per \say{AdaBoost\_n100} perchè presenta una Recall leggermente migliore rispetto alla concorrenza. Si è deciso di premiare una Recall alta perchè significa maggior capacità di adattarsi allo sbilanciamento del dominio di applicazione e perchè consente di utilizzare il classificatore come filtro per un eventuale classificatore successivo, più bilanciato e preciso.
+Inserire un bilanciamento automatico all'interno dell'albero di decisione ha effetto soprattutto quando il numero massimo di predittori è basso. In questo caso possiamo osservare l'aumento della Recall e la diminuzione della Precision. I singoli alberi, infatti, saranno incoraggiati a dare peso alle classi positive: la probabilità di falsi positivi aumenta e quella di falsi negativi diminuisce. Riteniamo che questo sia un effetto desiderabile in un contesto come questo, dove abbiamo un gran numero di classi sbilanciate e vorremmo generalizzare bene il modello. 
+
+In questo lavoro, infatti, si è stabilito di creare numerosi classificatori binari indipendenti. In realtà le classi dell'ontologia di riferimento non sono indipendenti, ma sono organizzate in una gerarchia complessa: singole coppie di classi possono essere nidificate, disgiunte o indipendenti.
+
+Una proteina che appartiene ad una classe appartiene necessariamente a tutte le classi "madri" e probabilmente a qualche classe "figlia". Si potrebbe dunque costruire un predittore complesso che tenga di conto delle gerarchie delle classi, rivalutando le predizioni indipendenti compiute da AdaBoost. I nostri predittori indipendenti fungerebbero da primo stadio, da filtro per questo secondo classificatore.
+Questo secondo stadio avrebbe la capacità di individuare i falsi positivi ed escluderli, ma sarebbe meno capace di reintegrare i falsi negativi, già esclusi dal primo. Di conseguenza abbiamo deciso di tollerare i falsi positivi più dei falsi negativi, e quindi di premiare una Recall alta a discapito della Precision.
+
+Il grafico \ref{fig:liv2} confronta i risultati dell'impostazione di AdaBoost che giudichiamo migliore (AdaBoost\_My\_n50\_Bal) con l'analoga di SVM. 
 
 
 

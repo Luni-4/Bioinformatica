@@ -32,7 +32,8 @@ if __name__ == '__main__':
     # 'Pegasos': Pegasos(),
     # 'AdaBoost_My_n10': AdaBoost()
     # 'AdaBoost_My_n10_Bal': AdaBoost()
-    'AdaBoost_My_n50_Bal': AdaBoost(50)
+    # 'AdaBoost_My_n50_Bal': AdaBoost(50)
+    'AdaBoost_My_n1_Bal': AdaBoost(1)
     }
     for onto_name in ['CC']:
         # Filename of the Annotation Matrix

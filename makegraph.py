@@ -5,9 +5,10 @@ from metricresult import *
 
 inputfolder = './Simulation/'
 outputfolder = 'img/'
-bestSettings = {'AdaBoost': 'AdaBoost_n100',
+bestSettings = {'AdaBoost': 'AdaBoost_My_n50_Bal',
                  'SVM': 'SVM_Balanced_C8_G8',
-                 'Pegasos': 'Pegasos_Default'}
+                # 'Pegasos': 'Pegasos_Default'
+                }
 pretty =   {'precision1': 'Precision',
             'recall1': 'Recall',
             'auroc': 'AUROC',
@@ -99,8 +100,9 @@ def level1(ont, learner_fam, prefix = 'M_'):
     mrs = [MetricResult(fn, remove_ills=True) for fn in files]
     mrs = list(filter(lambda x: len(x.d['Data']) > 0, mrs))
     fig, axs = plt.subplots(len(metrics), 1, sharex=True)
-    fig.set_size_inches(8,10)
-    fig.autofmt_xdate(bottom=0.3)
+    fig.set_size_inches(8,11)
+    fig.subplots_adjust(left = 0.15)
+    fig.autofmt_xdate(bottom=0.15)
     for i in range(len(metrics)):
         ax = axs[i]
         cmp_MR_graph(mrs, metrics[i], ax)
@@ -140,6 +142,7 @@ def level2(ont):
         h, l = ax.get_legend_handles_labels()
 
     #fig.set_size_inches(7,7)
+    
     fig.legend(h, l, 'lower right')
     #plt.legend(bbox_to_anchor=(1, 1), 
     #    bbox_transform=plt.gcf().transFigure)
@@ -163,13 +166,16 @@ def level3(ont):
     fig.autofmt_xdate(bottom=0.3)
     for i in range(len(metrics)):
         ax = axs[i]
+        #ax.margins(tight=True)
         cmp_MR_graph(mrs, metrics[i], ax)
+    fig.set_size_inches(7,6)
+    fig.tight_layout()
     fig.savefig(outputfolder + ont + '-level3.eps')
     #mrs[0].metric_on_population_graph()
 
 if __name__ == '__main__':
     for ont in ['CC']:
-        for learner_fam in ['AdaBoost', 'SVM', 'Pegasos']:
+        for learner_fam in ['AdaBoost', 'SVM']:
             level1(ont, learner_fam)
             cmp_ills(ont, learner_fam)
             pass
