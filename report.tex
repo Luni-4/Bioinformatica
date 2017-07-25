@@ -167,7 +167,7 @@ Per affrontare il problema si è puntato su modelli semplici, rapidi, che consen
 \begin{itemize}
     \item AdaBoost
     \item Support Vector Machine (SVM)    
-    \item Pegasos
+    %\item Pegasos
 \end{itemize}
 
 Ognuno dei metodi sopra elencati verrà applicato alla predizione dei termini CC (Cellular Component) della GO (Gene Ontology).
@@ -195,7 +195,8 @@ La matrice risulta essere sparsa, a causa dell'elevato numero di entry pari a 0.
 
 \paragraph*{}
 La \textit{Matrice delle Annotazioni} è una matrice rettangolare con un numero di righe pari al numero delle proteine e tante colonne quante sono le classi prese in considerazione. La Cellular Component (CC) si compone di 235 classi.
-  
+
+\paragraph*{} 
 Per ridurre l'uso di memoria centrale, sia la Matrice di Adiacenza che quella delle Annotazioni, sono caricate in forma sparsa. La funzione utilizzata per la conversione è contenuta nella libreria SciPy.
 
 Le singole colonne della matrice delle Annotazioni verranno successivamente convertite in array densi, in modo da poterle passare in input ai diversi algoritmi di apprendimento. 
@@ -706,21 +707,18 @@ SVM presenta una grande varianza di performance. Si è reso necessario un lavoro
 
 
 % //////////////////// LIVELLO 3 /////////////////
-\begin{comment}
 
 \topskip0pt
 \vspace*{\fill}
 
 \begin{figure}[ht]%
     \centering
-    %\includegraphics[scale = 0.80]{CC-level3.eps}%
+    \includegraphics[scale = 0.80]{CC-level3.eps}%
     \caption{Confronto tra i migliori classificatori delle diverse famiglie di modelli}%
     \label{fig:liv3} 
 \end{figure}
 
 \vspace*{\fill}
-
-\end{comment}
 
 \begin{comment}
 
