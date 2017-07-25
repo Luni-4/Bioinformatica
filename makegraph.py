@@ -8,6 +8,11 @@ outputfolder = 'img/'
 bestSettings = {'AdaBoost': 'AdaBoost_n100',
                  'SVM': 'SVM_Balanced_C8_G8',
                  'Pegasos': 'Pegasos_Default'}
+pretty =   {'precision1': 'Precision',
+            'recall1': 'Recall',
+            'auroc': 'AUROC',
+            'auprc': 'AUPRC',
+            'fscore1': 'F-score'}
 
     
 def precision_recall_graph(precision, recall, auprc):
@@ -65,7 +70,7 @@ def cmp_MR_graph(mrs, metric_name, ax, offset = 0):
     ax.boxplot(x, positions = positions, showfliers = False)
     ax.set_xticks(range(len(mrs)))
     ax.set_xticklabels([mr.d['Classifier'] for mr in mrs])
-    ax.set_ylabel(metric_name)
+    ax.set_ylabel(pretty[metric_name])
     if metric_name == 'auroc':
         ax.set_ylim(0.4,1)
     else:
@@ -124,7 +129,7 @@ def level2(ont):
             metric_name = metrics[m]
             x = [offset+0.8/len(metrics)*m for offset in range(len(mrs))]
             y = [mr.foldmean(metric_name, classno) for mr in mrs]
-            ax.bar(x, y, label = metric_name, width = 0.8/len(metrics))
+            ax.bar(x, y, label = pretty[metric_name], width = 0.8/len(metrics))
         ax.set_xticks([i+0.8/len(metrics) for i in range(len(mrs))])
         ax.set_xticklabels([mr.d['Classifier'] for mr in mrs])
         #ax.set_ylabel(metric_name)
@@ -164,7 +169,7 @@ def level3(ont):
 
 if __name__ == '__main__':
     for ont in ['CC']:
-        for learner_fam in ['AdaBoost']:
+        for learner_fam in ['AdaBoost', 'SVM', 'Pegasos']:
             level1(ont, learner_fam)
             cmp_ills(ont, learner_fam)
             pass
