@@ -98,7 +98,7 @@
 \lstset{
     language=Python, 
     basicstyle=\ttfamily\footnotesize,   
-    frame=single,
+    frame=none,
     tabsize=2,
     commentstyle=\color{greencomments},
     keywordstyle=\bfseries\color{bluekeywords},
@@ -343,8 +343,8 @@ La \autoref{tab:b2} elenca le impostazioni di Adaboost che si sono provate in qu
 \begin{table}[ht]%	
 \centering
 \caption{Configurazioni di AdaBoost}\label{tab:b2}
-\begin{tabular}{c|c|c|c|c|}
-%\hline
+\begin{tabular}{|c|c|c|c|c|}
+\hline
 nome & implementazione & \texttt{n\_estimators} & bilanciamento & \texttt{max\_depth} \\ 
 \hline 
 AdaBoost\_My\_n10 		& nostra	& 10 & No & 1 \\ 
