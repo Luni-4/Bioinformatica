@@ -168,7 +168,7 @@ Per affrontare il problema si è puntato su modelli semplici, rapidi, che consen
 \begin{itemize}
     \item AdaBoost
     \item Support Vector Machine (SVM)    
-    %\item Pegasos
+    \item Pegasos
 \end{itemize}
 
 Ognuno dei metodi sopra elencati verrà applicato alla predizione dei termini CC (Cellular Component) della GO (Gene Ontology).
@@ -205,13 +205,13 @@ Le singole colonne della matrice delle Annotazioni verranno successivamente conv
 \paragraph*{}
 Ogni proteina può appartenere a una o più classi, infatti ogni esempio del training set può avere più etichette ad esso associate. Tra le varie classi, esiste inoltre una relazione gerarchica, che non viene però indicata nei dati forniti. 
 
-Nello svolgimento del progetto si è deciso di considerare ogni classe in maniera indipendente, addestrando i classificatori, delle diverse famiglie di modelli, sulle singole classi.
+Nello svolgimento del progetto si è deciso di considerare ogni classe in maniera indipendente, addestrando i classificatori binari, delle diverse famiglie di modelli, sulle singole classi.
 
 
 \chapter{Metodi di Machine Learning} 
 \label{chap:metodi}
 
-I metodi di Machine Learning scelti si basano su modelli semplici, rapidi, che consentono di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento considerati sono \textit{AdaBoost} e le \textit{Support Vector Machine (SVM)}. La scelta dei metodi è stata effettuata con lo scopo di individuare le differenze tra i modelli di classificazione per decretare quello che funziona meglio. Un'ulteriore motivo è dato dal voler confrontare algoritmi di apprendimento lineari, come SVM, con algoritmi basati sull'utilizzo di un numero maggiore di classificatori, come AdaBoost.
+I metodi di Machine Learning scelti si basano su modelli semplici, rapidi, che consentono di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento considerati sono \textit{AdaBoost}, \textit{Support Vector Machine (SVM)} ed una loro particolare istanza chiamata \textit{Pegasos}. La scelta dei metodi è stata effettuata con lo scopo di individuare le differenze tra i modelli di classificazione e decretare il migliore. Un'ulteriore motivo è dato dal voler confrontare algoritmi di apprendimento lineari, come SVM e Pegasos, con algoritmi basati sull'utilizzo di un numero maggiore di classificatori, come AdaBoost.
 
 \paragraph*{}
 Per poter effettuare il tuning degli iperparametri, sono state create diverse configuarazioni di esecuzione.
@@ -230,8 +230,7 @@ Tipicamente per contenere i costi computazionali si sceglie una famiglia $ \math
 
 \subsection{Implementazione}
 
-Si è implementato l'algoritmo AdaBoost e si è confrontata la nostra implementazione con quella presente nelle librerie scikit-learn (\texttt{sklearn.ensemble.AdaBoostClassifier}
-\footnote{\url{scikit-learn.org/stable/modules/generated/sklearn.ensemble.AdaBoostClassifier.html}}).
+Si è implementato l'algoritmo AdaBoost e si è confrontata la nostra implementazione con quella presente nelle librerie scikit-learn (\texttt{sklearn.ensemble.AdaBoostClassifier}).
 
 Illustrare la nostra implementazione può essere utile anche per comprendere meglio il funzionamento di base di AdaBoost. 
 Il codice è stato scritto per rispettare le API di scikit-learn, in modo da poter essere integrato e chiamato dalle funzioni di scoring. Rispettando lo standard, si è creata una classe \texttt{AdaBoost} con i metodi \texttt{fit(X, y)} e \texttt{predict(X)}. Il codice presenta numerosi altri elementi per la compatibilità, ma si tratta di dettagli che tralasceremo in questa sede. 
@@ -291,7 +290,7 @@ Il metodo \texttt{fit} accetta una matrice \texttt{X} di feature, in cui ogni ri
 Il parametro \texttt{y} è un array di etichette, che nel nostro caso possono valere 0 (\texttt{False}) o 1 (\texttt{True}).
 
 Come classificatore di base si è optato per un \emph{decision stump}, cioè un predittore ad albero molto semplice, che presenta un solo test, quindi una sola ramificazione e al massimo due foglie. 
-Si è utilizzata l'implementazione dell'albero di decisione di scikit-learn\footnote{\url{scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html}}, con il parametro \texttt{max\_depth=1}. 
+Si è utilizzata l'implementazione dell'albero di decisione di scikit-learn, con il parametro \texttt{max\_depth=1}. 
 
 Impostare \texttt{class\_weight='balanced'} significa imporre all'albero di decisione di eseguire l'apprendimento moltiplicando il vettore \texttt{sample\_weight=} per degli scalari in modo da bilanciare i pesi in modo inversamente proporziale alla cardinalità delle classi. È stato fatto anche un tentativo senza questa impostazione.
 
@@ -342,7 +341,7 @@ La \autoref{tab:b2} elenca le impostazioni di Adaboost che si sono provate in qu
 
 \begin{table}[ht]%	
 \centering
-\caption{Configurazioni di AdaBoost}\label{tab:b2}
+\caption{Configurazioni di AdaBoost}\label{tab:b1}
 \begin{tabular}{|c|c|c|c|c|}
 \hline
 nome & implementazione & \texttt{n\_estimators} & bilanciamento & \texttt{max\_depth} \\ 
@@ -394,7 +393,7 @@ La sua funzione di decisione è definita come:
 I support vectors sono gli esempi del training set che, a seconda dell'iperpiano ottenuto, hanno un margine inferiore o pari a 1. La soluzione prodotta da SVM dipende solo da questi esempi.
 
 \paragraph*{}
-L'apprendimento del classificatore è stato effettuato usando la funzione \textit{SVC} \footnote{\url{scikit-learn.org/stable/modules/generated/sklearn.svm.SVC.html}}, implementata nel modulo \textit{sklearn.svm} contenente gli algoritmi SVM della libreria scikit-learn. Nella definizione del metodo sono stati impostati i seguenti parametri:
+L'apprendimento del classificatore è stato effettuato usando la funzione \textit{SVC}, implementata nel modulo \textit{sklearn.svm} contenente gli algoritmi SVM della libreria scikit-learn. Nella definizione del metodo sono stati impostati i seguenti parametri:
 
 \paragraph*{}
 \textbf{\textit{C}}. Penalità sull'errore commesso. È un parametro di tradeoff, un valore elevato di C crea un modello complesso che mira a classificare nel miglior modo possibile gli esempi del training set, mentre un valore piccolo comporta un modello con una funzione di decisione più semplice. È un valore di tipo float. 
@@ -441,7 +440,7 @@ Per determinare con quali parametri, sul dataset considerato, la SVM produce dei
 
 \begin{table}[ht]%	
 \centering
-\caption{Configurazioni di SVM}\label{tab:b1}
+\caption{Configurazioni di SVM}\label{tab:b2}
 \begin{tabular}{|c|c|c|S[table-parse-only = true]|S[table-parse-only = true]|c|}
 \hline
 Nome                    & Bilanciamento & Kernel & C        & Gamma & Degree    \\ 
@@ -473,8 +472,57 @@ SVM\_Balanced\_Poly\_4  & balanced      & Poly   & 1.0      & auto    & 4       
 \end{tabular} 
 \end{table}
 
+\section{Pegasos}
+Pegasos è un algoritmo di apprendimento iterativo utilizzato per risolvere il problema di ottimizzazione lineare convessa posto dalle Support Vector Machines (SVM).
+È una particolare istanza di OGD e dipende da due parametri fondamentali:
+
 \paragraph*{}
-La complessità in tempo di ciascuna configurazione è un $\mathcal{O}(N^2)$ rispetto al numero degli esempi del training set. La velocità di computazione diminuisce considerevolmente all'aumentare della grandezza dei parametri usati.
+\textbf{\textit{T}}. Numero di cicli. Determina il numero di iterazioni compiute dall'algoritmo. Questo valore corrisponde anche alla totalità degli esempi estratti uniformemente dal training set. Assume solo valori interi.
+
+\paragraph*{}
+$\mathbf{\mathit{\lambda}}$. Coefficiente di regolarizzazione. Viene usato per calcolare il costo di misclassificazione $\eta_t$, infatti $\eta_t = \dfrac{1}{\lambda t}$, con $t$ pari al ciclo corrente. Un $\lambda$ basso comporta un costo elevato e dei pesi sempre maggiori all'aumentare del numero di iterazioni, al contrario, un alto valore di $\lambda$ mantiene bassi i pesi dando poca importanza all'errore di classificazione commesso. Assume valori decimali.
+
+\paragraph*{}
+L'analisi di Pegasos è stata effettuata usando due implementazioni diverse. La prima è stata scritta interamente in Python, mentre la seconda utilizza la funzione \textit{SGDClassifier} della libreria scikit-learn.
+La funzione \textit{SGDClassifier} sfrutta il parametro \textit{class\_weight} per il bilanciamento delle classi, descritto precedentemente in SVM.  
+
+\subsection{Parametri}
+Le diverse configurazioni di Pegasos si differenziano tra loro per i valori di T e $\lambda$ e, tranne una, si riferiscono tutte alla prima implementazione. Per la seconda implementazione, si è usata un'unica configurazione e con un valore di $\lambda$ non molto piccolo, a causa dell'elevato tempo computazionale richiesto dalla funzione della libreria di scikit-learn. Si è comunque deciso di tenerla in considerazione in modo da poterla confrontare con le altre.
+
+\paragraph*{}
+Si è variato principalmente il parametro $\lambda$. Per la maggior parte delle configurazioni, si è mantenuto T costante perché, per valori sufficientemente alti, non influenza notevolmente i risultati prodotti dall'algoritmo. La Tabella~\ref{tab:b3} mostra le varie configurazioni e l'ultima riga descrive l'unica che si riferisce alla seconda implementazione.
+
+\begin{table}[ht]%	
+\centering
+\caption{Configurazioni di Pegasos}\label{tab:b3}
+\begin{tabular}{|c|c|S[table-parse-only = true]|S[table-parse-only = true]|}
+\hline
+Nome                 & Bilanciamento &  T       & $\lambda$ \\
+\hline 
+Pegasos\_Default     & -             & 1000     & 0.05      \\
+\hline 
+Pegasos\_I0\_L0      & -             & 1e+04    & 1.0e-04   \\
+\hline 
+Pegasos\_I9\_L9      & -             & 1e+05    & 1.0e-05   \\
+\hline 
+Pegasos\_I9\_L1\_0   & -             & 1e+05    & 1.0e-10   \\
+\hline 
+Pegasos\_I9\_L1\_1   & -             & 1e+05    & 1.0e-11   \\
+\hline 
+Pegasos\_I0\_L1\_5   & -             & 1e+04    & 1.0e+6    \\
+\hline 
+Pegasos\_I9\_L1\_2   & -             & 1e+05    & 2.0       \\
+\hline 
+Pegasos\_I9\_L1\_3   & -             & 1e+05    & 100.0     \\
+\hline 
+Pegasos\_I9\_L1\_4   & -             & 1e+05    & 1000.0    \\
+\hline 
+Pegasos\_SGD         & balanced      & 1e+05    & 100       \\
+\hline 
+\end{tabular} 
+\end{table}
+
+\newpage
 
 \section{Costruzione del software}
 Il programma Python è costruito in modo tale da calcolare le funzioni di predizione per un'unica ontologia. Questa scelta è stata effettuta per facilitare la gestione del codice e dei risultati prodotti. Se si vogliono eseguire diverse ontologie bisogna mandare nuovamente in esecuzione il processo specificando l'ontologia che si vuole computare.
@@ -502,7 +550,6 @@ L'\textit{Header} è un dizionario contenente le seguenti informazioni:
 \begin{itemize}
     \item L'ontologia in uso
     \item L'algoritmo di apprendimento eseguito
-    \item I parametri del metodo
     \item Il tempo di inizio della configurazione in formato data e ora
 \end{itemize}
 Le \textit{Metriche} ricavate da ciascun fold di ogni classe sono le seguenti:
@@ -514,8 +561,8 @@ Le \textit{Metriche} ricavate da ciascun fold di ogni classe sono le seguenti:
     \item F-score
     \item False Positive rate
     \item True Positive rate
-    \item Auroc
-    \item Auprc
+    \item AUROC
+    \item AUPRC
 \end{itemize}
 Anche la struttura sopra descritta è contenuta all'interno di un dizionario. Ad ogni classe sono associati tanti dizionari quanti sono i fold.
 
@@ -530,7 +577,7 @@ La funzione \textit{cross\_val\_score} è stata scelta perché consente di ridur
 Le metriche di un fold vengono calcolate fornendo in input alle funzioni le etichette degli esempi del test set e le predizioni computate dal classificatore. Di seguito una breve lista delle procedure utilizzate:
 
 \begin{itemize}
-\item \textit{precision\_recall\_fscore\_support} calcola la precision, la recall e la f-score di un classificatore
+\item \textit{precision\_recall\_fscore\_support} calcola la Precision, la Recall e la F-score di un classificatore
 
 \item \textit{precision\_recall\_curve} computa la precision-recall-curve
 
@@ -550,10 +597,10 @@ Le metriche sono state scelte considerando diversi aspetti del dataset.
 A causa della presenza di classi sbilanciate, che presentano un numero elevato di esempi negativi rispetto a quelli positivi, l'accuratezza non rappresenta una metrica significativa per il modello che si sta valutando.
 
 \paragraph*{}
-L'accuratezza corrisponde alla frazione delle predizioni corrette ed è definita come:
+L'accuratezza corrisponde alla media delle predizioni sbagliate da un classificatore ed è definita come:
 
 \begin{equation}
-\texttt{accuracy}(y, \hat{y}) = \frac{1}{n_\text{samples}} \sum_{i=0}^{n_\text{samples}-1} \mathbb{I}(\hat{y}_i = y_i)
+\texttt{accuracy}(y, \hat{y}) = \frac{1}{n_\text{samples}} \sum_{i=0}^{n_\text{samples}-1} \mathbb{I}(\hat{y}_i \neq y_i)
 \end{equation}
 
 Come si può notare, l'accuratezza non fornisce un buon valore in caso di sbilanciamento, in quanto non è in grado di discriminare i valori positivi da quelli negativi.
@@ -657,9 +704,10 @@ Il grafico \ref{fig:liv2} confronta i risultati dell'impostazione di AdaBoost ch
 
 
 \subsection{Risultati di SVM}
-SVM presenta una grande varianza di performance. Si è reso necessario un lavoro di esplorazione prima di trovare un classificatore accettabile, che non presenti Precision o Recall eccessivamente basse. \say{SVM\_Balanced\_C7\_G7} è una scelta quasi obbligata.
+SVM presenta una grande varianza di performance. Si è reso necessario un lavoro di esplorazione prima di trovare un classificatore accettabile, che non presenti Precision o Recall eccessivamente basse. \say{SVM\_Balanced\_C8\_G8} è una scelta quasi obbligata.
 
-%\subsection{Risultati di Pegasos}
+\subsection{Risultati di Pegasos}
+TODO
 
 
 % //////////////////// ILL-DEFINED /////////////////
@@ -686,6 +734,22 @@ SVM presenta una grande varianza di performance. Si è reso necessario un lavoro
 \topskip0pt
 \vspace*{\fill}
 
+\begin{figure}[ht]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-Pegasos-ills.eps}%   
+    \caption{Numero di ill-defined delle configurazioni di Pegasos}%
+    \label{figure:ill13}%
+\end{figure}
+
+\begin{figure}[hb]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-Pegasos-ills-LS.eps}%   
+    \caption{Numero di ill-defined delle configurazioni di Pegasos su classi linearmente separabili}%
+    \label{figure:ill14}%
+\end{figure}
+
+\vspace*{\fill}
+
 % //////////////////// LIVELLO 1 /////////////////
 
 \topskip0pt
@@ -708,6 +772,18 @@ SVM presenta una grande varianza di performance. Si è reso necessario un lavoro
     \includegraphics[scale = 0.80]{CC-SVM-level1.eps}%   
     \caption{Confronto tra le metriche di diverse configurazioni di SVM}%
     \label{figure:liv1.2}%
+\end{figure}
+
+\vspace*{\fill}
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[hb]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-Pegasos-level1.eps}%   
+    \caption{Confronto tra le metriche di diverse configurazioni di Pegasos}%
+    \label{figure:liv1.3}%
 \end{figure}
 
 \vspace*{\fill}
@@ -741,6 +817,23 @@ SVM presenta una grande varianza di performance. Si è reso necessario un lavoro
 \end{figure}
 
 \vspace*{\fill}
+
+% //////////////////// PEGASOS LINEARMENTE SEPARABILE /////////////////
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[hb]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-Pegasos-level1-LS.eps}%   
+    \caption{Confronto tra le metriche di diverse configurazioni di Pegasos su classi linearmente separabili}%
+    \label{figure:illps}%
+\end{figure}
+
+\vspace*{\fill}
+
+
+
 
 \begin{comment}
 
