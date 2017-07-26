@@ -259,7 +259,7 @@ Vediamo ora l'implementazione del metodo che esegue l'apprendimento:
         
         # Start creating weak learners and training them
         while len(self.estimators) < self.n_estimators:
-            weak = DecisionTreeClassifier(max_depth=1)
+            weak = DecisionTreeClassifier(max_depth=1, class_weight='balanced')
             weak.fit(X, y, sample_weight=sample_weights)
             errors = np.array([weak.predict(t[0]) != t[1] for t in zip(X, y)])
             
@@ -291,7 +291,9 @@ Il metodo \texttt{fit} accetta una matrice \texttt{X} di feature, in cui ogni ri
 Il parametro \texttt{y} è un array di etichette, che nel nostro caso possono valere 0 (\texttt{False}) o 1 (\texttt{True}).
 
 Come classificatore di base si è optato per un \emph{decision stump}, cioè un predittore ad albero molto semplice, che presenta un solo test, quindi una sola ramificazione e al massimo due foglie. 
-Si è utilizzata l'implementazione dell'albero di decisione di scikit-learn\footnote{\url{scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html}}, con il parametro \texttt{max\_depth = 1}.
+Si è utilizzata l'implementazione dell'albero di decisione di scikit-learn\footnote{\url{scikit-learn.org/stable/modules/generated/sklearn.tree.DecisionTreeClassifier.html}}, con il parametro \texttt{max\_depth=1}. 
+
+Impostare \texttt{class\_weight='balanced'} significa imporre all'albero di decisione di eseguire l'apprendimento moltiplicando il vettore \texttt{sample\_weight=} per degli scalari in modo da bilanciare i pesi in modo inversamente proporziale alla cardinalità delle classi. È stato fatto anche un tentativo senza questa impostazione.
 
 Ad ogni iterazione viene creato un nuovo \emph{stump} e viene addestrato sul training set opportunamente pesato attraverso il vettore \texttt{sample\_weights}, che assegna un peso ad ogni sample e influenza così la funzione di perdita dello \emph{stump}.
 Alla prima iterazione il peso è uguale per ogni sample, ma nelle iterazioni successive i sample classificati correttamente perdono peso in favore di quelli classificati scorrettamente.
@@ -326,13 +328,13 @@ In caso di aderenza perfetta, la procedura di boosting è arrestata prima del ra
 \end{description}
  
 \subsection{Parametri}
-In questo lavoro sono state esplorate diverse configurazioni del predittore AdaBoost.
+In questo lavoro sono state esplorate diverse configurazioni del predittore AdaBoost, prima con l'implementazione di scikit-learn e poi con la nostra.
 
 Si è mantenuto il \texttt{learning\_rate} a 1. 
 
 Si è variato \texttt{n\_estimators} ponendolo a 10, 50 e 100 stimatori di base.
 
-Si sono poi modificate delle proprietà dello stimatore ad albero di base, impostando un bilanciamento del peso delle classi inversamente proporzionale alla loro frequenza, usando l'impostazione \texttt{class\_weight = \say{balanced}}, in analogia col predittore SVM.
+Si sono poi modificate delle proprietà dello stimatore ad albero di base, impostando un bilanciamento del peso delle classi inversamente proporzionale alla loro frequenza, usando l'impostazione \texttt{class\_weight = \say{balanced}}, in analogia col predittore SVM. Con questa impostazione si è creato un classificatore \texttt{n\_estimators=1}, per provare il funzionamento dello \textit{stump} di decisione senza boost.
 
 Infine, si è tentato l'utilizzo di alberi leggermente più complessi, impostandone la \texttt{max\_depth} a 3. Questo consente di creare alberi a tre livelli di test. Normalmente alzare questo livello in un albero decisione può portare ad avvicinarsi velocemente verso l'overfitting.
 
@@ -341,23 +343,31 @@ La \autoref{tab:b2} elenca le impostazioni di Adaboost che si sono provate in qu
 \begin{table}[ht]%	
 \centering
 \caption{Configurazioni di AdaBoost}\label{tab:b2}
-\begin{tabular}{|c|c|c|c|}
-\hline
-nome & \texttt{n\_estimators} & bilanciamento & \texttt{max\_depth} \\ 
+\begin{tabular}{c|c|c|c|c|}
+%\hline
+nome & implementazione & \texttt{n\_estimators} & bilanciamento & \texttt{max\_depth} \\ 
 \hline 
-AdaBoost\_n10 & 10 & No & 1 \\ 
+AdaBoost\_My\_n10 		& nostra	& 10 & No & 1 \\ 
 \hline 
-AdaBoostDefault & 50 & No & 1 \\ 
+AdaBoost\_My\_n10\_Bal 	& nostra	& 10 & Auto & 1 \\ 
 \hline 
-AdaBoost\_n100 & 100 & No & 1 \\ 
+AdaBoost\_My\_n1\_Bal 	& nostra	& 1 & Auto & 1 \\ 
 \hline 
-AdaBoost\_n5\_Bal & 5 & Auto & 1 \\ 
+AdaBoost\_My\_n50\_Bal 	& nostra	& 50 & Auto & 1 \\ 
 \hline 
-AdaBoost\_n10\_Bal & 10 & Auto & 1 \\ 
+AdaBoost\_n10 			& scikit-learn & 10 & No & 1 \\ 
 \hline 
-AdaBoost\_n50\_Bal & 50 & Auto & 1 \\ 
+AdaBoostDefault 		& scikit-learn & 50 & No & 1 \\ 
 \hline 
-AdaBoost\_n50\_Bal\_Dep3 & 5 & Auto &  3\\ 
+AdaBoost\_n100 			& scikit-learn & 100 & No & 1 \\ 
+\hline 
+AdaBoost\_n5\_Bal 		& scikit-learn & 5 & Auto & 1 \\ 
+\hline 
+AdaBoost\_n10\_Bal 		& scikit-learn & 10 & Auto & 1 \\ 
+\hline 
+AdaBoost\_n50\_Bal 		& scikit-learn & 50 & Auto & 1 \\ 
+\hline 
+AdaBoost\_n50\_Bal\_Dep3 	& scikit-learn & 5 & Auto &  3\\ 
 \hline 
 \end{tabular} 
 \end{table}
@@ -624,18 +634,25 @@ Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei
 \subsection{Risultati di AdaBoost}
 Si osserva come AdaBoost sia un algoritmo piuttosto robusto. Le performance sui test set sono buone, variano a seconda delle caratteristiche della classe in esame, ma le diverse configurazioni riportano risultati sempre validi, seppur con piccole variazioni.
 
+\paragraph{Quantità di classificatori}
 Osserviamo dunque che le performance migliorano leggermente aumentando il numero di iterazioni di Adaboost. Ad ogni iterazione vengono corretti gli errori dell'iterazione precedente, ed è lecito aspettarsi che si arrivi ad un punto in cui l'errore è piccolo ed oscillante, cioè ogni iterazione tenta di correggere degli errori ma ne introduce degli altri.
 
+\paragraph{Bilanciamento}
 AdaBoost, inoltre, rispetto ad altri classificatori, è capace di correggere in modo efficace lo sbilanciamento delle classi. In questo contesto applicativo, infatti, per ogni classe ci sono numerosi elementi che non vi appartengono (quindi con etichetta 0) e pochi elementi che vi appartengono (etichetta 1). La conseguenza è che altri classificatori hanno difficoltà ad apprendere a classificare correttamente gli esempi con etichetta 1, dal momento che sarà sufficiente predire sempre 0 per ottenere uno score alto. AdaBoost soffre del problema durante la prima iterazione (come dimostrato dalle performance di AdaBoost\_My\_n1\_Bal), ma le iterazioni successive stanno già bilanciando le classi problematiche.
+
+\paragraph{Weak learners}
+Gli \emph{stump} di decisione sono una buona scelta come famiglia di predittori di base. Sono efficienti, si adattano bene a dati eterogenei ed è possibile leggerli ed interpretarli dopo l'apprendimento. Chi volesse addentrarsi nella semantica delle features potrebbe ritrovare facilmente quali siano le features più significative. L'operazione sarebbe complicata dal fatto di dover leggere una serie di alberi generati da AdaBoost, ma compensata dalla semplicità degli alberi. Se è vero che un albero di decisione può rapidamente andare in overfitting, d'altro canto limitarsi a \textit{stump} ci evita questo rischio. Osserviamo che aumentare la profondità degli alberi non ha migliorato i risultati.
 
 Inserire un bilanciamento automatico all'interno dell'albero di decisione ha effetto soprattutto quando il numero massimo di predittori è basso. In questo caso possiamo osservare l'aumento della Recall e la diminuzione della Precision. I singoli alberi, infatti, saranno incoraggiati a dare peso alle classi positive: la probabilità di falsi positivi aumenta e quella di falsi negativi diminuisce. Riteniamo che questo sia un effetto desiderabile in un contesto come questo, dove abbiamo un gran numero di classi sbilanciate e vorremmo generalizzare bene il modello. 
 
+\paragraph{Gerarchie e stadi di predizione}
 In questo lavoro, infatti, si è stabilito di creare numerosi classificatori binari indipendenti. In realtà le classi dell'ontologia di riferimento non sono indipendenti, ma sono organizzate in una gerarchia complessa: singole coppie di classi possono essere nidificate, disgiunte o indipendenti.
 
-Una proteina che appartiene ad una classe appartiene necessariamente a tutte le classi "madri" e probabilmente a qualche classe "figlia". Si potrebbe dunque costruire un predittore complesso che tenga di conto delle gerarchie delle classi, rivalutando le predizioni indipendenti compiute da AdaBoost. I nostri predittori indipendenti fungerebbero da primo stadio, da filtro per questo secondo classificatore.
+Una proteina che appartiene ad una classe appartiene necessariamente a tutte le classi "madri" e possibilmente a qualcuna delle classi "figlie". Si potrebbe dunque costruire un predittore complesso che tenga di conto delle gerarchie delle classi, rivalutando le predizioni indipendenti compiute da AdaBoost. I nostri predittori indipendenti fungerebbero da primo stadio, da filtro per questo secondo classificatore.
 Questo secondo stadio avrebbe la capacità di individuare i falsi positivi ed escluderli, ma sarebbe meno capace di reintegrare i falsi negativi, già esclusi dal primo. Di conseguenza abbiamo deciso di tollerare i falsi positivi più dei falsi negativi, e quindi di premiare una Recall alta a discapito della Precision.
 
-Il grafico \ref{fig:liv2} confronta i risultati dell'impostazione di AdaBoost che giudichiamo migliore (AdaBoost\_My\_n50\_Bal) con l'analoga di SVM. 
+\paragraph{Cardinalità delle classi}
+Il grafico \ref{fig:liv2} confronta i risultati dell'impostazione di AdaBoost che giudichiamo migliore secondo i criteri appena esposti. (AdaBoost\_My\_n50\_Bal) con l'analoga di SVM. L'impostazione scelta dimostra un buona Recall nel caso di una classe di cardinalità media. Le classi con una cardinalità molto bassa necessariamente possono offrire un training set poco significativo, e la riuscita dipende molto dalle caratteristiche semantiche della classe. In una classe molto popolata ottieniamo metriche molto alte, in quanto ci sono molti dati e il problema è facilmente generalizzabile. AdaBoost ci consente di creare predittori di buona qualità senza fare necessariamente tuning impegnativi di parametri.
 
 
 
