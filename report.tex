@@ -640,43 +640,39 @@ Come spiegato precedentemente, le metriche vengono calcolate per ogni fold di un
 \section{Risultati}
 
 \subsection{Ill-defined}
-Durante la fase di validazione è emerso che parte dei classificatori addestrati non ha predetto alcun esempio del test set, dando solo risposte negative. Poichè i 5 fold sono stati costruiti in modo da possedere sempre almeno un esempio positivo, questo significa che il classificatore ha commesso un errore.
+Durante la fase di cross-validation è emerso che parte dei classificatori addestrati non ha predetto alcun esempio del test set, dando solo risposte negative. Poichè i 5 fold sono stati costruiti in modo da avere sempre almeno un esempio positivo, questo significa che il classificatore ha commesso un errore.
 
 Tale comportamento va oltre alla logica dei normali errori che può commettere un classificatore. Non avendo predetto neanche un positivo (vero o falso che sia), non si può escludere che il classificatore abbia semplicemente appreso a rispondere negativamente a qualunque input, rendendosi di fatto inutilizzabile.
 
-Inoltre, poichè il numero di positivi è zero, il calcolo della precision è impossibile, dal momento che avremmo una divisione per zero. Di conseguenza anche F-score non è computabile. L'implementazione di scikit-learn rimedia parzialmente a questo comportamento: durante il calcolo delle metriche, scikit-learn intercetta l'errore, solleva un warning e fissa precision e F-score a zero, affermando che tali valori sono \emph{ill-defined}.
+Inoltre, poichè il numero di positivi è zero, il calcolo della Precision è impossibile, dal momento che avremmo una divisione per zero. Di conseguenza anche F-score non è computabile. L'implementazione di scikit-learn rimedia parzialmente a questo comportamento: durante il calcolo delle metriche, scikit-learn intercetta l'errore, solleva un warning e fissa precision e F-score a zero, affermando che tali valori sono \emph{ill-defined}.
 
 Durante l'analisi delle metriche possiamo selezionare questi predittori intrinsecamente difettosi cercando tra i predittori quelli che abbiano Precision e F-score uguali a zero. Possiamo dunque misurare l'impatto del problema e quantificare i predittori difettosi (che abbiamo battezzato  \emph{ill-defined}).
 
 Si osserva che il numero di predittori \emph{ill-defined} aumenta quando il training set è sbilanciato, cioè quando si apprende da una classe che contiene poche proteine. Ovviamente anche la qualità dell'algoritmo di apprendimento è influente. Gli algoritmi che non bilanciano le classi e che non sono in grado di apprendere da pochi esempi genereranno predittori difettosi.
 
-%grafico che mostra come varia qualche metrica e/o il numero di ill defined in base alla popolazione della classe
 Il sistema 5-fold prevede che per ogni classe dell'ontologia vengano generati 5 predittori. I predittori \emph{ill-defined} possono essere numerosi, ma fintantochè una classe possiede almeno un predittore non \emph{ill-defined} possiamo concludere che sia possibile costruire per tale classe dun predittore funzionante.
 
 Possiamo considerare il numero di predittori \emph{ill-defined} alla stregua di un indicatore di qualità dell'algoritmo di apprendimento. A parità di cardinalità della classe, avere meno \emph{ill-defined} significa aver sfruttato meglio il valore degli esempi positivi.
 
-I grafici della Figura~\ref{fig:ill1} e ~\ref{figure:ill12} mostrano la quantità di ill-defined di AdaBoost e di Svm tra i 5-fold.
+La Figura~\ref{figure:ill1} mostra che la quantità di \emph{ill-defined} di AdaBoost non presenta variazioni significative ed il valore mediano resta compreso tra 2 e 3 per i parametri analizzati.
 
-Osserviamo quindi che per Adaboost la quantità di \emph{ill-defined} non presenta variazioni significative, e il valore mediano resta compreso tra 2 e 3 per i parametri analizzati.
+La Figura~\ref{figure:ill12} TODO
 
-Per SVM c'è molta meno continuità: il valore si abbassa per valori di C elevati, che però vedremo avere Precision molto bassa.
+In Pegasos, come si vede dalla Figura~\ref{figure:ill13}, il numero di ill-defined è elevatissimo per quasi tutte le configurazioni, fatta eccezione per \say{Pegasos\_SGD} che non ne produce nessuno. Questa notevole differenza è dovuta al mancato utilizzo di una tecnica per il bilanciamento delle classi nella prima implementazione.
 
-Menzione d'onore merita l'impostazione \say{SVM\_C12\_G12}, che ha prodotto solo classificatori \emph{ill-defined} per tutte le classi di entrambe le ontologie.
-Con questi parametri i classificatori generalizzano troppo il problema e apprendono a dare solo risposte negative.
-
-I classificatori difettosi sono inutilizzabili ma facili da identificare ed escludere. In un contesto applicativo reale verrebero esclusi dall'utilizzo. Pertanto le analisi che seguono filtrano il bias introdotto dai classificatori \emph{ill-defined} e analizzano sono i classificatori costruiti correttamente.
+I classificatori difettosi sono inutilizzabili, ma facili da identificare ed escludere. In un contesto applicativo reale verrebero esclusi dall'utilizzo. Pertanto, le analisi che seguono, filtrano il bias introdotto dai classificatori \emph{ill-defined} e analizzano solo classificatori costruiti correttamente.
 
 \subsection{Analisi a Livelli}
 Per identificare i migliori classificatori e poterli confrontare tra loro, è stata creata una struttura a tre livelli. Nei primi due livelli, i classificatori di modelli diversi non interagiscono tra loro. In ogni livello, le ontologie sono sempre analizzate in maniera indipendente. 
 
-Al \textit{Livello 1} vengono confrontate le metriche prodotte dalle diverse configurazioni di uno stesso classificatore. Questo metodo consente di determinare qual è il migliore classificatore per ogni famiglia di modelli. La Figura~\ref{figure:liv1.1} mette in relazione tra loro le diverse configurazioni di AdaBoost, mentre la Figura~\ref{figure:liv1.2} quelle di SVM.
+Al \textit{Livello 1} vengono confrontate le metriche prodotte dalle diverse configurazioni di uno stesso classificatore. Questo metodo consente di determinare qual è il migliore classificatore per ogni famiglia di modelli. La Figura~\ref{figure:liv1.1} mette in relazione tra loro le diverse configurazioni di AdaBoost, la Figura~\ref{figure:liv1.2} quelle di SVM, infine la Figura~\ref{figure:liv1.3} quelle di Pegasos.
 
 \paragraph*{}
 Il \textit{Livello 2} confronta la configurazione del classificatore che ha ottenuto i risultati migliori al livello precedente su diverse classi. Lo scopo di questa analisi consiste nel capire come un classificatore varia le sue predizioni a seconda della classe scelta. Le classi considerate sono tre e sono disposte in ordine crescente rispetto al numero di esempi positivi. L'id della classe si ottiene unendo il nome dell'ontologia usata e la relativa colonna della Matrice delle Annotazioni.
-La Figura~\ref{fig:liv2} mostra le metriche delle migliori configurazioni di AdaBoost e SVM.
+La Figura~\ref{fig:liv2} mostra le metriche ottenute dalle migliori configurazioni di AdaBoost, SVM e Pegasos.
 
 \paragraph*{}
-Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei classificatori di ogni famiglia di modelli. Le metriche considerate sono AUROC, AUPRC e F-score. La Figura~\ref{fig:liv3} mostra il confronto tra AdaBoost e SVM.
+Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei classificatori di ogni famiglia di modelli. Le metriche considerate sono AUROC, AUPRC e F-score. La Figura~\ref{fig:liv3} mostra il confronto tra AdaBoost, SVM e Pegasos.
 
 \subsection{Risultati di AdaBoost}
 Si osserva come AdaBoost sia un algoritmo piuttosto robusto. Le performance sui test set sono buone, variano a seconda delle caratteristiche della classe in esame, ma le diverse configurazioni riportano risultati sempre validi, seppur con piccole variazioni.
@@ -707,8 +703,13 @@ Il grafico \ref{fig:liv2} confronta i risultati dell'impostazione di AdaBoost ch
 SVM presenta una grande varianza di performance. Si è reso necessario un lavoro di esplorazione prima di trovare un classificatore accettabile, che non presenti Precision o Recall eccessivamente basse. \say{SVM\_Balanced\_C8\_G8} è una scelta quasi obbligata.
 
 \subsection{Risultati di Pegasos}
-TODO
+Come si può notare dai risultati, mostrati dalla Figura~\ref{figure:liv1.3}, tutte le configurazioni di Pegasos producono pessimi risultati. La principale causa è data dalla presenza di un gran numero di classi non linearmente separabili, che non consentono di trovare un iperpiano che separi perfettamente gli esempi. Uno sviluppo ulteriore potrebbe essere quello di utilizzare funzioni kernel sia per la prima che per la seconda implementazione.
 
+\paragraph*{}
+Le brutte prestazioni di Pegasos hanno comportato un'analisi più approfondita del classificatore utilizzando solo le classi linearmente separabili dell'ontologia CC.
+La Figura~\ref{figure:ill14} mostra la quantità di ill-defined prodotti. Come si può notare, le configurazioni \say{Pegasos\_I9\_L1\_0} e \say{Pegasos\_I9\_L1\_1}, riferite alla prima implementazione, non hanno ill-defined. Questo risultato sancisce che valori piccoli di $\lambda$ producono buoni risultati su classi linearmente separabili sbilanciate. Anche la configurazione \say{Pegasos\_SGD} ha un numero di ill-defined pari a 0, ma bisogna ricordare che la seconda implementazione usa un parametro per bilanciare le classi.
+
+Il confronto tra le varie configurazioni di Pegasos è illustrato dalla Figura~\ref{figure:illps}. \say{Pegasos\_I9\_L1\_0} e \say{Pegasos\_I9\_L1\_1} ottengono risultati identici. Le differenze tra le loro $\lambda$ è di un ordine di grandezza, per cui per valori troppo piccoli l'algoritmo pone un limite inferiore. La F-score risulta la migliore rispetto a quella delle restanti configurazioni, ma la Precision assume un valore troppo basso. \say{Pegasos\_SGD} ottiene risultati inferiori e questo è dovuto all'uso di un $\lambda$ abbastanza grande, necessario per ridurre i tempi di computazione della seconda implementazione.  
 
 % //////////////////// ILL-DEFINED /////////////////
 
@@ -719,7 +720,7 @@ TODO
     \centering
     \includegraphics[scale = 0.80]{CC-AdaBoost-ills.eps}%
     \caption{Numero di ill-defined delle configurazioni di AdaBoost}%
-    \label{fig:ill1}% 
+    \label{figure:ill1}% 
 \end{figure}
 
 \begin{figure}[hb]%
