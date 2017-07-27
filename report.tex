@@ -203,9 +203,11 @@ Per ridurre l'uso di memoria centrale, sia la Matrice di Adiacenza che quella de
 Le singole colonne della matrice delle Annotazioni verranno successivamente convertite in array densi, in modo da poterle passare in input ai diversi algoritmi di apprendimento. 
 
 \paragraph*{}
-Ogni proteina può appartenere a una o più classi, infatti ogni esempio del training set può avere più etichette ad esso associate. Tra le varie classi, esiste inoltre una relazione gerarchica, che non viene però indicata nei dati forniti. 
+Ogni proteina può appartenere a una o più classi, infatti ogni esempio del training set può avere più etichette ad esso associate. Tra le varie classi, esiste inoltre una relazione gerarchica, che non viene però indicata nei dati di input.
 
-Nello svolgimento del progetto si è deciso di considerare ogni classe in maniera indipendente, addestrando i classificatori binari, delle diverse famiglie di modelli, sulle singole classi.
+Le classi risultano notevolmente sbilanciate, infatti, per la maggior parte di esse, il numero di positivi è nettamente inferiore rispetto a quello dei negativi. Inoltre, solo alcune classi dell'ontologia sono linearmente separabili. 
+
+Nello svolgimento del progetto si è deciso di considerare ogni classe in maniera indipendente, addestrando i classificatori binari, appartenenti a famiglie di modelli diversi, sulle singole classi.
 
 
 \chapter{Metodi di Machine Learning} 
@@ -642,7 +644,7 @@ Possiamo considerare il numero di predittori \emph{ill-defined} alla stregua di 
 
 La Figura~\ref{figure:ill1} mostra che la quantità di \emph{ill-defined} di AdaBoost non presenta variazioni significative ed il valore mediano resta compreso tra 2 e 3 per i parametri analizzati.
 
-La Figura~\ref{figure:ill12} TODO
+Gli \emph{ill-defined} di SVM, mostrati dalla Figura~\ref{figure:ill12}, non presentano variazioni significative ed il valore mediano, in alcune configurazioni, rimane costante a 2.
 
 In Pegasos, come si vede dalla Figura~\ref{figure:ill13}, il numero di ill-defined è elevatissimo per quasi tutte le configurazioni, fatta eccezione per \say{Pegasos\_SGD} che non ne produce nessuno. Questa notevole differenza è dovuta al mancato utilizzo di una tecnica per il bilanciamento delle classi nella prima implementazione.
 
@@ -683,10 +685,10 @@ Questo secondo stadio avrebbe la capacità di individuare i falsi positivi ed es
 \paragraph{Cardinalità delle classi}
 Il grafico \ref{fig:liv2} confronta i risultati dell'impostazione di AdaBoost che giudichiamo migliore secondo i criteri appena esposti. (AdaBoost\_My\_n50\_Bal) con l'analoga di SVM. L'impostazione scelta dimostra un buona Recall nel caso di una classe di cardinalità media. Le classi con una cardinalità molto bassa necessariamente possono offrire un training set poco significativo, e la riuscita dipende molto dalle caratteristiche semantiche della classe. In una classe molto popolata ottieniamo metriche molto alte, in quanto ci sono molti dati e il problema è facilmente generalizzabile. AdaBoost ci consente di creare predittori di buona qualità senza fare necessariamente tuning impegnativi di parametri.
 
-
-
 \subsection{Risultati di SVM}
-SVM presenta una grande varianza di performance. Si è reso necessario un lavoro di esplorazione prima di trovare un classificatore accettabile, che non presenti Precision o Recall eccessivamente basse. \say{SVM\_Balanced\_C8\_G8} è una scelta quasi obbligata.
+Le migliori configurazioni di SVM sono la \say{SVM\_Balanced\_C7\_G7} e la \\ \say{SVM\_Balanced\_C8\_G8}. Entrambe utilizzano un kernel RBF, hanno un valore di C molto grande ed un gamma piccolo. La F-score è ben al di sopra della media, con valori di Precision e Recall notevoli. 
+
+La \say{SVM\_Balanced\_Poly\_4}, nonostante facesse uso di un kernel polinomiale di 4 grado, ha prodotto scarsi risultati al costo di un elevato tempo computazionale.
 
 \subsection{Risultati di Pegasos}
 Come si può notare dai risultati, mostrati dalla Figura~\ref{figure:liv1.3}, tutte le configurazioni di Pegasos producono pessimi risultati. La principale causa è data dalla presenza di un gran numero di classi non linearmente separabili, che non consentono di trovare un iperpiano che separi perfettamente gli esempi. Uno sviluppo ulteriore potrebbe essere quello di utilizzare funzioni kernel sia per la prima che per la seconda implementazione.
