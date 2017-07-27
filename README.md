@@ -143,11 +143,6 @@ Politica di lavoro:
 - Uso dei kernel per Pegasos. In questo modo si proverebbe a risolvere il problema del training set non linearmente separabile.
 (Cesa non li ha richiesti, tu cosa ne dici? Rispondi qui sotto.)
 
-
-Ill-defined
-Le configurazioni di SVM non hanno portato a miglioramenti, io propongo di provare, oltre alla scelta dei parametri, nuovi approcci legati 
-a class_weight. Ci devo pensare su.
-
 A MICHI:
     
 

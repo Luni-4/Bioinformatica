@@ -396,7 +396,7 @@ I support vectors sono gli esempi del training set che, a seconda dell'iperpiano
 L'apprendimento del classificatore è stato effettuato usando la funzione \textit{SVC}, implementata nel modulo \textit{sklearn.svm} contenente gli algoritmi SVM della libreria scikit-learn. Nella definizione del metodo sono stati impostati i seguenti parametri:
 
 \paragraph*{}
-\textbf{\textit{C}}. Penalità sull'errore commesso. È un parametro di tradeoff, un valore elevato di C crea un modello complesso che mira a classificare nel miglior modo possibile gli esempi del training set, mentre un valore piccolo comporta un modello con una funzione di decisione più semplice. È un valore di tipo float. 
+\textbf{\textit{C}}. Penalità sull'errore commesso. Un valore elevato di C crea un modello complesso che mira a classificare nel miglior modo possibile gli esempi del training set, ma al tempo stesso aumenta notevolmente la varianza e può portare ad overfitting. L'uso di un valore piccolo, al contrario, costruisce un modello più semplice e con una varianza più bassa. È un valore di tipo float. 
 
 \paragraph*{}
 \textbf{\textit{Kernel}}. Specifica il kernel che deve essere usato dall'algoritmo. I kernel scelti per lo svolgimento del progetto sono stati:
@@ -410,7 +410,7 @@ L'apprendimento del classificatore è stato effettuato usando la funzione \texti
 \textbf{\textit{degree}}. Grado del polinomio usato dal Kernel Polinomiale. È un valore intero.
 
 \paragraph*{}
-\textbf{\textit{gamma}}. Inverso del raggio di influenza. Questo parametro stabilisce quali sono gli esempi scelti dal modello come support vectors. SVM è molto sensibile a questo parametro. Con un gamma molto grande, il raggio di influenza risulterà piccolo ed il modello sceglierà come support vectors gli elementi più vicini al margine e quelli che violano il vincolo, al contrario, un gamma piccolo comporta un raggio di influenza grande ed ogni esempio del training set sarà un support vector. È un valore di tipo float.
+\textbf{\textit{gamma}}. $\gamma = \dfrac{1}{\sigma}$. Definisce l'ampiezza delle Gaussiane nello spazio RBF. SVM è molto sensibile a questo parametro. Un valore elevato di gamma comporta delle Gaussiane molto strette e ogni esempio non è influenzato da quelli vicini, quindi il numero di support vectors sarà basso, ma si rischia di incorrere nell'overfitting. Al contrario, un valore molto piccolo di gamma porterà ad avere delle Gaussiane molto ampie, perciò un esempio verrà influenzato dagli esempi del training set circostanti e la quantità di support vectors risulterà elevata. Un gamma troppo piccolo ammetterebbe come support vectors tutti gli esempi e il modello creato non riuscirebbe a discriminare al meglio le classi. È un valore di tipo float.
 
 Un valore grande di gamma può portare a overfitting, mentre uno troppo piccolo rischia di produrre un classificatore che non riesce a discriminare al meglio le classi.
 
@@ -427,13 +427,13 @@ numero\_campioni / (numero\_classi * array\_contenente\_cardinalità\_classi)
 Per determinare con quali parametri, sul dataset considerato, la SVM produce dei buoni risultati, vengono eseguite le seguenti configurazioni:
 
 \paragraph*{}
-\textbf{\textit{Unbalanced}}. Il kernel di questa configurazione è RBF. La funzione SVC viene eseguita con i parametri di default, C unitario e gamma variabile, per verificare, dall'analisi dei risultati ottenuti, la necessità di modificare gli iperparametri.
+\textbf{\textit{Unbalanced}}. Il kernel di questa configurazione è RBF. La funzione SVC viene eseguita con i parametri di default, C unitario e gamma variabile, per determinare se risulta necessaria un eventuale modifica degli iperparametri.
 
 \paragraph*{}
-\textbf{\textit{C crescente}}. Il kernel usato dalla configurazione è RBF. Il valore di class\_weight è \say{balanced}. Mantenendo costanti tutti gli altri parametri, C viene fatto crescere nell'intervallo $[1,3]$ in maniera discreta. Si vuole verificare che aumentando C in maniera gradata, i risultati subiscano un miglioramento.
+\textbf{\textit{Balanced}}. Questa configurazione utilizza gli stessi parametri della Unbalanced, ma imposta il parametro class\_weight a \say{balanced} per poter bilanciare le classi.
 
 \paragraph*{}
-\textbf{\textit{C e gamma variabili}}. Questa configurazione è identica a quella precedente, con la sola differenza di far crescere anche il parametro gamma insieme a C. I valori di entrambi vengono estratti dall'intervallo $[10^{-3}, 10^3]$ in scala logaritmica.
+\textbf{\textit{C e gamma variabili}}. Insieme di due configurazioni. Il kernel usato è RBF. Il parametro C di SVC assume un valore elevato, mentre gamma uno molto piccolo. La seconda configurazione fa crescere entrambi di un ordine di grandezza.
 
 \paragraph*{}
 \textbf{\textit{Poly}}. Viene usato un kernel polinomiale di grado 4. Il valore di class\_weight è \say{balanced}. Tutti i restanti parametri non sono stati modificati. La scelta del grado del polinomio è stata effettuata tenendo in considerazione la potenza computazionale delle macchine a disposizione.
@@ -449,23 +449,9 @@ SVM\_Unbalanced         & -             & RBF    & 1.0      & auto    & -       
 \hline 
 SVM\_Balanced           & balanced      & RBF    & 1.0      & auto    & -       \\
 \hline 
-SVM\_Balaman            & 0:0.01 1:0.99 & RBF    & 1.0      & auto    & -       \\
-\hline 
-SVM\_Balanced\_C2       & balanced      & RBF    & 2.0      & auto    & -       \\
-\hline 
-SVM\_Balanced\_C3       & balanced      & RBF    & 3.0      & auto    & -       \\
-\hline 
-SVM\_Balanced\_C5       & balanced      & RBF    & 5.0      & auto    & -       \\
-\hline 
-SVM\_Balanced\_C7       & balanced      & RBF    & 7.0      & auto    & -       \\
-\hline 
-SVM\_Balanced\_C0\_G0   & balanced      & RBF    & 0.01     & 1.0e-09 & -       \\
-\hline 
-SVM\_Balanced\_C2\_G2   & balanced      & RBF    & 0.1      & 1.0e-08 & -       \\
-\hline 
 SVM\_Balanced\_C7\_G7   & balanced      & RBF    & 1.0e+05  & 0.01    & -       \\
 \hline 
-SVM\_Balanced\_C12\_G12 & balanced      & RBF    & 1.0e+10  & 1000.0  & -       \\
+SVM\_Balanced\_C8\_G8   & balanced      & RBF    & 1.0e+06  & 0.1     & -       \\
 \hline 
 SVM\_Balanced\_Poly\_4  & balanced      & Poly   & 1.0      & auto    & 4       \\
 \hline 
@@ -709,6 +695,7 @@ Come si può notare dai risultati, mostrati dalla Figura~\ref{figure:liv1.3}, tu
 Le brutte prestazioni di Pegasos hanno comportato un'analisi più approfondita del classificatore utilizzando solo le classi linearmente separabili dell'ontologia CC.
 La Figura~\ref{figure:ill14} mostra la quantità di ill-defined prodotti. Come si può notare, le configurazioni \say{Pegasos\_I9\_L1\_0} e \say{Pegasos\_I9\_L1\_1}, riferite alla prima implementazione, non hanno ill-defined. Questo risultato sancisce che valori piccoli di $\lambda$ producono buoni risultati su classi linearmente separabili sbilanciate. Anche la configurazione \say{Pegasos\_SGD} ha un numero di ill-defined pari a 0, ma bisogna ricordare che la seconda implementazione usa un parametro per bilanciare le classi.
 
+\paragraph*{}
 Il confronto tra le varie configurazioni di Pegasos è illustrato dalla Figura~\ref{figure:illps}. \say{Pegasos\_I9\_L1\_0} e \say{Pegasos\_I9\_L1\_1} ottengono risultati identici. Le differenze tra le loro $\lambda$ è di un ordine di grandezza, per cui per valori troppo piccoli l'algoritmo pone un limite inferiore. La F-score risulta la migliore rispetto a quella delle restanti configurazioni, ma la Precision assume un valore troppo basso. \say{Pegasos\_SGD} ottiene risultati inferiori e questo è dovuto all'uso di un $\lambda$ abbastanza grande, necessario per ridurre i tempi di computazione della seconda implementazione.  
 
 % //////////////////// ILL-DEFINED /////////////////
