@@ -175,7 +175,7 @@ def level3(ont):
 
 if __name__ == '__main__':
     for ont in ['CC']:
-        for learner_fam in ['AdaBoost', 'SVM']:
+        for learner_fam in ['AdaBoost', 'SVM', 'Pegasos']:
             level1(ont, learner_fam)
             cmp_ills(ont, learner_fam)
             pass
