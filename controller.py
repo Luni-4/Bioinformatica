@@ -67,7 +67,7 @@ if __name__ == '__main__':
            "Pegasos_I9_L1_4":      Pegasos(iterations = t[9], lambda_reg = l1[4]),      
            
            # Try Pegasos of scikit-learn
-           "Pegasos_SGD":          SGDClassifier(power_t = 1, learning_rate = "invscaling", class_weight = b, n_iter = t[9], eta0 = 0.01),
+           "Pegasos_SGD":          SGDClassifier(power_t = 1, learning_rate = "invscaling", class_weight = b, n_iter = t[0], eta0 = l1[1]),
            
            # AdaBoost Configurations
            "AdaBoostDefault":      AdaBoostClassifier(),
