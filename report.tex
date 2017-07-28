@@ -218,7 +218,7 @@ I metodi di Machine Learning scelti si basano su modelli semplici, rapidi, che c
 \paragraph*{}
 Per poter effettuare il tuning degli iperparametri, sono state create diverse configuarazioni di esecuzione.
 Le configurazioni sono inserite in un dizionario Python che ha come chiavi i nomi delle configurazioni stesse e come oggetti i classificatori della liberia scikit-learn con impostati i parametri che si vogliono testare.
-Utilizzando tutte le classi di un ontologia, si ottiene un elevato tempo computazionale per ciascuna configurazione. Per evitare ciò, si è deciso di campionare le classi, prendendone una ogni cinque.
+Utilizzando tutte le classi si ottiene un elevato tempo computazionale per ciascuna configurazione. Per evitare ciò, si è deciso di campionare le classi, prendendone una ogni cinque.
  
 
 \section{AdaBoost}
@@ -395,7 +395,7 @@ La sua funzione di decisione è definita come:
 I support vectors sono gli esempi del training set che, a seconda dell'iperpiano ottenuto, hanno un margine inferiore o pari a 1. La soluzione prodotta da SVM dipende solo da questi esempi.
 
 \paragraph*{}
-L'apprendimento del classificatore è stato effettuato usando la funzione \textit{SVC}, implementata nel modulo \textit{sklearn.svm} contenente gli algoritmi SVM della libreria scikit-learn. Nella definizione del metodo sono stati impostati i seguenti parametri:
+L'apprendimento del classificatore è stato effettuato usando la funzione \textit{SVC}, implementata nel modulo \textit{sklearn.svm} e contenente gli algoritmi SVM della libreria scikit-learn. Nella definizione del metodo sono stati impostati i seguenti parametri:
 
 \paragraph*{}
 \textbf{\textit{C}}. Penalità sull'errore commesso. Un valore elevato di C crea un modello complesso che mira a classificare nel miglior modo possibile gli esempi del training set, ma al tempo stesso aumenta notevolmente la varianza e può portare ad overfitting. L'uso di un valore piccolo, al contrario, costruisce un modello più semplice e con una varianza più bassa. È un valore di tipo float. 
@@ -413,8 +413,6 @@ L'apprendimento del classificatore è stato effettuato usando la funzione \texti
 
 \paragraph*{}
 \textbf{\textit{gamma}}. $\gamma = \dfrac{1}{\sigma}$. Definisce l'ampiezza delle Gaussiane nello spazio RBF. SVM è molto sensibile a questo parametro. Un valore elevato di gamma comporta delle Gaussiane molto strette e ogni esempio non è influenzato da quelli vicini, quindi il numero di support vectors sarà basso, ma si rischia di incorrere nell'overfitting. Al contrario, un valore molto piccolo di gamma porterà ad avere delle Gaussiane molto ampie, perciò un esempio verrà influenzato dagli esempi del training set circostanti e la quantità di support vectors risulterà elevata. Un gamma troppo piccolo ammetterebbe come support vectors tutti gli esempi e il modello creato non riuscirebbe a discriminare al meglio le classi. È un valore di tipo float.
-
-Un valore grande di gamma può portare a overfitting, mentre uno troppo piccolo rischia di produrre un classificatore che non riesce a discriminare al meglio le classi.
 
 \paragraph*{}
 \textbf{\textit{class\_weight}}. Parametro utilizzato per il bilanciamento di classi sbilanciate. Se non viene fornito in input, tutte le classi hanno peso unitario. Il peso di ciascuna classe può essere tarato, a seconda del risultato che si vuole ottenere, privilegiando una classe rispetto ad un'altra, oppure calcolato in maniera autonoma dalla funzione per mezzo della modalità \say{balanced}. 
@@ -513,13 +511,12 @@ Pegasos\_SGD         & balanced      & 1e+05    & 100       \\
 \newpage
 
 \section{Costruzione del software}
-Il programma Python è costruito in modo tale da calcolare le funzioni di predizione per un'unica ontologia. Questa scelta è stata effettuta per facilitare la gestione del codice e dei risultati prodotti. Se si vogliono eseguire diverse ontologie bisogna mandare nuovamente in esecuzione il processo specificando l'ontologia che si vuole computare.
-Tuttavia, per una singola istanza del programma, possono essere inserite più configurazioni contemporaneamente.
+Il programma Python è costruito in modo tale da calcolare le funzioni di predizione per tutte le classi dell'ontologia. Inoltre, per una singola istanza del programma, possono essere inserite più configurazioni contemporaneamente.
 
 Gli step seguiti dall'algoritmo sono i seguenti:
 
 \begin{itemize}
-    \item Verificare che l'ontologia e le configurazioni inserite siano corrette
+    \item Verificare che le configurazioni inserite siano corrette
     \item Se ritenute valide, le configurazioni vengono eseguite una alla volta sulle classi dell'ontologia
     \item Calcolo delle metriche e salvataggio dei risultati ottenuti
 \end{itemize}
@@ -628,19 +625,19 @@ Come spiegato precedentemente, le metriche vengono calcolate per ogni fold di un
 \section{Risultati}
 
 \subsection{Ill-defined}
-Durante la fase di cross-validation è emerso che parte dei classificatori addestrati non ha predetto alcun esempio del test set, dando solo risposte negative. Poichè i 5 fold sono stati costruiti in modo da avere sempre almeno un esempio positivo, questo significa che il classificatore ha commesso un errore.
+Durante la fase di cross-validation è emerso che parte dei classificatori addestrati non sono riusciti a predire nessun esempio del test set, dando solo risposte negative. Poichè i 5 fold sono stati costruiti in modo da avere sempre almeno un esempio positivo, questo significa che il classificatore ha commesso un errore.
 
-Tale comportamento va oltre alla logica dei normali errori che può commettere un classificatore. Non avendo predetto neanche un positivo (vero o falso che sia), non si può escludere che il classificatore abbia semplicemente appreso a rispondere negativamente a qualunque input, rendendosi di fatto inutilizzabile.
+Non avendo predetto neanche un positivo (vero o falso che sia), il classificatore ha imparato a rispondere negativamente a qualunque input, rendendosi di fatto inutilizzabile.
 
-Inoltre, poichè il numero di positivi è zero, il calcolo della Precision è impossibile, dal momento che avremmo una divisione per zero. Di conseguenza anche F-score non è computabile. L'implementazione di scikit-learn rimedia parzialmente a questo comportamento: durante il calcolo delle metriche, scikit-learn intercetta l'errore, solleva un warning e fissa precision e F-score a zero, affermando che tali valori sono \emph{ill-defined}.
+Inoltre, poichè il numero di positivi è zero, il calcolo della Precision risulta impossibile, ottenendo una divisione per zero. Di conseguenza anche la F-score non è computabile. Le funzioni della libreria scikit-learn rimediano parzialmente a questo comportamento ponendo a 0 le metriche problematiche e catalogandole come \emph{ill-defined}.
 
-Durante l'analisi delle metriche possiamo selezionare questi predittori intrinsecamente difettosi cercando tra i predittori quelli che abbiano Precision e F-score uguali a zero. Possiamo dunque misurare l'impatto del problema e quantificare i predittori difettosi (che abbiamo battezzato  \emph{ill-defined}).
+Durante l'analisi delle metriche è possibile selezionare i predittori intrinsecamente difettosi cercando quelli che hanno Precision e F-score uguali a zero. In questo modo viene facile quantificare i predittori difettosi.
 
-Si osserva che il numero di predittori \emph{ill-defined} aumenta quando il training set è sbilanciato, cioè quando si apprende da una classe che contiene poche proteine. Ovviamente anche la qualità dell'algoritmo di apprendimento è influente. Gli algoritmi che non bilanciano le classi e che non sono in grado di apprendere da pochi esempi genereranno predittori difettosi.
+Si osserva che il numero di predittori \emph{ill-defined} aumenta con training set sbilanciati. Ovviamente anche l'algoritmo di apprendimento influisce in maniera considerevole sulla qualità dei risultati, infatti se le classi non vengono bilanciate, i predittori generati saranno difettosi.
 
-Il sistema 5-fold prevede che per ogni classe dell'ontologia vengano generati 5 predittori. I predittori \emph{ill-defined} possono essere numerosi, ma fintantochè una classe possiede almeno un predittore non \emph{ill-defined} possiamo concludere che sia possibile costruire per tale classe dun predittore funzionante.
+Il sistema 5-fold prevede che per ogni classe dell'ontologia vengano generati 5 distinti predittori. I predittori \emph{ill-defined} possono essere numerosi, ma fintantochè una classe possiede almeno un predittore non \emph{ill-defined}, è possibile costruire, per tale classe, un predittore funzionante.
 
-Possiamo considerare il numero di predittori \emph{ill-defined} alla stregua di un indicatore di qualità dell'algoritmo di apprendimento. A parità di cardinalità della classe, avere meno \emph{ill-defined} significa aver sfruttato meglio il valore degli esempi positivi.
+Il numero di predittori \emph{ill-defined} possono essere considerati un indicatore di qualità dell'algoritmo di apprendimento. A parità di cardinalità della classe, avere un numero minore di \emph{ill-defined} comporta un utilizzo migliore degli esempi positivi.
 
 La Figura~\ref{figure:ill1} mostra che la quantità di \emph{ill-defined} di AdaBoost non presenta variazioni significative ed il valore mediano resta compreso tra 2 e 3 per i parametri analizzati.
 
