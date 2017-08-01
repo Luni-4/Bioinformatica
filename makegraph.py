@@ -7,7 +7,7 @@ inputfolder = './Simulation/'
 outputfolder = 'img/'
 bestSettings = {'AdaBoost': 'AdaBoost_My_n50_Bal',
                  'SVM': 'SVM_Balanced_C8_G8',
-                # 'Pegasos': 'Pegasos_Default'
+                 'Pegasos': 'Pegasos_I0_L1_5'
                 }
 pretty =   {'precision1': 'Precision',
             'recall1': 'Recall',
