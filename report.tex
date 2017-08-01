@@ -89,6 +89,10 @@
 %Impostare font del documento (Latin Modern Roman)
 \renewcommand*\rmdefault{lmr}
 
+% L'output è un pdf-a
+
+
+
 % Definizione dei colori per i commenti, le keyword e le stringhe dei codici
 \definecolor{bluekeywords}{rgb}{0.13,0.13,1}
 \definecolor{greencomments}{rgb}{0,0.5,0}
@@ -503,7 +507,7 @@ Pegasos\_I9\_L1\_3   & -             & 1e+05    & 100.0     \\
 \hline 
 Pegasos\_I9\_L1\_4   & -             & 1e+05    & 1000.0    \\
 \hline 
-Pegasos\_SGD         & balanced      & 1e+05    & 100       \\
+Pegasos\_SGD         & balanced      & 1e+04    & 1.0e-11   \\
 \hline 
 \end{tabular} 
 \end{table}
@@ -688,7 +692,13 @@ Le migliori configurazioni di SVM sono la \say{SVM\_Balanced\_C7\_G7} e la \\ \s
 La \say{SVM\_Balanced\_Poly\_4}, nonostante facesse uso di un kernel polinomiale di 4 grado, ha prodotto scarsi risultati al costo di un elevato tempo computazionale.
 
 \subsection{Risultati di Pegasos}
-Come si può notare dai risultati, mostrati dalla Figura~\ref{figure:liv1.3}, tutte le configurazioni di Pegasos producono pessimi risultati. La principale causa è data dalla presenza di un gran numero di classi non linearmente separabili, che non consentono di trovare un iperpiano che separi perfettamente gli esempi. Uno sviluppo ulteriore potrebbe essere quello di utilizzare funzioni kernel sia per la prima che per la seconda implementazione.
+Come si può notare dai risultati, mostrati dalla Figura~\ref{figure:liv1.3}, tutte le configurazioni di Pegasos producono pessimi risultati. La principale causa è data dalla presenza di un gran numero di classi non linearmente separabili, che non consentono di trovare un iperpiano che separi perfettamente gli esempi. 
+
+\paragraph*{}
+\say{Pegasos\_SGD} è l'unico classificatore che non produce ill-defined e questo risultato è dovuto all'utilizzo del parametro \say{balanced}.
+
+Le configurazioni \say{Pegasos\_I0\_L1\_5}, \say{Pegasos\_I9\_L1\_2}, \say{Pegasos\_I9\_L1\_3}, \say{Pegasos\_I9\_L1\_4} ottengono valori identici in ciascuna delle metriche considerate, ma al tempo stesso rappresentano i migliori classificatori per Pegasos. Hanno una Recall molto alta ed una Precision bassa. Lo sbilanciamento delle classi influisce notevolmente sui risultati, infatti il loro numero di ill-defined è elevatissimo. Il classificatore \say{Pegasos\_I0\_L1\_5}, usato al \textit{Livello 2} e al \textit{Livello 3}, è stato scelto in maniera arbitraria tra le configurazioni migliori. Dal confronto si evince che le sue prestazioni sono nettamente inferiori rispetto a quelle degli altri classificatori.
+Uno sviluppo ulteriore potrebbe esssere dato dall'utilizzo di funzioni kernel sia per la prima che per la seconda implementazione, in modo da migliorare le performance generali.
 
 \paragraph*{}
 Le brutte prestazioni di Pegasos hanno comportato un'analisi più approfondita del classificatore utilizzando solo le classi linearmente separabili dell'ontologia CC.
