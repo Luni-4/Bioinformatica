@@ -1,103 +1,9 @@
-% //////////////////// Preambolo /////////////////
-
-% Definizione del documento
-\documentclass[12pt,a4paper,oneside,hidelinks]{report}
-
-% Lingue usate nel documento e dizionario per la correzione delle parole
-\usepackage[english,italian]{babel}
-
-%Codifica dei font di input e di output
-\usepackage[T1]{fontenc}
-\usepackage[utf8]{inputenc}
-
-% Fornisce i comandi per una buona interlinea dei caratteri
-\usepackage{setspace}
-
-% Grafica del documento
-\usepackage{graphicx}
-
-% Migliore indentazione del testo
-\usepackage{indentfirst}
-
-% Gestisce le caption delle immagini
-\usepackage{caption}
-
-% Gestiscono la parte matematica del documento
-\usepackage{amssymb, amsmath, amsthm}
-
-% Gestisce il codice del documento
-\usepackage{listings}
-\renewcommand{\ttdefault}{txtt}
-
-% Gestisce i link
-\usepackage{hyperref}
-
-% Formattazione pagina
-\usepackage{geometry}
-
-% Colori
-\usepackage{xcolor}
-
-% Pacchetti usati per scrivere lo pseudocodice di un algoritmo
-\usepackage{algorithm}
-\usepackage[noend]{algpseudocode}
-
-%Rimuove la parola "Algorithm #" dallo pseudocodice
-%\captionsetup[algorithm]{labelformat=empty}
-
-% Gestione delle multirighe in una tabella
-\usepackage{multirow}
-
-% Gestione delle tabelle su più pagine
-\usepackage{subcaption}
-
-% Consente di impostare le virgolette del discorso diretto
-\usepackage{dirtytalk}
-
-% Allineamento dei numeri in una tabella
-\usepackage{siunitx}
-
-% Converte file eps in pdf
-\usepackage{epstopdf}
-
-% Commenta ed esclude parti del file latex dalla compilazione
-\usepackage{comment}
-
-% L'output è un pdf a-1b
-%\usepackage[a-1b]{pdfx} 
-
-% //////////////////////////////////////////////////
-
-% Impostare interlinea a 1.5
-\renewcommand{\baselinestretch}{1.5}
-
-% Dichiara la funzione argmin non presente di default
-\DeclareMathOperator*{\argmin}{argmin}
-
-% Dichiara la funzione sgn non presente di default 
-\DeclareMathOperator*{\sgn}{sgn}
-
-% Apertura del pdf con il 100% di zoom
-\hypersetup{pdfstartview={XYZ null null 1.00}}
-
-% Impostare i margini della pagina
-\geometry{left=2cm,right=2cm, top=2cm, bottom=2cm}
-
-% Reinclude nella compilazione le parti escluse
-%\includecomment{comment}
+% Preambolo
+\include{Latex/preamble}
 
 % Definizione della cartella contenente le immagini da usare
 \graphicspath{ {img/} }
 
-%Impostare font del documento (Latin Modern Roman)
-\renewcommand*\rmdefault{lmr}
-
-% Definizione dei colori per i commenti, le keyword e le stringhe dei codici
-\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
-\definecolor{greencomments}{rgb}{0,0.5,0}
-\definecolor{redstrings}{rgb}{0.9,0,0}
-
-% Opzioni grafiche delle liste contenenti il codice scritto in Python
 \lstset{
     language=Python, 
     basicstyle=\ttfamily\footnotesize,   
@@ -117,26 +23,6 @@
     showstringspaces=false,
     literate={à}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {ù}{{\'u}}1,
 }
-\lstdefinestyle{customp}{
-    language=Python, 
-    basicstyle=\ttfamily\footnotesize,   
-    backgroundcolor=\color{gray!10},
-    frame=none,
-    tabsize=2,
-    commentstyle=\color{greencomments},
-    keywordstyle=\color{bluekeywords},
-    stringstyle=\color{redstrings},
-    title=\lstname,    
-    escapeinside={\%*}{*)},
-    breaklines=true,
-    breakatwhitespace=true,    
-    framextopmargin=2pt,
-    framexbottommargin=2pt,
-    inputencoding=utf8,
-    extendedchars=true,
-    showstringspaces=false,
-    literate={à}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {ù}{{\'u}}1,
-}
 
 % //////////////////// DOCUMENTO /////////////////
 
@@ -149,9 +35,9 @@
         Predizione della funzione delle proteine \\
         con metodi di Machine Learning}
   
-\author{Federico Picetti \\
-        %Michele Valsesia
-        }
+\author{ Federico Picetti \\
+         Michele Valsesia
+       }
 
 \date{Anno accademico 2017/2018} 
 
@@ -188,30 +74,8 @@ Il \autoref{chap:metodi} spiega i metodi di machine learning scelti, la loro imp
 
 Il \autoref{chap:risultati} illustra i risultati ottenuti dai clasificatori per mezzo di grafici e confronta tra loro i diversi algoritmi di apprendimento allo scopo di individuare quelli con il più basso errore di classificazione.
 
-\chapter{Analisi dei Dati} 
-\label{chap:dati}
-Le feature degli esempi da fornire in input agli algoritmi di apprendimento sono contenute in una matrice bidimensionale chiamata \textit{Matrice di Adiacenza}, mentre le rispettive etichette si trovano nella \textit{Matrice delle Annotazioni}.
-
-\paragraph*{}
-La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica di dimensione $3195 \times 3195$. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. Le entry della matrice contengono una misura di similarità, ricavata da fattori biologici, fra coppie di proteine.
-Ciascuna entry può assumere valori tra $[0,1]$. Un valore vicino o uguale a 0 indica che le proteine non sono simili tra loro, mentre valori tendenti o uguali a 1 ne sanciscono la similarità. 
-La matrice risulta essere sparsa, a causa dell'elevato numero di entry pari a 0.
-
-\paragraph*{}
-La \textit{Matrice delle Annotazioni} è una matrice rettangolare con un numero di righe pari al numero delle proteine e tante colonne quante sono le classi prese in considerazione. La Cellular Component (CC) si compone di 235 classi.
-
-\paragraph*{} 
-Per ridurre l'uso di memoria centrale, sia la Matrice di Adiacenza che quella delle Annotazioni, sono caricate in forma sparsa. La funzione utilizzata per la conversione è contenuta nella libreria SciPy.
-
-Le singole colonne della matrice delle Annotazioni verranno successivamente convertite in array densi, in modo da poterle passare in input ai diversi algoritmi di apprendimento. 
-
-\paragraph*{}
-Ogni proteina può appartenere a una o più classi: ogni esempio del training set può avere più etichette ad esso associate. Tra le varie classi esiste una relazione gerarchica, che non viene però indicata nei dati di input.
-
-Le classi risultano notevolmente sbilanciate: nella maggior parte di esse, il numero di positivi è nettamente inferiore rispetto a quello dei negativi. Inoltre, solo alcune classi dell'ontologia sono linearmente separabili. 
-
-Nello svolgimento del progetto si è deciso di considerare ogni classe in maniera indipendente, addestrando classificatori binari, appartenenti a famiglie di modelli diversi, sulle singole classi.
-
+% Analisi dei dati
+\include{Latex/data}
 
 \chapter{Metodi di Machine Learning} 
 \label{chap:metodi}
@@ -513,117 +377,11 @@ Pegasos\_SGD         & balanced      & 1e+04    & 1.0e-11   \\
 
 \newpage
 
-\section{Costruzione del software}
-Il programma Python è costruito in modo tale da calcolare le funzioni di predizione per tutte le classi dell'ontologia. Inoltre, per una singola istanza del programma, possono essere inserite più configurazioni contemporaneamente.
+% Costruzione del software
+\include{Latex/software}
 
-Gli step seguiti dall'algoritmo sono i seguenti:
-
-\begin{itemize}
-    \item Verificare che le configurazioni inserite siano corrette
-    \item Se ritenute valide, le configurazioni vengono eseguite una alla volta sulle classi dell'ontologia
-    \item Calcolo delle metriche e salvataggio dei risultati ottenuti
-\end{itemize}
-
-\paragraph*{}
-Le performance di un metodo vengono valutate con la tecnica sperimentale della 5-fold cross-validation. Questa tecnica suddivide il dataset in 5 fold, quattro dei quali vengono usati per addestrare il classificatore e il fold restante per ottenere le metriche richieste. Ogni fold deve essere utilizzato almeno una volta come test set, questo implica che per ogni classe vengono prodotti cinque classificatori, ciascuno con le proprie metriche.
-
-I risultati ottenuti dall'esecuzione di una configurazione sono salvati in un file \textit{json} che presenta la seguente struttura:
-
-\begin{itemize}
-    \item Header
-    \item Metriche dei fold di ogni classe
-    \item Footer
-\end{itemize}
-L'\textit{Header} è un dizionario contenente le seguenti informazioni:
-\begin{itemize}
-    \item L'ontologia in uso
-    \item L'algoritmo di apprendimento eseguito
-    \item Il tempo di inizio della configurazione in formato data e ora
-\end{itemize}
-Le \textit{Metriche} ricavate da ciascun fold di ogni classe sono le seguenti:
-\begin{itemize}
-    \item Identificativo della classe (indice colonna della Matrice delle Annotazioni)
-    \item Numero di esempi positivi nel fold
-    \item Precision
-    \item Recall
-    \item F-score
-    \item False Positive rate
-    \item True Positive rate
-    \item AUROC
-    \item AUPRC
-\end{itemize}
-Anche la struttura sopra descritta è contenuta all'interno di un dizionario. Ad ogni classe sono associati tanti dizionari quanti sono i fold.
-
-Il \textit{Footer} è costituito da un dizionario di un solo elemento: il tempo di fine della configurazione in formato data e ora.
-
-Dai file json prodotti vengono estratte le informazioni necessarie per la valutazione dei classificatori.
-
-\paragraph*{}
-Per poter eseguire la cross-validation e calcolare le misure richieste, vengono utilizzate delle funzioni messe a disposizione dalla libreria scikit-learn.
-La funzione \textit{cross\_val\_score} è stata scelta perché consente di ridurre il tempo di computazione, assegnando l'esecuzione dei differenti fold di una classe alle diverse unità di elaborazione presenti sulla macchina.
-
-Le metriche di un fold vengono calcolate fornendo in input alle funzioni le etichette degli esempi del test set e le predizioni computate dal classificatore. Di seguito una breve lista delle procedure utilizzate:
-
-\begin{itemize}
-\item \textit{precision\_recall\_fscore\_support} calcola la Precision, la Recall e la F-score di un classificatore
-
-\item \textit{precision\_recall\_curve} computa la precision-recall-curve
-
-\item \textit{average\_precision\_score} restituisce l'AUPRC del classificatore 
-
-\item \textit{roc\_curve} determina la ROC
-
-\item \textit{auc} restituisce l'AUROC del classificatore
-\end{itemize}
-
-
-\chapter{Analisi dei Risultati}
-\label{chap:risultati}
-
-\section{Scelta delle metriche}
-Le metriche sono state scelte considerando diversi aspetti del dataset.
-A causa della presenza di classi sbilanciate, che presentano un numero elevato di esempi negativi rispetto a quelli positivi, l'accuratezza non rappresenta una metrica significativa per il modello che si sta valutando.
-
-\paragraph*{}
-L'accuratezza corrisponde alla media delle predizioni sbagliate da un classificatore ed è definita come:
-
-\begin{equation}
-\texttt{accuracy}(y, \hat{y}) = \frac{1}{n_\text{samples}} \sum_{i=0}^{n_\text{samples}-1} \mathbb{I}(\hat{y}_i \neq y_i)
-\end{equation}
-
-Come si può notare, l'accuratezza non fornisce un buon valore in caso di sbilanciamento, in quanto non è in grado di discriminare i valori positivi da quelli negativi.
-
-\paragraph*{}
-Le metriche considerate durante lo svolgimento del progetto sono la Precision, la Recall, la F-score, l'AUPRC e l'AUROC.
-
-La \textit{Precision} corrisponde all'abilità del classificatore di non etichettare un esempio negativo come positivo. È definita nell'intervallo $[0,1]$. Più la precision è alta, più un classificatore non scambierà gli esempi negativi per positivi.
-
-\begin{equation}
-\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}
-\end{equation}
-
-\paragraph*{}
-La \textit{Recall} rappresenta l'abilità di un classificatore di individuare gli esempi postivi. È definita nell'intervallo $[0,1]$. Più la recall è alta, più un classificatore individuerà meglio gli esempi positivi.
-
-\begin{equation}
-\text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}
-\end{equation}
-
-\paragraph*{}
-La \textit{F-score} è data dalla media armonica della precision e della recall. È definita nell'intervallo $[0,1]$. Più la f-score è alta, più un classificatore produrrà buoni risultati.
-
-\begin{equation}
-\text{F-score} = \frac{2 \times \text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}
-\end{equation}
-
-\paragraph*{}
-L'\textit{Area Under the Precision-Recall Curve (AUPRC)} rappresenta l'area sotto la curva del grafico precision-recall. Assume valori definiti nell'intervallo $[0,1]$. Più il valore è alto, più un classificatore produrrà buoni risultati.
-
-\paragraph*{}
-L'\textit{Area Under the Receiver Operating Characteristic (AUROC)} rappresenta la probabilità che un classificatore associ un valore più alto ad un esempio positivo, scelto casualmente, rispetto ad uno negativo, sempre scelto in maniera casuale. Assume valori definiti nell'intervallo $[0,1]$. Più il valore è alto, più un classificatore produrrà buoni risultati.
-
-\paragraph*{}
-Come spiegato precedentemente, le metriche vengono calcolate per ogni fold di una classe e i risultati prodotti vengono salvati in un file json. Per poter valutare le performance di un classificatore su una classe specifica, viene fatta la media delle metriche di ciascun fold della classe.
+% Metriche
+\include{Latex/metrics}
 
 \section{Risultati}
 
@@ -827,9 +585,6 @@ Il confronto tra le varie configurazioni di Pegasos è illustrato dalla Figura~\
 \end{figure}
 
 \vspace*{\fill}
-
-
-
 
 \begin{comment}
 
