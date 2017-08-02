@@ -1,0 +1,363 @@
+% Preambolo
+\include{preamble}
+
+% Definizione della cartella contenente le immagini da usare
+\graphicspath{ {../img/} }
+
+\lstset{
+    language=Python, 
+    basicstyle=\ttfamily\footnotesize,   
+    frame=none,
+    tabsize=2,
+    commentstyle=\color{greencomments},
+    keywordstyle=\bfseries\color{bluekeywords},
+    stringstyle=\color{redstrings},
+    title=\lstname,    
+    escapeinside={\%*}{*)},
+    breaklines=true,
+    breakatwhitespace=true,    
+    %framextopmargin=2pt,
+    %framexbottommargin=2pt,
+    inputencoding=utf8,
+    extendedchars=true,
+    showstringspaces=false,
+    literate={à}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {ù}{{\'u}}1,
+}
+
+% //////////////////// DOCUMENTO /////////////////
+
+\begin{document}
+
+% //////////////////// Titolo /////////////////
+
+%Titolo e intestazione
+\title{% 
+        Predizione della funzione delle proteine \\
+        con metodi di Machine Learning}
+  
+\author{Federico Picetti}
+
+\date{Anno accademico 2017/2018} 
+
+\maketitle
+
+\tableofcontents
+
+% //////////////////// Capitoli /////////////////
+
+\newpage
+
+\section*{Introduzione}
+Il progetto ambisce ad utilizzare degli algoritmi di apprendimento automatico per costruire dei classificatori in grado di predire la funzione delle proteine della \textit{Drosophila melanogaster} (moscerino della frutta), organismo modello per gli insetti. Si vogliono sperimentare diversi algoritmi in modo da analizzarne il comportamento e le performance. 
+
+Per affrontare il problema si è puntato su modelli semplici, rapidi, che consentano di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento scelti sono: 
+
+\begin{itemize}
+    \item AdaBoost
+    %\item Support Vector Machine (SVM)    
+    %\item Pegasos
+\end{itemize}
+
+Ognuno dei metodi sopra elencati verrà applicato alla predizione dei termini CC (Cellular Component) della GO (Gene Ontology).
+
+\paragraph*{}
+Il progetto è stato implementato utilizzando \textit{Python} 3.5, e la versione 0.18.1 della libreria per l'apprendimento automatico \textit{scikit-learn}. Le strutture di memoria per i dati sono realizzate con l'ausilio della libreria \textit{SciPy} 0.19.1.
+
+\paragraph*{}
+L'elaborato descrive i passaggi e le problematiche affrontate durante lo svolgimento del lavoro. Si è deciso di associare ad ogni singolo stadio lavorativo un capitolo. 
+
+Il \autoref{chap:dati} analizza i dati di input, mostrando la loro struttura e le possibili metodologie di elaborazione. 
+
+Il \autoref{chap:metodi} spiega i metodi di machine learning scelti, la loro implementazione pratica e i settaggi utilizzati.
+
+Il \autoref{chap:risultati} illustra i risultati ottenuti dai clasificatori per mezzo di grafici e confronta tra loro i diversi algoritmi di apprendimento allo scopo di individuare quelli con il più basso errore di classificazione.
+
+% Analisi dei dati
+\include{data}
+
+\chapter{Metodi di Machine Learning} 
+\label{chap:metodi}
+
+I metodi di Machine Learning scelti si basano su modelli semplici, rapidi, che consentono di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento considerati sono \textit{AdaBoost}, \textit{Support Vector Machine (SVM)} ed una loro particolare istanza chiamata \textit{Pegasos}. La scelta dei metodi è stata effettuata con lo scopo di individuare le differenze tra i modelli di classificazione e decretare il migliore. Un'ulteriore motivo è dato dal voler confrontare algoritmi di apprendimento lineari, come SVM e Pegasos, con algoritmi basati sull'utilizzo di un numero maggiore di classificatori, come AdaBoost.
+
+\paragraph*{}
+Per poter effettuare il tuning degli iperparametri, sono state create diverse configuarazioni di esecuzione.
+Le configurazioni sono inserite in un dizionario Python che ha come chiavi i nomi delle configurazioni stesse e come oggetti i classificatori della liberia scikit-learn con impostati i parametri che si vogliono testare.
+Utilizzando tutte le classi si ottiene un elevato tempo computazionale per ciascuna configurazione. Per evitare ciò, si è deciso di campionare le classi, prendendone una ogni cinque.
+
+\section{AdaBoost}
+AdaBoost (adaptive boosting) è un algoritmo incrementale che costruisce una serie di classificatori $ h_{i}:\mathbb{R}^{d}\rightarrow \{-1,+1\} $ appartenenti ad una famiglia $ \mathcal{H} $. 
+Il procedimento prevede di addestrare un classificatore di base sul training set, calcolarne l'errore, creare copie del classificatore e addestrarle sullo stesso training set, aumentando i pesi degli elementi del training set classificati scorrettamente dai classificatori precedenti. I classificatori successivi tenderanno quindi a concentrarsi sui casi più difficili.
+Al termine avremo un classificatore nella forma
+\[\hat{y}=\sgn(\sum_{i=1}^{T} w_{i}h_{i}(\vec{x}))\]
+dove $ \vec{w} $ è un vettore di coefficienti reali (pesi) e $ T $ è il numero di classificatori.
+
+Tipicamente per contenere i costi computazionali si sceglie una famiglia $ \mathcal{H} $ di classificatori di base molto semplici. $ T $ può essere un numero fissato o può crescere durante l'apprendimento e fermarsi secondo un dato criterio di stop.
+
+\subsection{Implementazione}
+
+Si è implementato l'algoritmo AdaBoost e si è confrontata la nostra implementazione con quella presente nelle librerie scikit-learn (\texttt{sklearn.ensemble.AdaBoostClassifier}).
+
+Illustrare la nostra implementazione può essere utile anche per comprendere meglio il funzionamento di base di AdaBoost. 
+Il codice è stato scritto per rispettare le API di scikit-learn, in modo da poter essere integrato e chiamato dalle funzioni di scoring. Rispettando lo standard, si è creata una classe \texttt{AdaBoost} con i metodi \texttt{fit(X, y)} e \texttt{predict(X)}. Il codice presenta numerosi altri elementi per la compatibilità, ma si tratta di dettagli che tralasceremo in questa sede. 
+
+Il metodo \texttt{\_\_init\_\_} crea un'istanza del classificatore:
+\begin{lstlisting}
+class AdaBoost:
+    def __init__(self, n_estimators=10):
+        if n_estimator < 1:
+            raise ValueError("n_estimator must be greater than 0")
+        self.n_estimators = n_estimators
+        self.estimators = []
+        self.est_weights = []
+\end{lstlisting}
+
+\texttt{n\_estimators} è il numero massimo di stimatori \textit{weak} da costruire per il boost. Si è fissato a 10 il valore di default. 
+\texttt{self.estimators} conterrà i classificatori $ h_{i} $ della classe $ \mathcal{H} $, mentre \texttt{self.est\_weights} corrisponde al vettore $ \vec{w} $ dei pesi degli stimatori.
+
+Vediamo ora l'implementazione del metodo che esegue l'apprendimento:
+\begin{lstlisting}
+    def fit(self, X, y):
+        ## OMISSIS ## Encode labels, validate input...
+        # Init sample_weights as a constant, normalized vector
+        sample_weights = np.ones(X.shape[0]) / X.shape[0]
+        
+        # Start creating weak learners and training them
+        while len(self.estimators) < self.n_estimators:
+            weak = DecisionTreeClassifier(max_depth=1, class_weight='balanced')
+            weak.fit(X, y, sample_weight=sample_weights)
+            errors = np.array([weak.predict(t[0]) != t[1] for t in zip(X, y)])
+            
+            # epsilon: error on the training set whose elements are weighted.
+            epsilon = np.sum([b * sw for b, sw in zip(errors, sample_weights)])
+            if epsilon == 0:
+                # This learner is perfect for this sample weights.
+                # Push it and terminate learning.
+                self.estimators.append(weak)
+                self.est_weights.append(1)
+                break
+            # wi: weigth of this estimator
+            wi = 0.5 * np.log((1 - epsilon) / epsilon)
+            # recalculate sample_weights, increasing the importance of misclassified samples.
+            # the new weights will be used in the next iteration
+            for i in range(len(y)):
+                if errors[i] == 1:
+                    sample_weights[i] *= np.exp(wi)
+                else:
+                    sample_weights[i] *= np.exp(-wi)
+            # normalize
+            sample_weights = sample_weights / sample_weights.sum()
+            self.estimators.append(weak)
+            self.est_weights.append(wi)
+\end{lstlisting}
+
+Il metodo \texttt{fit} accetta una matrice \texttt{X} di feature, in cui ogni riga rappresenta un sample del training set, per cui $ x_{i,j} $ contiene la $ j $-esima feature dell'$ i $-esimo sample.
+
+Il parametro \texttt{y} è un array di etichette, che nel nostro caso possono valere 0 (\texttt{False}) o 1 (\texttt{True}).
+
+Come classificatore di base si è optato per un \emph{decision stump}, cioè un predittore ad albero molto semplice, che presenta un solo test, quindi una sola ramificazione e al massimo due foglie. 
+Si è utilizzata l'implementazione dell'albero di decisione di scikit-learn, con il parametro \texttt{max\_depth=1}. 
+
+Impostare \texttt{class\_weight='balanced'} significa imporre all'albero di decisione di eseguire l'apprendimento moltiplicando il vettore \texttt{sample\_weight=} per degli scalari in modo da bilanciare i pesi in modo inversamente proporziale alla cardinalità delle classi. È stato fatto anche un tentativo senza questa impostazione.
+
+Ad ogni iterazione viene creato un nuovo \emph{stump} e viene addestrato sul training set opportunamente pesato attraverso il vettore \texttt{sample\_weights}, che assegna un peso ad ogni sample e influenza così la funzione di perdita dello \emph{stump}.
+Alla prima iterazione il peso è uguale per ogni sample, ma nelle iterazioni successive i sample classificati correttamente perdono peso in favore di quelli classificati scorrettamente.
+
+Il metodo \texttt{predict} accetta una matrice \texttt{X} di feature costruita analogamente a quella per il metodo \texttt{fit}\footnote{Il metodo \texttt{predict} non è fatto per predire un singolo esempio, ma un vettore di esempi. Questa scelta, imposta dalle API di scikit-learn, rende purtroppo meno leggibile la funzione.}.
+
+\begin{lstlisting}
+    def predict(self, X):
+        ## OMISSIS ## validate input
+        p = [weak.predict(X) * w for w, weak in zip(self.est_weights, self.estimators)]
+        p = reduce(lambda x, y: x+y, p)
+
+        # Apply sgn function on the discriminant function f(x)    
+        p[p>=0] = 1
+        p[p<0] = 0
+        ## OMISSIS ## encode labels in p
+        return p
+\end{lstlisting}
+Per ogni vettore di feature di un esempio $\vec{x}$, questa funzione restituisce
+$ \hat{y}=\sgn(\sum_{i=1}^{T} w_{i}h_{i}(\vec{x})) $
+cioè la somma pesata delle predizioni di ogni \emph{stump} sull'esempio fornito.
+
+\paragraph{Implementazione di libreria}
+Si è confrontata la nostra implementazione con quella fornita dalla libreria scikit-learn. Tra i parametri di interesse messi a disposizione dalla libreria, osserviamo:
+
+\begin{description}
+\item[\texttt{base\_estimator}:]la famiglia $ \mathcal{H} $ di \emph{weak learner};
+\item[\texttt{n\_estimators}:]analogo alla nostra implementazione, è la quantità massima di stimatori da costruire, limite oltre il quale il boosting è terminato.
+In caso di aderenza perfetta, la procedura di boosting è arrestata prima del raggiungimento del limite.
+\item[\texttt{learning\_rate}:] permette di ridurre il contributo di ogni classificatore.
+
+\end{description}
+ 
+\subsection{Parametri}
+In questo lavoro sono state esplorate diverse configurazioni del predittore AdaBoost, prima con l'implementazione di scikit-learn e poi con la nostra.
+
+Si è mantenuto il \texttt{learning\_rate} a 1. 
+
+Si è variato \texttt{n\_estimators} ponendolo a 10, 50 e 100 stimatori di base.
+
+Si sono poi modificate delle proprietà dello stimatore ad albero di base, impostando un bilanciamento del peso delle classi inversamente proporzionale alla loro frequenza, usando l'impostazione \texttt{class\_weight = \say{balanced}}, in analogia col predittore SVM. Con questa impostazione si è creato un classificatore \texttt{n\_estimators=1}, per provare il funzionamento dello \textit{stump} di decisione senza boost.
+
+Infine, si è tentato l'utilizzo di alberi leggermente più complessi, impostandone la \texttt{max\_depth} a 3. Questo consente di creare alberi a tre livelli di test. Normalmente alzare questo livello in un albero decisione può portare ad avvicinarsi velocemente verso l'overfitting.
+
+La \autoref{tab:b1} elenca le impostazioni di Adaboost che si sono provate in questo lavoro.
+
+\begin{table}[ht]%	
+\centering
+\caption{Configurazioni di AdaBoost}\label{tab:b1}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+nome & implementazione & \texttt{n\_estimators} & bilanciamento & \texttt{max\_depth} \\ 
+\hline 
+AdaBoost\_My\_n10 		& nostra	& 10 & No & 1 \\ 
+\hline 
+AdaBoost\_My\_n10\_Bal 	& nostra	& 10 & Auto & 1 \\ 
+\hline 
+AdaBoost\_My\_n1\_Bal 	& nostra	& 1 & Auto & 1 \\ 
+\hline 
+AdaBoost\_My\_n50\_Bal 	& nostra	& 50 & Auto & 1 \\ 
+\hline 
+AdaBoost\_n10 			& scikit-learn & 10 & No & 1 \\ 
+\hline 
+AdaBoostDefault 		& scikit-learn & 50 & No & 1 \\ 
+\hline 
+AdaBoost\_n100 			& scikit-learn & 100 & No & 1 \\ 
+\hline 
+AdaBoost\_n5\_Bal 		& scikit-learn & 5 & Auto & 1 \\ 
+\hline 
+AdaBoost\_n10\_Bal 		& scikit-learn & 10 & Auto & 1 \\ 
+\hline 
+AdaBoost\_n50\_Bal 		& scikit-learn & 50 & Auto & 1 \\ 
+\hline 
+AdaBoost\_n50\_Bal\_Dep3 	& scikit-learn & 5 & Auto &  3\\ 
+\hline 
+\end{tabular} 
+\end{table}
+
+% Costruzione del software
+\include{software}
+
+% Metriche
+\include{metrics}
+
+\section{Risultati}
+
+\subsection{Ill-defined}
+Durante la fase di cross-validation è emerso che parte dei classificatori addestrati non ha predetto alcun esempio del test set, dando solo risposte negative. Poichè i 5 fold sono stati costruiti in modo da avere sempre almeno un esempio positivo, questo significa che il classificatore ha commesso un errore.
+
+Non avendo predetto neanche un positivo (vero o falso che sia), il classificatore ha imparato a rispondere negativamente a qualunque input, rendendosi di fatto inutilizzabile.
+
+Inoltre, poichè il numero di positivi è zero, il calcolo della Precision contiene una divisione per zero e quindi  risulta impossibile. Di conseguenza anche la F-score non è computabile. Le funzioni della libreria scikit-learn rimediano parzialmente a questo comportamento ponendo a 0 le metriche problematiche e catalogandole come \emph{ill-defined}.
+
+Durante l'analisi delle metriche è possibile selezionare i predittori intrinsecamente difettosi cercando quelli che hanno Precision e F-score uguali a zero. In questo modo è facile quantificare i predittori difettosi.
+
+Si osserva che il numero di predittori \emph{ill-defined} aumenta con training set sbilanciati. Ovviamente anche l'algoritmo di apprendimento influisce in maniera considerevole sulla qualità dei risultati: se i pesi delle classi non vengono bilanciati, i predittori generati saranno difettosi.
+
+Il sistema 5-fold prevede che per ogni classe dell'ontologia vengano generati 5 distinti predittori. I predittori \emph{ill-defined} possono essere numerosi, ma fintantochè una classe possiede almeno un predittore non \emph{ill-defined}, è possibile costruire, per tale classe, un predittore funzionante.
+
+Il numero di predittori \emph{ill-defined} può essere considerato un indicatore di qualità dell'algoritmo di apprendimento. A parità di cardinalità della classe, avere un numero minore di \emph{ill-defined} comporta un utilizzo migliore degli esempi positivi.
+
+La Figura~\ref{figure:ill1} mostra che la quantità di \emph{ill-defined} di AdaBoost non presenta variazioni significative ed il valore mediano resta compreso tra 2 e 3 per i parametri analizzati.
+
+I classificatori difettosi sono inutilizzabili, ma facili da identificare ed escludere. In un contesto applicativo reale verrebero esclusi dall'utilizzo. Pertanto nelle analisi che seguono si è filtrato il bias introdotto dai classificatori \emph{ill-defined} e si sono analizzati solo classificatori costruiti correttamente.
+
+\subsection{Analisi a Livelli}
+Per identificare i migliori classificatori e poterli confrontare tra loro, è stata creata una struttura a tre livelli. Nei primi due livelli, i classificatori di modelli diversi non interagiscono tra loro. In ogni livello, le ontologie sono sempre analizzate in maniera indipendente. 
+
+Al \textit{Livello 1} vengono confrontate le metriche prodotte dalle diverse configurazioni di uno stesso classificatore. Questo metodo consente di determinare qual è il migliore classificatore per ogni famiglia di modelli. La Figura~\ref{figure:liv1.1} mette in relazione tra loro le diverse configurazioni di AdaBoost.
+
+\paragraph*{}
+Il \textit{Livello 2} confronta la configurazione del classificatore che ha ottenuto i risultati migliori al livello precedente su diverse classi. Lo scopo di questa analisi consiste nel capire come un classificatore varia le sue predizioni a seconda della classe scelta. Le classi considerate sono tre e sono disposte in ordine crescente rispetto al numero di esempi positivi. L'id della classe si ottiene unendo il nome dell'ontologia usata e la relativa colonna della Matrice delle Annotazioni.
+La Figura~\ref{fig:liv2} mostra le metriche ottenute dalle migliori configurazioni di AdaBoost.
+
+\paragraph*{}
+Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei classificatori di ogni famiglia di modelli. Le metriche considerate sono AUROC, AUPRC e F-score. %La Figura~\ref{fig:liv3} mostra il confronto tra AdaBoost, SVM e Pegasos.
+
+\subsection{Risultati di AdaBoost}
+Si osserva come AdaBoost sia un algoritmo piuttosto robusto. Le performance sui test set sono buone, variano a seconda delle caratteristiche della classe in esame, ma le diverse configurazioni riportano risultati sempre validi, seppur con piccole variazioni.
+
+\paragraph{Quantità di classificatori}
+Osserviamo dunque che le performance migliorano leggermente aumentando il numero di iterazioni di Adaboost. Ad ogni iterazione vengono corretti gli errori dell'iterazione precedente, ed è lecito aspettarsi che si arrivi ad un punto in cui l'errore è piccolo ed oscillante, cioè ogni iterazione tenta di correggere degli errori ma ne introduce degli altri.
+
+\paragraph{Bilanciamento}
+AdaBoost, inoltre, rispetto ad altri classificatori, è capace di correggere in modo efficace lo sbilanciamento delle classi. In questo contesto applicativo, infatti, per ogni classe ci sono numerosi elementi che non vi appartengono (quindi con etichetta 0) e pochi elementi che vi appartengono (etichetta 1). La conseguenza è che altri classificatori hanno difficoltà ad apprendere a classificare correttamente gli esempi con etichetta 1, dal momento che sarà sufficiente predire sempre 0 per ottenere uno score alto. AdaBoost soffre del problema durante la prima iterazione (come dimostrato dalle performance di AdaBoost\_My\_n1\_Bal), ma le iterazioni successive stanno già bilanciando le classi problematiche.
+
+\paragraph{Weak learners}
+Gli \emph{stump} di decisione sono una buona scelta come famiglia di predittori di base. Sono efficienti, si adattano bene a dati eterogenei ed è possibile leggerli ed interpretarli dopo l'apprendimento. Chi volesse addentrarsi nella semantica delle features potrebbe ritrovare facilmente quali siano le features più significative. L'operazione sarebbe complicata dal fatto di dover leggere una serie di alberi generati da AdaBoost, ma compensata dalla semplicità degli alberi. Se è vero che un albero di decisione può rapidamente andare in overfitting, d'altro canto limitarsi a \textit{stump} ci evita questo rischio. Osserviamo che aumentare la profondità degli alberi non ha migliorato i risultati.
+
+Inserire un bilanciamento automatico all'interno dell'albero di decisione ha effetto soprattutto quando il numero massimo di predittori è basso. In questo caso possiamo osservare l'aumento della Recall e la diminuzione della Precision. I singoli alberi, infatti, saranno incoraggiati a dare peso alle classi positive: la probabilità di falsi positivi aumenta e quella di falsi negativi diminuisce. Riteniamo che questo sia un effetto desiderabile in un contesto come questo, dove abbiamo un gran numero di classi sbilanciate e vorremmo generalizzare bene il modello. 
+
+\paragraph{Gerarchie e stadi di predizione}
+In questo lavoro, infatti, si è stabilito di creare numerosi classificatori binari indipendenti. In realtà le classi dell'ontologia di riferimento non sono indipendenti, ma sono organizzate in una gerarchia complessa: singole coppie di classi possono essere nidificate, disgiunte o indipendenti.
+
+Una proteina che appartiene ad una classe appartiene necessariamente a tutte le classi "madri" e possibilmente a qualcuna delle classi "figlie". Si potrebbe dunque costruire un predittore complesso che tenga di conto delle gerarchie delle classi, rivalutando le predizioni indipendenti compiute da AdaBoost. I nostri predittori indipendenti fungerebbero da primo stadio, da filtro per questo secondo classificatore.
+Questo secondo stadio avrebbe la capacità di individuare i falsi positivi ed escluderli, ma sarebbe meno capace di reintegrare i falsi negativi, già esclusi dal primo. Di conseguenza abbiamo deciso di tollerare i falsi positivi più dei falsi negativi, e quindi di premiare una Recall alta a discapito della Precision.
+
+\paragraph{Cardinalità delle classi}
+Il grafico \ref{fig:liv2} confronta i risultati dell'impostazione di AdaBoost che giudichiamo migliore secondo i criteri appena esposti. (AdaBoost\_My\_n50\_Bal) con l'analoga di SVM. L'impostazione scelta dimostra un buona Recall nel caso di una classe di cardinalità media. Le classi con una cardinalità molto bassa necessariamente possono offrire un training set poco significativo, e la riuscita dipende molto dalle caratteristiche semantiche della classe. In una classe molto popolata ottieniamo metriche molto alte, in quanto ci sono molti dati e il problema è facilmente generalizzabile. AdaBoost ci consente di creare predittori di buona qualità senza fare necessariamente tuning impegnativi di parametri.
+
+% //////////////////// ILL-DEFINED /////////////////
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[p]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-AdaBoost-ills.eps}%
+    \caption{Numero di ill-defined delle configurazioni di AdaBoost}%
+    \label{figure:ill1}% 
+\end{figure}
+
+\vspace*{\fill}
+
+% //////////////////// LIVELLO 1 /////////////////
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[hb]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-AdaBoost-level1.eps}%   
+    \caption{Confronto tra le metriche di diverse configurazioni di AdaBoost}%
+    \label{figure:liv1.1}%
+\end{figure}
+
+\vspace*{\fill}
+
+
+% //////////////////// LIVELLO 2 /////////////////
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[ht]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-level2.eps}%
+    \caption{Confronto tra i classificatori con le migliori performance su diverse classi}%
+    \label{fig:liv2}% 
+\end{figure}
+
+\vspace*{\fill}
+
+
+% //////////////////// LIVELLO 3 /////////////////
+\begin{comment}
+
+\topskip0pt
+\vspace*{\fill}
+
+\begin{figure}[ht]%
+    \centering
+    \includegraphics[scale = 0.80]{CC-level3.eps}%
+    \caption{Confronto tra i migliori classificatori delle diverse famiglie di modelli}%
+    \label{fig:liv3} 
+\end{figure}
+
+\vspace*{\fill}
+
+\end{comment}
+
+\end{document}

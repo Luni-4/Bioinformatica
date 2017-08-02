@@ -1,0 +1,47 @@
+\chapter{Analisi dei Risultati}
+\label{chap:risultati}
+
+\section{Scelta delle metriche}
+Le metriche sono state scelte considerando diversi aspetti del dataset.
+A causa della presenza di classi sbilanciate, che presentano un numero elevato di esempi negativi rispetto a quelli positivi, l'accuratezza non rappresenta una metrica significativa per il modello che si sta valutando.
+
+\paragraph*{}
+L'accuratezza corrisponde alla media delle predizioni sbagliate da un classificatore ed è definita come:
+
+\begin{equation}
+\texttt{accuracy}(y, \hat{y}) = \frac{1}{n_\text{samples}} \sum_{i=0}^{n_\text{samples}-1} \mathbb{I}(\hat{y}_i \neq y_i)
+\end{equation}
+
+Come si può notare, l'accuratezza non fornisce un buon valore in caso di sbilanciamento, in quanto non è in grado di discriminare i valori positivi da quelli negativi.
+
+\paragraph*{}
+Le metriche considerate durante lo svolgimento del progetto sono la Precision, la Recall, la F-score, l'AUPRC e l'AUROC.
+
+La \textit{Precision} corrisponde all'abilità del classificatore di non etichettare un esempio negativo come positivo. È definita nell'intervallo $[0,1]$. Più la precision è alta, più un classificatore non scambierà gli esempi negativi per positivi.
+
+\begin{equation}
+\text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}
+\end{equation}
+
+\paragraph*{}
+La \textit{Recall} rappresenta l'abilità di un classificatore di individuare gli esempi postivi. È definita nell'intervallo $[0,1]$. Più la recall è alta, più un classificatore individuerà meglio gli esempi positivi.
+
+\begin{equation}
+\text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}
+\end{equation}
+
+\paragraph*{}
+La \textit{F-score} è data dalla media armonica della precision e della recall. È definita nell'intervallo $[0,1]$. Più la f-score è alta, più un classificatore produrrà buoni risultati.
+
+\begin{equation}
+\text{F-score} = \frac{2 \times \text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}
+\end{equation}
+
+\paragraph*{}
+L'\textit{Area Under the Precision-Recall Curve (AUPRC)} rappresenta l'area sotto la curva del grafico precision-recall. Assume valori definiti nell'intervallo $[0,1]$. Più il valore è alto, più un classificatore produrrà buoni risultati.
+
+\paragraph*{}
+L'\textit{Area Under the Receiver Operating Characteristic (AUROC)} rappresenta la probabilità che un classificatore associ un valore più alto ad un esempio positivo, scelto casualmente, rispetto ad uno negativo, sempre scelto in maniera casuale. Assume valori definiti nell'intervallo $[0,1]$. Più il valore è alto, più un classificatore produrrà buoni risultati.
+
+\paragraph*{}
+Come spiegato precedentemente, le metriche vengono calcolate per ogni fold di una classe e i risultati prodotti vengono salvati in un file json. Per poter valutare le performance di un classificatore su una classe specifica, viene fatta la media delle metriche di ciascun fold della classe.

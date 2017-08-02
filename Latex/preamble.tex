@@ -1,0 +1,117 @@
+% //////////////////// Preambolo /////////////////
+
+% Definizione del documento
+\documentclass[12pt,a4paper,oneside,hidelinks]{report}
+
+% Lingue usate nel documento e dizionario per la correzione delle parole
+\usepackage[english,italian]{babel}
+
+%Codifica dei font di input e di output
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+
+% Fornisce i comandi per una buona interlinea dei caratteri
+\usepackage{setspace}
+
+% Grafica del documento
+\usepackage{graphicx}
+
+% Migliore indentazione del testo
+\usepackage{indentfirst}
+
+% Gestisce le caption delle immagini
+\usepackage{caption}
+
+% Gestiscono la parte matematica del documento
+\usepackage{amssymb, amsmath, amsthm}
+
+% Gestisce il codice del documento
+\usepackage{listings}
+\renewcommand{\ttdefault}{txtt}
+
+% Gestisce i link
+\usepackage{hyperref}
+
+% Formattazione pagina
+\usepackage{geometry}
+
+% Colori
+\usepackage{xcolor}
+
+% Pacchetti usati per scrivere lo pseudocodice di un algoritmo
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+
+%Rimuove la parola "Algorithm #" dallo pseudocodice
+%\captionsetup[algorithm]{labelformat=empty}
+
+% Gestione delle multirighe in una tabella
+\usepackage{multirow}
+
+% Gestione delle tabelle su più pagine
+\usepackage{subcaption}
+
+% Consente di impostare le virgolette del discorso diretto
+\usepackage{dirtytalk}
+
+% Allineamento dei numeri in una tabella
+\usepackage{siunitx}
+
+% Converte file eps in pdf
+\usepackage{epstopdf}
+
+% Commenta ed esclude parti del file latex dalla compilazione
+\usepackage{comment}
+
+% L'output è un pdf a-1b
+%\usepackage[a-1b]{pdfx} 
+
+% //////////////////////////////////////////////////
+
+% Impostare interlinea a 1.5
+\renewcommand{\baselinestretch}{1.5}
+
+% Dichiara la funzione argmin non presente di default
+\DeclareMathOperator*{\argmin}{argmin}
+
+% Dichiara la funzione sgn non presente di default 
+\DeclareMathOperator*{\sgn}{sgn}
+
+% Apertura del pdf con il 100% di zoom
+\hypersetup{pdfstartview={XYZ null null 1.00}}
+
+% Impostare i margini della pagina
+\geometry{left=2cm,right=2cm, top=2cm, bottom=2cm}
+
+% Reinclude nella compilazione le parti escluse
+%\includecomment{comment}
+
+%Impostare font del documento (Latin Modern Roman)
+\renewcommand*\rmdefault{lmr}
+
+% Definizione dei colori per i commenti, le keyword e le stringhe dei codici
+\definecolor{bluekeywords}{rgb}{0.13,0.13,1}
+\definecolor{greencomments}{rgb}{0,0.5,0}
+\definecolor{redstrings}{rgb}{0.9,0,0}
+
+% Opzioni grafiche delle liste contenenti il codice scritto in Python
+\lstdefinestyle{customp}{
+    language=Python, 
+    basicstyle=\ttfamily\footnotesize,   
+    backgroundcolor=\color{gray!10},
+    frame=none,
+    tabsize=2,
+    commentstyle=\color{greencomments},
+    keywordstyle=\color{bluekeywords},
+    stringstyle=\color{redstrings},
+    title=\lstname,    
+    escapeinside={\%*}{*)},
+    breaklines=true,
+    breakatwhitespace=true,    
+    framextopmargin=2pt,
+    framexbottommargin=2pt,
+    inputencoding=utf8,
+    extendedchars=true,
+    showstringspaces=false,
+    literate={à}{{\'a}}1 {ã}{{\~a}}1 {é}{{\'e}}1 {ù}{{\'u}}1,
+}

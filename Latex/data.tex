@@ -1,0 +1,23 @@
+\chapter{Analisi dei Dati} 
+\label{chap:dati}
+Le feature degli esempi da fornire in input agli algoritmi di apprendimento sono contenute in una matrice bidimensionale chiamata \textit{Matrice di Adiacenza}, mentre le rispettive etichette si trovano nella \textit{Matrice delle Annotazioni}.
+
+\paragraph*{}
+La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica di dimensione $3195 \times 3195$. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. Le entry della matrice contengono una misura di similarità, ricavata da fattori biologici, fra coppie di proteine.
+Ciascuna entry può assumere valori tra $[0,1]$. Un valore vicino o uguale a 0 indica che le proteine non sono simili tra loro, mentre valori tendenti o uguali a 1 ne sanciscono la similarità. 
+La matrice risulta essere sparsa, a causa dell'elevato numero di entry pari a 0.
+
+\paragraph*{}
+La \textit{Matrice delle Annotazioni} è una matrice rettangolare con un numero di righe pari al numero delle proteine e tante colonne quante sono le classi prese in considerazione. La Cellular Component (CC) si compone di 235 classi.
+
+\paragraph*{} 
+Per ridurre l'uso di memoria centrale, sia la Matrice di Adiacenza che quella delle Annotazioni, sono caricate in forma sparsa. La funzione utilizzata per la conversione è contenuta nella libreria SciPy.
+
+Le singole colonne della matrice delle Annotazioni verranno successivamente convertite in array densi, in modo da poterle passare in input ai diversi algoritmi di apprendimento. 
+
+\paragraph*{}
+Ogni proteina può appartenere a una o più classi: ogni esempio del training set può avere più etichette ad esso associate. Tra le varie classi esiste una relazione gerarchica, che non viene però indicata nei dati di input.
+
+Le classi risultano notevolmente sbilanciate: nella maggior parte di esse, il numero di positivi è nettamente inferiore rispetto a quello dei negativi. Inoltre, solo alcune classi dell'ontologia sono linearmente separabili. 
+
+Nello svolgimento del progetto si è deciso di considerare ogni classe in maniera indipendente, addestrando classificatori binari, appartenenti a famiglie di modelli diversi, sulle singole classi.
