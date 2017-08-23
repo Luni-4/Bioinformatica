@@ -17,21 +17,21 @@ Come si può notare, l'accuratezza non fornisce un buon valore in caso di sbilan
 \paragraph*{}
 Le metriche considerate durante lo svolgimento del progetto sono la Precision, la Recall, la F-score, l'AUPRC e l'AUROC.
 
-La \textit{Precision} corrisponde all'abilità del classificatore di non etichettare un esempio negativo come positivo. È definita nell'intervallo $[0,1]$. Più la precision è alta, più un classificatore non scambierà gli esempi negativi per positivi.
+La \textit{Precision} corrisponde alla capacità di un classificatore di non etichettare un esempio negativo come positivo. È definita nell'intervallo $[0,1]$. Più la Precision è alta, più un classificatore non scambierà degli esempi negativi per positivi.
 
 \begin{equation}
 \text{Precision} = \frac{\text{TP}}{\text{TP} + \text{FP}}
 \end{equation}
 
 \paragraph*{}
-La \textit{Recall} rappresenta l'abilità di un classificatore di individuare gli esempi postivi. È definita nell'intervallo $[0,1]$. Più la recall è alta, più un classificatore individuerà meglio gli esempi positivi.
+La \textit{Recall} rappresenta l'abilità di un classificatore di individuare gli esempi postivi. È definita nell'intervallo $[0,1]$. Più la Recall è alta, più un classificatore è abile nell'individuare gli esempi positivi.
 
 \begin{equation}
 \text{Recall} = \frac{\text{TP}}{\text{TP} + \text{FN}}
 \end{equation}
 
 \paragraph*{}
-La \textit{F-score} è data dalla media armonica della precision e della recall. È definita nell'intervallo $[0,1]$. Più la f-score è alta, più un classificatore produrrà buoni risultati.
+La \textit{F-score} è data dalla media armonica tra la Precision e la Recall. È definita nell'intervallo $[0,1]$. Più la F-score è alta, più un classificatore produrrà buoni risultati.
 
 \begin{equation}
 \text{F-score} = \frac{2 \times \text{Precision} \times \text{Recall}}{\text{Precision} + \text{Recall}}

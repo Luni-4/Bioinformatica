@@ -4,7 +4,7 @@
 \usepackage{afterpage}
 
 % Definizione della cartella contenente le immagini da usare
-\graphicspath{ {../img/} }
+\graphicspath{{../img/}}
 
 % //////////////////// DOCUMENTO /////////////////
 
@@ -30,7 +30,7 @@
 \newpage
 
 \section*{Introduzione}
-Il progetto ambisce ad utilizzare degli algoritmi di apprendimento automatico per costruire dei classificatori in grado di predire la funzione delle proteine della \textit{Drosophila melanogaster} (moscerino della frutta), organismo modello per gli insetti. Si vogliono sperimentare diversi algoritmi in modo da analizzarne il comportamento e le performance. 
+Il progetto ambisce ad utilizzare degli algoritmi di apprendimento automatico per costruire dei classificatori in grado di predire la funzione delle proteine della \textit{Drosophila melanogaster} (moscerino della frutta), organismo modello per gli insetti. Un ulteriore obiettivo è dato dall'analisi del comportamento e delle performance di ciascuno dei classificatori prodotti.
 
 Per affrontare il problema si è puntato su modelli semplici, rapidi, che consentano di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento scelti sono: 
 
@@ -42,16 +42,16 @@ Per affrontare il problema si è puntato su modelli semplici, rapidi, che consen
 Ognuno dei metodi sopra elencati verrà applicato alla predizione dei termini CC (Cellular Component) della GO (Gene Ontology).
 
 \paragraph*{}
-Il progetto è stato implementato utilizzando \textit{Python} 3.5, e la versione 0.18.1 della libreria per l'apprendimento automatico \textit{scikit-learn}. Le strutture di memoria per i dati sono realizzate con l'ausilio della libreria \textit{SciPy} 0.19.1.
+Il progetto è stato implementato utilizzando \textit{Python} 3.5 e la versione 0.18.1 della libreria per l'apprendimento automatico \textit{scikit-learn}. Le strutture dati realizzate sfruttano la libreria \textit{SciPy} 0.19.1.
 
 \paragraph*{}
 L'elaborato descrive i passaggi e le problematiche affrontate durante lo svolgimento del lavoro. Si è deciso di associare ad ogni singolo stadio lavorativo un capitolo. 
 
-Il \autoref{chap:dati} analizza i dati di input, mostrando la loro struttura e le possibili metodologie di elaborazione. 
+Il \autoref{chap:dati} analizza i dati di input, mostra la loro struttura e le possibili metodologie di elaborazione. 
 
 Il \autoref{chap:metodi} spiega i metodi di machine learning scelti, la loro implementazione pratica e i settaggi utilizzati.
 
-Il \autoref{chap:risultati} illustra i risultati ottenuti dai clasificatori per mezzo di grafici e confronta tra loro i diversi algoritmi di apprendimento allo scopo di individuare quelli con il più basso errore di classificazione.
+Il \autoref{chap:risultati} illustra i risultati ottenuti dai classificatori per mezzo di grafici e confronta tra loro i diversi algoritmi di apprendimento, allo scopo di individuare quelli con il più basso errore di classificazione.
 
 % Analisi dei dati
 \include{data}
@@ -59,7 +59,7 @@ Il \autoref{chap:risultati} illustra i risultati ottenuti dai clasificatori per 
 \chapter{Metodi di Machine Learning} 
 \label{chap:metodi}
 
-I metodi di Machine Learning scelti si basano su modelli semplici, rapidi, che consentono di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento considerati sono \textit{AdaBoost}, \textit{Support Vector Machine (SVM)} ed una loro particolare istanza chiamata \textit{Pegasos}. La scelta dei metodi è stata effettuata con lo scopo di individuare le differenze tra i modelli di classificazione e decretare il migliore. Un'ulteriore motivo è dato dal voler confrontare algoritmi di apprendimento lineari, come SVM e Pegasos, con algoritmi basati sull'utilizzo di un numero maggiore di classificatori, come AdaBoost.
+I metodi di Machine Learning scelti si basano su modelli semplici, rapidi, che consentono di ottenere una buona valutazione dell'errore di classificazione. Gli algoritmi di apprendimento considerati sono le \textit{Support Vector Machine (SVM)} ed una loro particolare istanza chiamata \textit{Pegasos}. Analizzando le differenze tra i vari modelli si vuole decretare l'algoritmo di apprendimento migliore.
 
 \paragraph*{}
 Per poter effettuare il tuning degli iperparametri, sono state create diverse configuarazioni di esecuzione.
@@ -120,13 +120,13 @@ numero\_campioni / (numero\_classi * array\_contenente\_cardinalità\_classi)
 Per determinare con quali parametri, sul dataset considerato, la SVM produce dei buoni risultati, vengono eseguite le seguenti configurazioni:
 
 \paragraph*{}
-\textbf{\textit{Unbalanced}}. Il kernel di questa configurazione è RBF. La funzione SVC viene eseguita con i parametri di default, C unitario e gamma variabile, per determinare se risulta necessaria un eventuale modifica degli iperparametri.
+\textbf{\textit{Unbalanced}}. Il kernel di questa configurazione è RBF. La funzione SVC viene eseguita con i parametri di default, C unitario e gamma variabile, per determinare se è necessaria un'eventuale modifica degli iperparametri.
 
 \paragraph*{}
 \textbf{\textit{Balanced}}. Questa configurazione utilizza gli stessi parametri della Unbalanced, ma imposta il parametro class\_weight a \say{balanced} per poter bilanciare le classi.
 
 \paragraph*{}
-\textbf{\textit{C e gamma variabili}}. Insieme di due configurazioni. Il kernel usato è RBF. Il parametro C di SVC assume un valore elevato, mentre gamma uno molto piccolo. La seconda configurazione fa crescere entrambi di un ordine di grandezza.
+\textbf{\textit{C e gamma variabili}}. Si hanno due configurazioni con queste caratteristiche. Il kernel usato in entrambe è RBF. Per la prima configurazione, il parametro C di SVC assume un valore elevato, mentre gamma uno molto piccolo. La seconda configurazione fa crescere di un ordine di grandezza entrambi i valori.
 
 \paragraph*{}
 \textbf{\textit{Poly}}. Viene usato un kernel polinomiale di grado 4. Il valore di class\_weight è \say{balanced}. Tutti i restanti parametri non sono stati modificati. La scelta del grado del polinomio è stata effettuata tenendo in considerazione la potenza computazionale delle macchine a disposizione.
@@ -169,7 +169,7 @@ La funzione \textit{SGDClassifier} sfrutta il parametro \textit{class\_weight} p
 Le diverse configurazioni di Pegasos si differenziano tra loro per i valori di T e $\lambda$ e, tranne una, si riferiscono tutte alla prima implementazione. Per la seconda implementazione, si è usata un'unica configurazione e con un valore di $\lambda$ non molto piccolo, a causa dell'elevato tempo computazionale richiesto dalla funzione della libreria di scikit-learn. Si è comunque deciso di tenerla in considerazione in modo da poterla confrontare con le altre.
 
 \paragraph*{}
-Si è variato principalmente il parametro $\lambda$. Per la maggior parte delle configurazioni, si è mantenuto T costante perché, per valori sufficientemente alti, non influenza notevolmente i risultati prodotti dall'algoritmo. La Tabella~\ref{tab:b3} mostra le varie configurazioni e l'ultima riga descrive l'unica che si riferisce alla seconda implementazione.
+Si è variato principalmente il parametro $\lambda$. Per la maggior parte delle configurazioni, si è mantenuto T costante perché, per valori sufficientemente alti, non influenza notevolmente i risultati prodotti dall'algoritmo. La Tabella~\ref{tab:b3} mostra le varie configurazioni usate. L'ultima riga è l'unica configurazione relativa alla seconda implementazione.
 
 \begin{table}[ht]%	
 \centering
@@ -274,7 +274,7 @@ Il confronto tra le varie configurazioni di Pegasos è illustrato dalla Figura~\
 
 \begin{figure}[hb]%
     \centering
-    \includegraphics[scale = 0.80]{CC-SVM-ills.eps}%   
+    \includegraphics[scale = 0.80]{CC-SVM-ills}%   
     \caption{Numero di ill-defined delle configurazioni di SVM}%
     \label{figure:ill12}%
 \end{figure}
@@ -288,14 +288,14 @@ Il confronto tra le varie configurazioni di Pegasos è illustrato dalla Figura~\
 
 \begin{figure}[hpt!]%
     \centering
-    \includegraphics[scale = 0.80]{CC-Pegasos-ills.eps}%   
+    \includegraphics[scale = 0.80]{CC-Pegasos-ills}%   
     \caption{Numero di ill-defined delle configurazioni di Pegasos}%
     \label{figure:ill13}%
 \end{figure}
 
 \begin{figure}[hbp!]%
     \centering
-    \includegraphics[scale = 0.80]{CC-Pegasos-ills-LS.eps}%   
+    \includegraphics[scale = 0.80]{CC-Pegasos-ills-LS}%   
     \caption{Numero di ill-defined delle configurazioni di Pegasos su classi linearmente separabili}%
     \label{figure:ill14}%
 \end{figure}
@@ -309,7 +309,7 @@ Il confronto tra le varie configurazioni di Pegasos è illustrato dalla Figura~\
 
 \begin{figure}[hb]%
     \centering
-    \includegraphics[scale = 0.80]{CC-SVM-level1.eps}%   
+    \includegraphics[scale = 0.80]{CC-SVM-level1}%   
     \caption{Confronto tra le metriche di diverse configurazioni di SVM}%
     \label{figure:liv1.2}%
 \end{figure}
@@ -321,7 +321,7 @@ Il confronto tra le varie configurazioni di Pegasos è illustrato dalla Figura~\
 
 \begin{figure}[hb]%
     \centering
-    \includegraphics[scale = 0.80]{CC-Pegasos-level1.eps}%   
+    \includegraphics[scale = 0.80]{CC-Pegasos-level1}%   
     \caption{Confronto tra le metriche di diverse configurazioni di Pegasos}%
     \label{figure:liv1.3}%
 \end{figure}
@@ -336,7 +336,7 @@ Il confronto tra le varie configurazioni di Pegasos è illustrato dalla Figura~\
 
 \begin{figure}[ht]%
     \centering
-    \includegraphics[scale = 0.80]{CC-level2.eps}%
+    \includegraphics[scale = 0.80]{CC-level2}%
     \caption{Confronto tra i classificatori con le migliori performance su diverse classi}%
     \label{fig:liv2}% 
 \end{figure}
@@ -351,7 +351,7 @@ Il confronto tra le varie configurazioni di Pegasos è illustrato dalla Figura~\
 
 \begin{figure}[ht]%
     \centering
-    \includegraphics[scale = 0.80]{CC-level3.eps}%
+    \includegraphics[scale = 0.80]{CC-level3}%
     \caption{Confronto tra i migliori classificatori delle diverse famiglie di modelli}%
     \label{fig:liv3} 
 \end{figure}
@@ -365,7 +365,7 @@ Il confronto tra le varie configurazioni di Pegasos è illustrato dalla Figura~\
 
 \begin{figure}[hb]%
     \centering
-    \includegraphics[scale = 0.80]{CC-Pegasos-level1-LS.eps}%   
+    \includegraphics[scale = 0.80]{CC-Pegasos-level1-LS}%   
     \caption{Confronto tra le metriche di diverse configurazioni di Pegasos su classi linearmente separabili}%
     \label{figure:illps}%
 \end{figure}
