@@ -212,37 +212,37 @@ Pegasos\_SGD         & balanced      & 1e+04    & 1.0e-11   \\
 \section{Risultati}
 
 \subsection{Ill-defined}
-Durante la fase di cross-validation è emerso che parte dei classificatori addestrati non ha predetto alcun esempio del test set, dando solo risposte negative. Poichè i 5 fold sono stati costruiti in modo da avere sempre almeno un esempio positivo, questo significa che il classificatore ha commesso un errore.
+Durante la fase di cross-validation, è emerso che parte dei classificatori addestrati non sono riusciti a predire nessun esempio del test set, dando solo risposte negative. Poichè i 5 fold sono stati costruiti in modo da avere sempre almeno un esempio positivo, questo significa che il classificatore ha commesso un errore.
 
 Non avendo predetto neanche un positivo (vero o falso che sia), il classificatore ha imparato a rispondere negativamente a qualunque input, rendendosi di fatto inutilizzabile.
 
-Inoltre, poichè il numero di positivi è zero, il calcolo della Precision contiene una divisione per zero e quindi  risulta impossibile. Di conseguenza anche la F-score non è computabile. Le funzioni della libreria scikit-learn rimediano parzialmente a questo comportamento ponendo a 0 le metriche problematiche e catalogandole come \emph{ill-defined}.
+Inoltre, poichè non si ha nessuna predizione positiva, il calcolo della Precision contiene una divisione per zero e quindi risulta impossibile. Di conseguenza anche la F-score non è computabile. Le funzioni della libreria scikit-learn rimediano parzialmente a questo comportamento ponendo a zero le metriche problematiche e catalogandole come \emph{ill-defined}.
 
-Durante l'analisi delle metriche è possibile selezionare i predittori intrinsecamente difettosi cercando quelli che hanno Precision e F-score uguali a zero. In questo modo è facile quantificare i predittori difettosi.
+Durante l'analisi delle metriche è possibile selezionare i predittori intrinsecamente difettosi, individuando quelli con Precision e F-score uguale a zero. In questo modo, risulta più facile quantificarne il loro numero.
 
-Si osserva che il numero di predittori \emph{ill-defined} aumenta con training set sbilanciati. Ovviamente anche l'algoritmo di apprendimento influisce in maniera considerevole sulla qualità dei risultati: se i pesi delle classi non vengono bilanciati, i predittori generati saranno difettosi.
+Si osserva che il numero di predittori \emph{ill-defined} aumenta in presenza di training set sbilanciati. Ovviamente anche l'algoritmo di apprendimento influisce notevolmente sulla qualità dei risultati: se le classi non vengono bilanciate, i predittori generati saranno difettosi.
 
 Il sistema 5-fold prevede che per ogni classe dell'ontologia vengano generati 5 distinti predittori. I predittori \emph{ill-defined} possono essere numerosi, ma fintantochè una classe possiede almeno un predittore non \emph{ill-defined}, è possibile costruire, per tale classe, un predittore funzionante.
 
 Il numero di predittori \emph{ill-defined} può essere considerato un indicatore di qualità dell'algoritmo di apprendimento. A parità di cardinalità della classe, avere un numero minore di \emph{ill-defined} comporta un utilizzo migliore degli esempi positivi.
 
-Gli \emph{ill-defined} di SVM, mostrati dalla Figura~\ref{figure:ill12}, non presentano variazioni significative ed il valore mediano, in alcune configurazioni, rimane costante a 2.
+Gli \emph{ill-defined} di SVM, mostrati dalla Figura~\ref{figure:ill12}, non presentano variazioni significative ed il valor medio, in alcune configurazioni, rimane costante a 2.
 
 In Pegasos, come si vede dalla Figura~\ref{figure:ill13}, il numero di ill-defined è elevatissimo per quasi tutte le configurazioni, fatta eccezione per \say{Pegasos\_SGD} che non ne produce nessuno. Questa notevole differenza è dovuta al mancato utilizzo di una tecnica per il bilanciamento delle classi nella prima implementazione.
 
-I classificatori difettosi sono inutilizzabili, ma facili da identificare ed escludere. In un contesto applicativo reale verrebero esclusi dall'utilizzo. Pertanto nelle analisi che seguono si è filtrato il bias introdotto dai classificatori \emph{ill-defined} e si sono analizzati solo classificatori costruiti correttamente.
+I classificatori difettosi sono inutilizzabili, ma facili da identificare ed escludere. Pertanto, nelle analisi che seguono, si è filtrato il bias introdotto dai classificatori \emph{ill-defined} e si sono analizzati solo classificatori costruiti correttamente.
 
 \subsection{Analisi a Livelli}
-Per identificare i migliori classificatori e poterli confrontare tra loro, è stata creata una struttura a tre livelli. Nei primi due livelli, i classificatori di modelli diversi non interagiscono tra loro. In ogni livello, le ontologie sono sempre analizzate in maniera indipendente. 
+Per identificare i migliori classificatori e poterli confrontare tra loro, è stata creata una struttura a tre livelli.
 
 Al \textit{Livello 1} vengono confrontate le metriche prodotte dalle diverse configurazioni di uno stesso classificatore. Questo metodo consente di determinare qual è il migliore classificatore per ogni famiglia di modelli. La Figura~\ref{figure:liv1.2} mette in relazione tra loro le diverse configurazioni di SVM, mentre la Figura~\ref{figure:liv1.3} quelle di Pegasos.
 
 \paragraph*{}
-Il \textit{Livello 2} confronta la configurazione del classificatore che ha ottenuto i risultati migliori al livello precedente su diverse classi. Lo scopo di questa analisi consiste nel capire come un classificatore varia le sue predizioni a seconda della classe scelta. Le classi considerate sono tre e sono disposte in ordine crescente rispetto al numero di esempi positivi. L'id della classe si ottiene unendo il nome dell'ontologia usata e la relativa colonna della Matrice delle Annotazioni.
+Il \textit{Livello 2} confronta la configurazione del classificatore che ha ottenuto i risultati migliori al livello precedente su diverse classi. Lo scopo di questa analisi consiste nel capire come un classificatore varia le sue predizioni a seconda della classe scelta. Le classi considerate sono tre e sono disposte in ordine crescente rispetto al numero di esempi positivi. L'id della classe è dato dall'unione tra il nome dell'ontologia e la relativa colonna della Matrice delle Annotazioni.
 La Figura~\ref{fig:liv2} mostra le metriche ottenute dalle migliori configurazioni di SVM e Pegasos.
 
 \paragraph*{}
-Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei classificatori di ogni famiglia di modelli. Le metriche considerate sono AUROC, AUPRC e F-score. La Figura~\ref{fig:liv3} mostra il confronto tra SVM e Pegasos.
+Il \textit{Livello 3} mette in relazione tra loro le migliori configurazioni dei classificatori di ogni famiglia di modelli. Le metriche considerate sono Recall, AUROC, AUPRC e F-score. La Figura~\ref{fig:liv3} mostra il confronto tra SVM e Pegasos.
 
 \subsection{Risultati di SVM}
 Le migliori configurazioni di SVM sono la \say{SVM\_Balanced\_C7\_G7} e la \\ \say{SVM\_Balanced\_C8\_G8}. Entrambe utilizzano un kernel RBF, hanno un valore di C molto grande ed un gamma piccolo. La F-score è ben al di sopra della media, con valori di Precision e Recall notevoli. 
