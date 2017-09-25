@@ -5,10 +5,10 @@ Le feature degli esempi da fornire in input agli algoritmi di apprendimento sono
 \paragraph*{}
 La \textit{Matrice di Adiacenza} è una matrice quadrata simmetrica di dimensione $3195 \times 3195$. Ogni riga identifica una proteina mentre le rispettive colonne rappresentano le feature della proteina stessa. Le entry della matrice contengono una misura di similarità, ricavata da fattori biologici, fra coppie di proteine.
 Ciascuna entry può assumere valori tra $[0,1]$. Un valore vicino o uguale a 0 indica che le proteine non sono simili tra loro, mentre valori tendenti o uguali a 1 ne sanciscono la similarità. 
-La matrice risulta essere sparsa, a causa dell'elevato numero di entry pari a 0.
+La matrice risulta essere sparsa a causa dell'elevato numero di entry pari a 0.
 
 \paragraph*{}
-La \textit{Matrice delle Annotazioni} è una matrice rettangolare con un numero di righe pari al numero delle proteine e tante colonne quante sono le classi prese in considerazione. La Cellular Component (CC) è composta da 235 classi.
+La \textit{Matrice delle Annotazioni} è una matrice rettangolare con un numero di righe pari al numero delle proteine e tante colonne quante sono le classi considerate. La Cellular Component (CC) è composta da 235 classi.
 
 \paragraph*{} 
 Per ridurre l'uso di memoria centrale, sia la Matrice di Adiacenza che quella delle Annotazioni, sono caricate in forma sparsa. La funzione utilizzata per la conversione è contenuta nella libreria SciPy.
